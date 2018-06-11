@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: rikorose/gcc-cmake:gcc-8
+    steps:
+      - checkout
+      - run:
+          name: Compile project
+          command: mkdir -p build && cd build && cmake ..
