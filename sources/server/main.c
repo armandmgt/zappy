@@ -10,6 +10,5 @@
 int main()
 {
 	fprintf(stdout, "hello world from server\n");
-	accasca
 	return (0);
 }
