@@ -7,4 +7,4 @@ jobs:
       - checkout
       - run:
           name: Compile project
-          command: mkdir -p build && cd build && cmake ..
+          command: mkdir -p build && cd build && cmake .. && make
