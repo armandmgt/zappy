@@ -5,35 +5,18 @@
 ** Created by armandmgt,
 */
 
-#include "server.h"
+#include <stdio.h>
+#include <getopt.h>
+#include "parse_functions.h"
+#include "common/tools.h"
 
-static unsigned long parse_number(int *error);
-static team_t *parse_teams(int *error, char *const argv[]);
-//	switch (opt) {
-//	case 'h':
-//		return (1);
-//	case 'p':
-//		break;
-//	case 'x':
-//		break;
-//	case 'y':
-//		break;
-//	case 'n':
-//		break;
-//	case 'c':
-//		break;
-//	case 'f':
-//		break;
-//	default:
-//		break;
-//	}
-
-static int port(options_t *opts, int *error)
+int port(options_t *opts, int *error, char * const * UNUSED(argv))
 {
 	opts->port = (uint16_t)parse_number(error);
+	return (0);
 }
 
-static int size(options_t *opts, int *error)
+int size(options_t *opts, int *error, char * const * UNUSED(argv))
 {
 	static int calls = 0;
 
@@ -41,19 +24,24 @@ static int size(options_t *opts, int *error)
 		opts->width = (unsigned int)parse_number(error);
 	else
 		opts->height = (unsigned int)parse_number(error);
+	return (0);
 }
 
-static int names(options_t *opts, int *error)
+int names(options_t *opts, int *error, char * const *argv)
 {
 	opts->teams = parse_teams(error, argv);
+	return (0);
 }
 
-static int clientNb(options_t *opts, int *error)
+int clientNb(options_t *opts, int *error, char * const *
+	UNUSED(argv))
 {
 	opts->maxClients = (unsigned int)parse_number(error);
+	return (0);
 }
 
-static int freq(options_t *opts, int *error)
+int freq(options_t *opts, int *error, char * const * UNUSED(argv))
 {
 	opts->freq = (unsigned int)parse_number(error);
+	return (0);
 }
