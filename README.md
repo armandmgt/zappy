@@ -7,7 +7,7 @@ An online game of cellular automation. Team of players (cells) must evolve in or
 for minerals in a grid like map.
 
 ### Installation
-`mkdir build && cd build && cmake .. && make`
+`make`
 
 ### Launch
 `./zappy_server -p <port> -x <width> -y <heigh>t -n [<name> [...]] -c <clientsNb>
