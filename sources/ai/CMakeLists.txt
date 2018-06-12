@@ -1,7 +1,12 @@
-set(SOURCES
-        main.c
-        ../../include/ai/ai.h
-        ../../include/common/tools.h
-        )
+include(CMakeSources.cmake)
 
-add_executable(zappy_ai ${SOURCES})
+project(zappy_ai)
+
+add_executable(${PROJECT_NAME} ${SRCS})
+
+#Headers
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_include_directories(${PROJECT_NAME} PRIVATE include/ai)
+target_include_directories(${PROJECT_NAME} PRIVATE include/common)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})

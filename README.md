@@ -3,8 +3,8 @@ Epitech's Zappy project
 
 ### Description
 
-An online game of cellular automation. Team of players (cells) must evolve in order to win the the game. They search 
-for minerals in a grid like map. 
+An online game of cellular automation. Team of players (cells) must evolve in order to win the the game. They search
+for minerals in a grid like map.
 
 ### Installation
 `mkdir build && cd build && cmake .. && make`
@@ -21,9 +21,9 @@ for minerals in a grid like map.
 
 ---
 ##### Done by:
+- Renaud MELET
 - Thomas BURGAUD
 - Thomas DEROTE-PARCELLIER
 - Marianne LEVEE
 - Tom ROCHAT
-- Renaud MELET
-- Armand MEGROT 
+- Armand MEGROT
