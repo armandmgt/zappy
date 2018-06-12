@@ -29,7 +29,7 @@ typedef struct options_s {
 
 typedef struct option_parser_s {
 	int opt;
-	int (*func)(options_t *, int *);
+	int (*func)(options_t *, int *, char * const *);
 } option_parser_t;
 
-int parse_options(int argc, char *const *argv, options_t *opts);
+int parse_options(int argc, char * const *argv, options_t *opts);

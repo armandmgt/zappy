@@ -10,40 +10,39 @@
 #include <string.h>
 #include "server.h"
 #include "common/tools.h"
-#include "parse_functions.c"
+#include "parse_functions.h"
 
-static int help(options_t *, int *);
-static int port(options_t *, int *);
-static int size(options_t *, int *);
-static int names(options_t *, int *);
-static int clientNb(options_t *, int *);
-static int freq(options_t *, int *);
+static int help(options_t *, int *, char * const *);
 
 int parse_options(int argc, char *const *argv, options_t *opts)
 {
 	int opt;
 	int error = 0;
+	int optcount = 0;
 	static option_parser_t parse_options[] = {
 		{'h', &help}, {'p', &port}, {'x', &size}, {'y', &size},
 		{'n', &names}, {'c', &clientNb}, {'f', &freq}
 	};
 
-	while ((opt = getopt(argc, argv, "hp:x:y:nc:f:")) && error == 0) {
+	while ((opt = getopt(argc, argv, "hp:x:y:nc:f:")) != -1 && error == 0) {
 		for (size_t i = 0; i < 7; i++) {
-			if (opt == parse_options[i].opt == opt &&
-				(parse_options[i].func(opts, &error) || error))
+			if (opt == parse_options[i].opt &&
+				(parse_options[i].func(opts, &error, argv) ||
+					error))
 				return (1);
 		}
+		optcount++;
 	}
-	return (error);
+	return (error || optcount != 6);
 }
 
-static int help(options_t * UNUSED(opts), int * UNUSED(error))
+static int help(options_t * UNUSED(opts), int * UNUSED(error),
+	char * const * UNUSED(argv))
 {
 	return (1);
 }
 
-static unsigned long parse_number(int *error)
+unsigned long parse_number(int *error)
 {
 	char *end_ptr = NULL;
 	unsigned long nb = strtoul((const char *)optarg, &end_ptr, 10);
@@ -56,7 +55,7 @@ static unsigned long parse_number(int *error)
 	}
 }
 
-static team_t *parse_teams(int *error, char *const argv[])
+team_t *parse_teams(int *error, char * const *argv)
 {
 	team_t *teams = NULL;
 	team_t *elem;
