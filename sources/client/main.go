@@ -6,18 +6,18 @@ import (
 )
 
 var (
-	machine = flag.String("h", "localhost", "machine name")
-	name = flag.String("n", "", "name of the team")
-	port = flag.Int("p", 0, "port number")
+	Machine = flag.String("h", "localhost", "machine name")
+	Name = flag.String("n", "", "name of the team")
+	Port = flag.Int("p", 0, "port number")
 )
 
 func init() {
 	flag.Parse()
 
-	if *port == 0 {
+	if *Port == 0 {
 		log.Fatalln("Invalid port provided -- Expected positive integer")
 	}
-	if *name == "" {
+	if *Name == "" {
 		log.Fatalln("Team name cannot be empty")
 	}
 }
