@@ -54,3 +54,6 @@ dkms.conf
 # Clion build
 *build*
 *idea*
+
+test/
+garbage/
