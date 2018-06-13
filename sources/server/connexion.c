@@ -8,6 +8,25 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
+
+int handle_client(int socket)
+{
+	pid_t pid;
+
+	dprintf(socket, "WELCOME\n");
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	else if (pid == 0) {
+		while (1) {
+			dprintf(socket, "CLIENT-NUM\nX Y\n");
+			return (0);
+			/*gérer les messages*/
+		}
+	}
+	return (0);
+}
 
 int server_connexion(int sock, struct sockaddr_in addr)
 {
@@ -22,7 +41,7 @@ int server_connexion(int sock, struct sockaddr_in addr)
 	while (1) {
 		socket = accept(sock, (struct sockaddr *)&client, &s_in_size);
 		getsockname(socket, (struct sockaddr *)&client, &s_in_size);
-		if (socket == -1)
+		if (socket == -1 || handle_client(socket) == -1)
 			return (-1);
 		close(socket);
 	}
