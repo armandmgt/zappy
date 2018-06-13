@@ -22,6 +22,10 @@ type Inhabitant interface {
 
 type Client struct {
 	Connection *net.TCPConn
+
+	team string
+	gameMap Map
+
 }
 
 ///
