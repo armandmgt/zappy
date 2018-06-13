@@ -24,7 +24,7 @@ func init() {
 
 func main() {
 	co := openConnection()
-	ai := Client{co}
+	ai := Client{co, *Name, Map{}}
 
 	gameLoop(ai)
 	defer co.Close()
