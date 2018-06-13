@@ -1,28 +1,28 @@
 /*
 ** EPITECH PROJECT, 2018
-** command_states
+** command_directions
 ** File description:
 ** none
 */
 
 #include "server/server.h"
 
-char *broadcast(void)
+char *forward(void)
 {
 	return ("ko");
 }
 
-char *inventory(void)
+char *right(void)
 {
 	return ("ko");
 }
 
-char *incantation(void)
+char *left(void)
 {
 	return ("ko");
 }
 
-char *death(void)
+char *look(void)
 {
 	return ("ko");
 }

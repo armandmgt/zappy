@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include <unistd.h>
 #include "server.h"
 #include "common/tools.h"
 
@@ -21,10 +22,14 @@ static char const USAGE[] = "USAGE: ./zappy_server -p port -x width -y height"
 int main(int argc, char * const *argv)
 {
 	options_t opts;
+	server_t server;
 
 	if (parse_options(argc, argv, &opts)) {
 		fprintf(stderr, USAGE);
 		return (FAILURE);
 	}
+	if (init_server(&opts, &server) == -1 || run_server(&opts, &server))
+		return (FAILURE);
+	close(server.sock);
 	return (SUCCESS);
 }
