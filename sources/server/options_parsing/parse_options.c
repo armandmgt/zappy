@@ -21,7 +21,7 @@ int parse_options(int argc, char *const *argv, options_t *opts)
 	int optcount = 0;
 	static option_parser_t parse_options[] = {
 		{'h', &help}, {'p', &port}, {'x', &size}, {'y', &size},
-		{'n', &names}, {'c', &clientNb}, {'f', &freq}
+		{'n', &names}, {'c', &client_nb}, {'f', &freq}
 	};
 
 	while ((opt = getopt(argc, argv, "hp:x:y:nc:f:")) != -1 && error == 0) {

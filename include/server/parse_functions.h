@@ -14,5 +14,5 @@ team_t *parse_teams(int *, char * const *);
 int port(options_t *, int *, char * const *);
 int size(options_t *, int *, char * const *);
 int names(options_t *, int *, char * const *);
-int clientNb(options_t *, int *, char * const *);
+int client_nb(options_t *, int *, char *const *);
 int freq(options_t *, int *, char * const *);
