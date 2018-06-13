@@ -20,5 +20,10 @@ func openConnection() *net.TCPConn {
 	return c
 }
 
-func gameLoop(ai Ai) {
+func gameLoop(ai Client) {
+	isRunning := true
+
+	for isRunning {
+		isRunning = false
+	}
 }

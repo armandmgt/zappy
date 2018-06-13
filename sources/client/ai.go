@@ -20,7 +20,7 @@ type Inhabitant interface {
 	incantation() int32
 }
 
-type Ai struct {
+type Client struct {
 	Connection *net.TCPConn
 }
 
@@ -28,12 +28,12 @@ type Ai struct {
 // Socket functions
 ///
 
-func (a *Ai) Read(b []byte) (string, error) {
+func (a *Client) Read(b []byte) (string, error) {
 	n, e := a.Connection.Read(b)
 	return string(b[:n]), e
 }
 
-func (a *Ai) Write(cmd string) (e error) {
+func (a *Client) Write(cmd string) (e error) {
 	_, e = a.Connection.Write([]byte(cmd))
 	return e
 }
@@ -42,45 +42,45 @@ func (a *Ai) Write(cmd string) (e error) {
 // Interface implementations
 ///
 
-func (a *Ai) moveForward() {
+func (a *Client) moveForward() {
 }
 
-func (a *Ai) turnRight() {
+func (a *Client) turnRight() {
 }
 
-func (a *Ai) turnLeft() {
+func (a *Client) turnLeft() {
 }
 
-func (a *Ai) look() (s []string) {
+func (a *Client) look() (s []string) {
 	return s
 }
 
-func (a *Ai) inventory() (s []string) {
+func (a *Client) inventory() (s []string) {
 	return s
 }
 
-func (a *Ai) broadcast() {
+func (a *Client) broadcast() {
 }
 
-func (a *Ai) getUnusedSlots() (n int32) {
+func (a *Client) getUnusedSlots() (n int32) {
 	return n
 }
 
-func (a *Ai) fork() {
+func (a *Client) fork() {
 }
 
-func (a *Ai) eject() (b bool) {
+func (a *Client) eject() (b bool) {
 	return b
 }
 
-func (a *Ai) take() (b bool) {
+func (a *Client) take() (b bool) {
 	return b
 }
 
-func (a *Ai) set() (b bool) {
+func (a *Client) set() (b bool) {
 	return b
 }
 
-func (a *Ai) incantation() (n int32) {
+func (a *Client) incantation() (n int32) {
 	return n
 }
