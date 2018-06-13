@@ -20,12 +20,21 @@ type Inhabitant interface {
 	incantation() int64
 }
 
+type Direction int
+
+const (
+	UPWAY    Direction = 0
+	LEFTWAY    Direction = 1
+	RIGHTWAY   Direction = 2
+	DOWNWAY Direction = 3
+)
+
 type Client struct {
 	Connection *net.TCPConn
 
 	team string
 	gameMap Map
-
+	rotation Direction
 }
 
 ///
@@ -47,12 +56,17 @@ func (a *Client) Write(cmd string) (e error) {
 ///
 
 func (a *Client) moveForward() {
+	if a.rot == UPWAY {
+		a.x += 1
+	}
 }
 
 func (a *Client) turnRight() {
+	a.rot = (a.rot - 1) % 4
 }
 
 func (a *Client) turnLeft() {
+	a.rot = (a.rot + 1) % 4
 }
 
 func (a *Client) look() (s []string) {
