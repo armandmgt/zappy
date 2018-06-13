@@ -13,8 +13,6 @@
 		char *(*ptr_func)(void);
 	} command_t;
 
-	int init_server(char **av);
-
 	char *forward(void);
 	char *right(void);
 	char *left(void);
