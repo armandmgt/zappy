@@ -19,7 +19,7 @@ int parse_options(int argc, char *const *argv, options_t *opts)
 	int opt;
 	int error = 0;
 	int optcount = 0;
-	static option_parser_t parse_options[] = {
+	static const option_parser_t parse_options[] = {
 		{'h', &help}, {'p', &port}, {'x', &size}, {'y', &size},
 		{'n', &names}, {'c', &client_nb}, {'f', &freq}
 	};
