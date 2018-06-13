@@ -19,3 +19,6 @@ func openConnection() *net.TCPConn {
 
 	return c
 }
+
+func gameLoop(ai Ai) {
+}
