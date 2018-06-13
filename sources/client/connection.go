@@ -20,9 +20,13 @@ func openConnection() *net.TCPConn {
 	return c
 }
 
-func gameLoop(ai Client) {
+func gameLoop(c Client) {
+	buffer := make([]byte, 1024)
 	isRunning := true
 
+	if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
+		log.Fatalln("Received invalid first response")
+	}
 	for isRunning {
 		isRunning = false
 	}
