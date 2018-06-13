@@ -24,5 +24,8 @@ func init() {
 
 func main() {
 	co := openConnection()
+	ai := Ai{co}
+
+	gameLoop(ai)
 	defer co.Close()
 }
