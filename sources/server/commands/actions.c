@@ -5,39 +5,39 @@
 ** none
 */
 
-#include "server.h"
-#include "commands.h"
+#include <stddef.h>
+#include "server/server.h"
 
-command_t command[] = {
-	{"FORWARD", &forward}, {"RIGHT", &right}, {"LEFT", &left},
-	{"LOOK", &look}, {"INVENTORY", &inventory}, {"BROADCAST", &broadcast},
-	{"CONNECT", &connect_server}, {"FORK", &born}, {"EJECT", &eject},
-	{"TAKE", &take}, {"SET", &set}, {"INCANTATION", &incantation},
-	{"DEATH", &death}, {NULL, NULL}
-	//TODO: remove NULL, NULL and use a const to know end of array
+static const command_t command[] = {
+	{"Forward", &forward}, {"Right", &right}, {"Left", &left},
+	{"Look", &look}, {"Inventory", &inventory},
+	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect},
+	{"Fork", &born}, {"Eject", &eject}, {"Take object", &take},
+	{"Set object", &set}, {"Incantation", &incantation},
+	{"Death", &death}
 };
 
-char *connect_server(void)
+char *connect(void)
 {
-	return ("ko");
+	return ("value\n");
 }
 
 char *born(void)
 {
-	return ("ko");
+	return ("ok\n");
 }
 
 char *eject(void)
 {
-	return ("ko");
+	return ("ko\n");
 }
 
 char *take(void)
 {
-	return ("ko");
+	return ("ko\n");
 }
 
 char *set(void)
 {
-	return ("ko");
+	return ("ko\n");
 }
