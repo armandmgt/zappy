@@ -23,18 +23,19 @@ type Inhabitant interface {
 type Direction int
 
 const (
-	UPWAY    Direction = 0
-	LEFTWAY    Direction = 1
-	RIGHTWAY   Direction = 2
-	DOWNWAY Direction = 3
+	N 	Direction = 1
+	E	Direction = 2
+	S	Direction = 3
+	W	Direction = 4
 )
 
 type Client struct {
 	Connection *net.TCPConn
-
 	team string
 	gameMap Map
-	rotation Direction
+	x          int64
+	y          int64
+	orientation Direction
 }
 
 ///
@@ -56,17 +57,23 @@ func (a *Client) Write(cmd string) (e error) {
 ///
 
 func (a *Client) moveForward() {
-	if a.rot == UPWAY {
+	if a.orientation == N {
 		a.x += 1
+	} else if a.orientation == S {
+		a.x -= 1
+	} else if a.orientation == E {
+		a.y += 1
+	} else if a.orientation == W {
+		a.y -= 1
 	}
 }
 
 func (a *Client) turnRight() {
-	a.rot = (a.rot - 1) % 4
+	a.orientation = (a.orientation + 1) % 4
 }
 
 func (a *Client) turnLeft() {
-	a.rot = (a.rot + 1) % 4
+	a.orientation = (a.orientation - 1) % 4
 }
 
 func (a *Client) look() (s []string) {
