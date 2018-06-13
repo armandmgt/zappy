@@ -7,6 +7,12 @@
 
 #pragma once
 
+	typedef struct command_s
+	{
+		char *cmd;
+		char *(*ptr_func)(void);
+	} command_t;
+
 	int init_server(char **av);
 #include <stdint.h>
 #include <stddef.h>
@@ -34,3 +40,18 @@ typedef struct option_parser_s {
 } option_parser_t;
 
 int parse_options(int argc, char * const *argv, options_t *opts);
+
+
+	char *forward(void);
+	char *right(void);
+	char *left(void);
+	char *look(void);
+	char *inventory(void);
+	char *broadcast(void);
+	char *connect(void);
+	char *born(void);
+	char *eject(void);
+	char *take(void);
+	char *set(void);
+	char *incantation(void);
+	char *death(void);

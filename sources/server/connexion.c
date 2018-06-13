@@ -31,7 +31,7 @@ int handle_client(int socket)
 int server_connexion(int sock, struct sockaddr_in addr)
 {
 	struct sockaddr_in client;
-	socklen_t s_in_size = sizeof(client);
+	socklen_t client_size = sizeof(client);
 	int socket;
 
 	if (bind(sock, (const struct sockaddr *)&addr, sizeof(addr)) == -1)
@@ -39,8 +39,8 @@ int server_connexion(int sock, struct sockaddr_in addr)
 	if (listen(sock, 1) == -1)
 		return (-1);
 	while (1) {
-		socket = accept(sock, (struct sockaddr *)&client, &s_in_size);
-		getsockname(socket, (struct sockaddr *)&client, &s_in_size);
+		socket = accept(sock, (struct sockaddr *)&client, &client_size);
+		getsockname(socket, (struct sockaddr *)&client, &client_size);
 		if (socket == -1 || handle_client(socket) == -1)
 			return (-1);
 		close(socket);
