@@ -33,7 +33,7 @@ int names(options_t *opts, int *error, char * const *argv)
 	return (0);
 }
 
-int clientNb(options_t *opts, int *error, char * const *
+int client_nb(options_t *opts, int *error, char * const *
 	UNUSED(argv))
 {
 	opts->maxClients = (unsigned int)parse_number(error);
