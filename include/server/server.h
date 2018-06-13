@@ -7,6 +7,7 @@
 
 #pragma once
 
+	int init_server(char **av);
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
