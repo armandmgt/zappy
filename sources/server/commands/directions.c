@@ -9,20 +9,20 @@
 
 char *forward(void)
 {
-	return ("ko");
+	return ("ok\n");
 }
 
 char *right(void)
 {
-	return ("ko");
+	return ("ok\n");
 }
 
 char *left(void)
 {
-	return ("ko");
+	return ("ok\n");
 }
 
 char *look(void)
 {
-	return ("ko");
+	return ("tile1 [...]\n");
 }
