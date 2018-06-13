@@ -11,13 +11,13 @@ type Inhabitant interface {
 	inventory() []string
 	broadcast() // Never fails
 
-	getUnusedSlots() int32
+	getUnusedSlots() int64
 	fork() // Never fails
 	eject() bool
 
 	take() bool
 	set() bool
-	incantation() int32
+	incantation() int64
 }
 
 type Client struct {
@@ -62,7 +62,7 @@ func (a *Client) inventory() (s []string) {
 func (a *Client) broadcast() {
 }
 
-func (a *Client) getUnusedSlots() (n int32) {
+func (a *Client) getUnusedSlots() (n int64) {
 	return n
 }
 
@@ -81,6 +81,6 @@ func (a *Client) set() (b bool) {
 	return b
 }
 
-func (a *Client) incantation() (n int32) {
+func (a *Client) incantation() (n int64) {
 	return n
 }
