@@ -28,7 +28,7 @@ func runCmd(c *Client, s string) {
 
 func execDebug() {
 	var cmd string
-	c := Client{nil, "foo", Map{}, 0}
+	c := Client{nil, "foo", Map{}, 0, 0, 0}
 	reader := bufio.NewReader(os.Stdin)
 
 	debugGreeting()

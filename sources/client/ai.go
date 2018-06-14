@@ -23,10 +23,10 @@ type Inhabitant interface {
 type Direction int
 
 const (
-	UPWAY    Direction = 0
-	LEFTWAY    Direction = 1
-	RIGHTWAY   Direction = 2
-	DOWNWAY Direction = 3
+	N 	Direction = 1
+	E	Direction = 2
+	S	Direction = 3
+	W	Direction = 4
 )
 
 type Client struct {
@@ -34,7 +34,9 @@ type Client struct {
 
 	Team string `json:"team"`
 	MapSize Map `json:"map"`
-	Rot Direction `json:"rotation"`
+	Orientation Direction `json:"rotation"`
+	X int64 `json:"x"`
+	Y int64 `json:"y"`
 }
 
 ///
@@ -56,16 +58,23 @@ func (a *Client) Write(cmd string) (e error) {
 ///
 
 func (a *Client) moveForward() {
-	if a.Rot == UPWAY {
+	if a.Orientation == N {
+		a.X += 1
+	} else if a.Orientation == S {
+		a.X -= 1
+	} else if a.Orientation == E {
+		a.Y += 1
+	} else if a.Orientation == W {
+		a.Y -= 1
 	}
 }
 
 func (a *Client) turnRight() {
-	a.Rot = (a.Rot - 1) % 4
+	a.Orientation = (a.Orientation - 1) % 4
 }
 
 func (a *Client) turnLeft() {
-	a.Rot = (a.Rot + 1) % 4
+	a.Orientation = (a.Orientation + 1) % 4
 }
 
 func (a *Client) look() (s []string) {
