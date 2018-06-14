@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include "server.h"
 #include "common/tools.h"
 
@@ -19,6 +20,8 @@ static char const USAGE[] = "USAGE: %s -p port -x width -y height"
 	"clientsNb\tis the number of authorized clients per team\n"
 	"freq\t\tis the reciprocal of time unit for execution of actions\n";
 
+static void free_teams(team_t *list);
+
 int main(int argc, char * const *argv)
 {
 	options_t opts = {0};
@@ -30,6 +33,18 @@ int main(int argc, char * const *argv)
 	}
 	if (init_server(&opts, &server) == -1 || run_server(&opts, &server))
 		return (FAILURE);
+	free_teams(server.teams);
 	close(server.sock);
 	return (SUCCESS);
+}
+
+static void free_teams(team_t *list)
+{
+	team_t *prev;
+
+	while (list) {
+		prev = list;
+		list = list->next;
+		free(prev);
+	}
 }

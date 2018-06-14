@@ -12,10 +12,9 @@
 
 typedef struct list_s {
 	void *data;
-	void (*free_func)(void *);
 	struct list_s *next;
 } list_t;
 
-bool add_elem_at_front(list_t **, void *data, void (*free_func)(void *));
-void free_list(list_t *);
+bool add_elem_at_front(list_t **, void *data);
+void free_list(list_t *, void (*free_func)(void *));
 size_t list_len(list_t *);

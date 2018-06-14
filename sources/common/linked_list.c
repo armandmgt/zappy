@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "common/linked_list.h"
 
-bool add_elem_at_front(list_t **players, void *data, void (*free_func)(void *))
+bool add_elem_at_front(list_t **players, void *data)
 {
 	list_t *node = calloc(sizeof(**players), 1);
 
@@ -17,12 +17,11 @@ bool add_elem_at_front(list_t **players, void *data, void (*free_func)(void *))
 		return (false);
 	node->next = *players;
 	node->data = data;
-	node->free_func = free_func;
 	*players = node;
 	return (true);
 }
 
-void free_list(list_t *list)
+void free_list(list_t *list, void (*free_func)(void *))
 {
 	list_t *ptr;
 	void *data;
@@ -31,9 +30,8 @@ void free_list(list_t *list)
 		ptr = list;
 		list = list->next;
 		data = ptr->data;
-		if (ptr->free_func)
-			ptr->free_func(data);
-		free(data);
+		if (free_func)
+			free_func(data);
 		free(ptr);
 	}
 }
