@@ -23,9 +23,7 @@ typedef struct team_s {
 
 typedef struct client_s {
 	int sock;
-	struct sockaddr_in addr;
 	team_t *team;
-	struct client_s *next;
 } client_t;
 
 typedef struct options_s {
@@ -50,3 +48,4 @@ int run_server(options_t *opts, server_t *server);
 client_t *get_new_client(int server_socket);
 
 int check_fds(server_t *server, fd_set *readfds);
+int handle_new_connections(server_t *server, fd_set *readfds);
