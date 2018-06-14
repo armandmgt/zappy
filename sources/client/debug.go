@@ -22,13 +22,21 @@ func runCmd(c *Client, s string) {
 	if function, ok := Responses[s[:3]]; !ok {
 		fmt.Println("Invalid command provided")
 	} else {
-		function(c, s)
+		if function == nil {
+			fmt.Println("Function not implemented")
+		} else {
+			function(c, s)
+		}
 	}
 }
 
 func execDebug() {
 	var cmd string
-	c := Client{nil, "foo", Map{}, 0, 0, 0}
+	c := &Client{}
+
+	initClient(c, nil)
+	c.Team = "DevTeam"
+
 	reader := bufio.NewReader(os.Stdin)
 
 	debugGreeting()
@@ -38,7 +46,7 @@ func execDebug() {
 			break
 		}
 		if len(cmd) > 3 {
-			runCmd(&c, cmd[:len(cmd) - 1])
+			runCmd(c, cmd[:len(cmd) - 1])
 		}
 	}
 	os.Exit(0)
