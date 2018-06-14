@@ -11,6 +11,6 @@ jobs:
       - run:
           name: Run norm errors check
           command: |
-            curl -L https://github.com/ronanboiteau/NormEZ/blob/master/NormEZ.rb > norm
+            curl -s https://raw.githubusercontent.com/armandmgt/NormEZ/master/NormEZ.rb > norm
             chmod +x norm
             ./norm -u -i
