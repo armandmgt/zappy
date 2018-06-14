@@ -38,6 +38,7 @@ typedef struct options_s {
 typedef struct server_t {
 	int sock;
 	struct sockaddr_in addr;
+	team_t *teams;
 	list_t *clients;
 } server_t;
 

@@ -28,6 +28,7 @@ int run_server(options_t *opts, server_t *server)
 
 int init_server(options_t *opts, server_t *server)
 {
+	server->teams = opts->teams;
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
 	server->addr.sin_addr.s_addr = INADDR_ANY;
