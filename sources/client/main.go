@@ -3,6 +3,7 @@ package main
 import (
 	`flag`
 	`log`
+	`net`
 )
 
 var (
@@ -28,8 +29,15 @@ func init() {
 
 func main() {
 	co := openConnection()
-	c := Client{co, *Name, Map{}, 0, 0, 0}
+	c := &Client{}
 
+	initClient(c, co)
 	gameLoop(c)
 	defer co.Close()
+}
+
+func initClient(c *Client, co *net.TCPConn) {
+	c.Connection = co
+	c.Team = *Name
+	c.Orientation = N
 }
