@@ -7,7 +7,7 @@ import (
 )
 
 var Responses = map[string]func(*Client, string) {
-	"msz": getMapSize, "bct": getTileContent, "tna": nil,
+	"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 	"pnw": nil, "ppo": nil, "plv": nil,
 	"pin": nil, "pex": nil, "pbc": nil,
 	"pic": nil, "pie": nil, "pfk": nil,
@@ -46,5 +46,10 @@ func getTileContent(_ *Client, s string) {
 			arr = append(arr, int64(v))
 		}
 	}
+	//TODO: keep the information somewhere...
+}
+
+func getTeamsNames(_ *Client, s string) {
+	_ = getResponseData(s)
 	//TODO: keep the information somewhere...
 }
