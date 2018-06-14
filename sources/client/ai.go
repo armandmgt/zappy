@@ -30,11 +30,11 @@ const (
 )
 
 type Client struct {
-	Connection *net.TCPConn
+	Connection *net.TCPConn `json:"connection"`
 
-	team string
-	gameMap Map
-	rot Direction
+	Team string `json:"team"`
+	MapSize Map `json:"map"`
+	Rot Direction `json:"rotation"`
 }
 
 ///
@@ -56,16 +56,16 @@ func (a *Client) Write(cmd string) (e error) {
 ///
 
 func (a *Client) moveForward() {
-	if a.rot == UPWAY {
+	if a.Rot == UPWAY {
 	}
 }
 
 func (a *Client) turnRight() {
-	a.rot = (a.rot - 1) % 4
+	a.Rot = (a.Rot - 1) % 4
 }
 
 func (a *Client) turnLeft() {
-	a.rot = (a.rot + 1) % 4
+	a.Rot = (a.Rot + 1) % 4
 }
 
 func (a *Client) look() (s []string) {
