@@ -1,13 +1,16 @@
 package main
 
-import `net`
+import (
+	`net`
+	`fmt`
+)
 
 type Inhabitant interface {
 	moveForward() // Never fails
 	turnRight() // Never fails
 	turnLeft() // Never fails
 
-	look() []string
+	look(b []byte) bool
 	inventory() []string
 	broadcast() // Never fails
 
@@ -43,13 +46,13 @@ type Client struct {
 // Socket functions
 ///
 
-func (a *Client) Read(b []byte) (string, error) {
-	n, e := a.Connection.Read(b)
+func (c *Client) Read(b []byte) (string, error) {
+	n, e := c.Connection.Read(b)
 	return string(b[:n]), e
 }
 
-func (a *Client) Write(cmd string) (e error) {
-	_, e = a.Connection.Write([]byte(cmd))
+func (c *Client) Write(cmd string) (e error) {
+	_, e = c.Connection.Write([]byte(cmd))
 	return e
 }
 
@@ -57,56 +60,67 @@ func (a *Client) Write(cmd string) (e error) {
 // Interface implementations
 ///
 
-func (a *Client) moveForward() {
-	if a.Orientation == N {
-		a.X += 1
-	} else if a.Orientation == S {
-		a.X -= 1
-	} else if a.Orientation == E {
-		a.Y += 1
-	} else if a.Orientation == W {
-		a.Y -= 1
+func (c *Client) moveForward() {
+	c.Write("Forward")
+	if c.Orientation == N {
+		c.X = (c.X + 1) % c.MapSize.X
+	} else if c.Orientation == S {
+		c.X = (c.X - c.MapSize.X) % c.MapSize.X
+	} else if c.Orientation == E {
+		c.Y = (c.Y + 1) % c.MapSize.Y
+	} else if c.Orientation == W {
+		c.Y = (c.Y - c.MapSize.Y) % c.MapSize.Y
 	}
 }
 
-func (a *Client) turnRight() {
-	a.Orientation = (a.Orientation - 1) % 4
+func (c *Client) turnRight() {
+	c.Write("Right")
+	c.Orientation = (c.Orientation + 1) % 4
 }
 
-func (a *Client) turnLeft() {
-	a.Orientation = (a.Orientation + 1) % 4
+func (c *Client) turnLeft() {
+	c.Write("Left")
+	c.Orientation = (c.Orientation - 1) % 4
 }
 
-func (a *Client) look() (s []string) {
+func (c *Client) look(b []byte) (bool) {
+	c.Write("Look")
+	content, e := c.Read(b);
+	if e != nil {
+		return false
+	}
+	for i, rune := range content {
+		fmt.Printf("%d : %c\n", i, rune)
+	}
+	return true
+}
+
+func (c *Client) inventory() (s []string) {
 	return s
 }
 
-func (a *Client) inventory() (s []string) {
-	return s
+func (c *Client) broadcast() {
 }
 
-func (a *Client) broadcast() {
-}
-
-func (a *Client) getUnusedSlots() (n int64) {
+func (c *Client) getUnusedSlots() (n int64) {
 	return n
 }
 
-func (a *Client) fork() {
+func (c *Client) fork() {
 }
 
-func (a *Client) eject() (b bool) {
+func (c *Client) eject() (b bool) {
 	return b
 }
 
-func (a *Client) take() (b bool) {
+func (c *Client) take() (b bool) {
 	return b
 }
 
-func (a *Client) set() (b bool) {
+func (c *Client) set() (b bool) {
 	return b
 }
 
-func (a *Client) incantation() (n int64) {
+func (c *Client) incantation() (n int64) {
 	return n
 }
