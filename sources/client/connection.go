@@ -20,7 +20,7 @@ func openConnection() *net.TCPConn {
 	return c
 }
 
-func gameLoop(c Client) {
+func gameLoop(c *Client) {
 	buffer := make([]byte, 1024)
 	isRunning := true
 

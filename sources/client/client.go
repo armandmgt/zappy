@@ -23,20 +23,13 @@ type Inhabitant interface {
 	incantation() int64
 }
 
-type Direction int
-
-const (
-	N 	Direction = 1
-	E	Direction = 2
-	S	Direction = 3
-	W	Direction = 4
-)
-
 type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
-	Team string `json:"team"`
 	MapSize Map `json:"map"`
+
+	Team string `json:"team"`
+	Inventory Inventory `json:"inventory"`
 	Orientation Direction `json:"rotation"`
 	X int64 `json:"x"`
 	Y int64 `json:"y"`

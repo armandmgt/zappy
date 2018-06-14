@@ -32,7 +32,11 @@ func runCmd(c *Client, s string) {
 
 func execDebug() {
 	var cmd string
-	c := Client{nil, "foo", Map{}, 0, 0, 0}
+	c := &Client{}
+
+	initClient(c, nil)
+	c.Team = "DevTeam"
+
 	reader := bufio.NewReader(os.Stdin)
 
 	debugGreeting()
@@ -42,7 +46,7 @@ func execDebug() {
 			break
 		}
 		if len(cmd) > 3 {
-			runCmd(&c, cmd[:len(cmd) - 1])
+			runCmd(c, cmd[:len(cmd) - 1])
 		}
 	}
 	os.Exit(0)
