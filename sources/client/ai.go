@@ -36,6 +36,7 @@ type Client struct {
 	x          int64
 	y          int64
 	orientation Direction
+	rot Direction
 }
 
 ///
