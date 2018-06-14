@@ -78,12 +78,13 @@ func (c *Client) turnLeft() {
 
 func (c *Client) look(b []byte) (bool) {
 	c.Write("Look")
-	content, e := c.Read(b);
-	if e != nil {
-		return false
-	}
+//	content, e := c.Read(b);
+//	if e != nil {
+//		return false
+//	}
+	content := "[player,,, thystame,, food,,,,,thystame,,, player deraumere,,,]"
 	for i, rune := range content {
-		fmt.Printf("%d : %c\n", i, rune)
+		fmt.Printf("%d: %c\n", i, rune)
 	}
 	return true
 }
