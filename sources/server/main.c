@@ -6,10 +6,11 @@
 */
 
 #include <stdio.h>
+#include <unistd.h>
 #include "server.h"
 #include "common/tools.h"
 
-static char const USAGE[] = "USAGE: ./zappy_server -p port -x width -y height"
+static char const USAGE[] = "USAGE: %s -p port -x width -y height"
 	" -n name1 name2 ... -c clientsNb -f freq\n"
 	"port\t\tis the port number\n"
 	"width\t\tis the width of the world\n"
@@ -21,10 +22,14 @@ static char const USAGE[] = "USAGE: ./zappy_server -p port -x width -y height"
 int main(int argc, char * const *argv)
 {
 	options_t opts;
+	server_t server;
 
 	if (parse_options(argc, argv, &opts)) {
-		fprintf(stderr, USAGE);
+		fprintf(stderr, USAGE, argv[0]);
 		return (FAILURE);
 	}
+	if (init_server(&opts, &server) == -1 || run_server(&opts, &server))
+		return (FAILURE);
+	close(server.sock);
 	return (SUCCESS);
 }
