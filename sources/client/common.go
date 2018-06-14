@@ -1,6 +1,6 @@
 package main
 
 type Map struct {
-	X int64
-	Y int64
+	X int64 `json:"x"`
+	Y int64 `json:"y"`
 }

@@ -4,6 +4,7 @@ import (
 	`strings`
 	`strconv`
 	`log`
+	`fmt`
 )
 
 var Responses = map[string]func(c *Client, s string) {
@@ -40,10 +41,11 @@ func getMapSize(c *Client, s string) {
 	for i, d := range data {
 		if v, e := strconv.Atoi(d); e != nil {
 			log.Println("[msz]\tFailed to parse server response")
+			fmt.Println(e.Error())
 		} else {
 			arr[i] = int64(v)
 		}
 	}
-	c.gameMap.X = arr[0]
-	c.gameMap.Y = arr[1]
+	c.MapSize.X = arr[0]
+	c.MapSize.Y = arr[1]
 }
