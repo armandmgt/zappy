@@ -8,7 +8,7 @@ import (
 
 var Responses = map[string]func(*Client, string) {
 	"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
-	"pnw": nil, "ppo": nil, "plv": nil,
+	"pnw": getNewPlayerInformations, "ppo": nil, "plv": nil,
 	"pin": nil, "pex": nil, "pbc": nil,
 	"pic": nil, "pie": nil, "pfk": nil,
 	"pdr": nil, "pgt": nil, "pdi": nil,
@@ -52,4 +52,43 @@ func getTileContent(_ *Client, s string) {
 func getTeamsNames(_ *Client, s string) {
 	_ = getResponseData(s)
 	//TODO: keep the information somewhere...
+}
+
+func getNewPlayerInformations(_ *Client, s string) {
+	newPlayer := Player{}
+	data := getResponseData(s)
+
+	num, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[pnw]\tGot invalid player number")
+		return
+	}
+	newPlayer.Number = int64(num)
+
+	x, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pnw]\tGot invalid player X position")
+		return
+	}
+	y, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pnw]\tGot invalid player Y position")
+		return
+	}
+	newPlayer.Pos = Map{int64(x), int64(y)}
+
+	o, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pnw]\tGot invalid player orientation")
+		return
+	}
+	newPlayer.Orientation = Direction(o)
+
+	l, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pnw]\tGot invalid player level")
+		return
+	}
+	newPlayer.Level = int64(l)
+	//TODO: Keep the new player somewhere
 }
