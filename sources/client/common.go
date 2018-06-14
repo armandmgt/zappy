@@ -1,6 +1,8 @@
 package main
 
-import `strings`
+import (
+	`strings`
+)
 
 type Map struct {
 	X int64 `json:"x"`
@@ -26,5 +28,8 @@ type Inventory [7]int64
 
 func getResponseData(s string) []string {
 	// Since all server responses start with xxx, we always cut at the 4th index
+	if len(s) == 3 {
+		return []string{}
+	}
 	return strings.Split(s[4:], " ")
 }

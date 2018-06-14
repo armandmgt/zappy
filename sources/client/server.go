@@ -4,6 +4,7 @@ import (
 	`strconv`
 	`log`
 	`fmt`
+	`encoding/json`
 )
 
 var Responses = map[string]func(*Client, string) {
@@ -21,6 +22,11 @@ var Responses = map[string]func(*Client, string) {
 func getMapSize(c *Client, s string) {
 	arr := make([]int64, 2)
 	data := getResponseData(s)
+
+	if len(data) == 0 {
+		log.Println("Got incomplete server response")
+		return
+	}
 	for i, d := range data {
 		if v, e := strconv.Atoi(d); e != nil {
 			log.Println("[msz]\tFailed to parse server response")
@@ -37,6 +43,11 @@ func getMapSize(c *Client, s string) {
 func getTileContent(_ *Client, s string) {
 	var arr []int64
 	data := getResponseData(s)
+
+	if len(data) == 0 {
+		log.Println("Got incomplete server response")
+		return
+	}
 	for _, d := range data {
 		if v, e := strconv.Atoi(d); e != nil {
 			log.Println("[bct]\tFailed to parse server response")
@@ -58,6 +69,10 @@ func getNewPlayerInformations(_ *Client, s string) {
 	newPlayer := Player{}
 	data := getResponseData(s)
 
+	if len(data) == 0 {
+		log.Println("Got incomplete server response")
+		return
+	}
 	num, e := strconv.Atoi(data[0])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player number")
@@ -91,4 +106,7 @@ func getNewPlayerInformations(_ *Client, s string) {
 	}
 	newPlayer.Level = int64(l)
 	//TODO: Keep the new player somewhere
+
+	j, _ := json.MarshalIndent(newPlayer, "", "\t")
+	fmt.Println(j)
 }
