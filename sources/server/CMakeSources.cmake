@@ -6,10 +6,6 @@ set(CORE
 
     connexion/connexion.c
     connexion/communication.c
-
-    commands/actions.c
-    commands/directions.c
-    commands/states.c
 )
 
 set(SRCS

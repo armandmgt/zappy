@@ -16,8 +16,10 @@ static int listen_socket(int sock, struct sockaddr_in *addr);
 
 int run_server(options_t *opts, server_t *server)
 {
+	fd_set readfds;
+
 	while (true) {
-		if (check_fds(server, NULL))
+		if (check_fds(server, &readfds))
 			break;
 	}
 	return (0);
