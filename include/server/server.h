@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "linked_list.h"
 
 #define TEAM_NAME_LEN 64
 
@@ -39,7 +40,7 @@ typedef struct options_s {
 typedef struct server_t {
 	int sock;
 	struct sockaddr_in addr;
-	client_t *clients;
+	list_t *clients;
 } server_t;
 
 int parse_options(int argc, char * const *argv, options_t *opts);
