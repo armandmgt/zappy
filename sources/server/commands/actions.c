@@ -46,6 +46,5 @@ char *take(cell_t *cells)
 
 char *set(cell_t *cells)
 {
-
 	return ("ko\n");
 }
