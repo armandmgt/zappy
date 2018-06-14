@@ -14,7 +14,7 @@ func openConnection() *net.TCPConn {
 	}
 
 	if c, err = net.DialTCP("tcp", nil, tcpAddr); err != nil {
-	log.Fatalln("Failed to DialTCP, reason:", err.Error())
+	log.Fatalln(err.Error())
 	}
 
 	return c
