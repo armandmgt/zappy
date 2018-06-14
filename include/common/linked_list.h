@@ -18,3 +18,4 @@ typedef struct list_s {
 
 bool add_elem_at_front(list_t **, void *data, void (*free_func)(void *));
 void free_list(list_t *);
+size_t list_len(list_t *);

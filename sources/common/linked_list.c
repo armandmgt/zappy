@@ -37,3 +37,12 @@ void free_list(list_t *list)
 		free(ptr);
 	}
 }
+
+size_t list_len(list_t *list)
+{
+	size_t len = 0;
+
+	for (; list; list = list->next)
+		len++;
+	return (len);
+}
