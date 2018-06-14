@@ -21,8 +21,8 @@ static char const USAGE[] = "USAGE: %s -p port -x width -y height"
 
 int main(int argc, char * const *argv)
 {
-	options_t opts;
-	server_t server;
+	options_t opts = {0};
+	server_t server = {0};
 
 	if (parse_options(argc, argv, &opts)) {
 		fprintf(stderr, USAGE, argv[0]);

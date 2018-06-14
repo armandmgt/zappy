@@ -19,7 +19,8 @@ int run_server(options_t *opts, server_t *server)
 	fd_set readfds;
 
 	while (true) {
-		if (check_fds(server, &readfds))
+		if (check_fds(server, &readfds) ||
+			handle_new_connections(server, &readfds))
 			break;
 	}
 	return (0);
@@ -52,4 +53,5 @@ static int listen_socket(int sock, struct sockaddr_in *addr)
 	if (bind(sock, (const struct sockaddr *)addr, sizeof(*addr)) ==	-1 ||
 		listen(sock, 128) == -1)
 		return (-1);
+	return (0);
 }
