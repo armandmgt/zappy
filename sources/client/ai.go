@@ -34,7 +34,7 @@ type Client struct {
 
 	team string
 	gameMap Map
-	rotation Direction
+	rot Direction
 }
 
 ///
@@ -57,7 +57,6 @@ func (a *Client) Write(cmd string) (e error) {
 
 func (a *Client) moveForward() {
 	if a.rot == UPWAY {
-		a.x += 1
 	}
 }
 
