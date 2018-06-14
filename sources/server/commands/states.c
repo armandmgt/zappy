@@ -27,8 +27,27 @@ char *inventory(player_t *player)
 
 char *incantation(player_t *player)
 {
-
-	return ("Elevation underway\nCurrent level X\nko\n");
+	if (player && player->level) {
+		switch (player->level)
+		{
+			case (player->level == 1):
+			level2(infos, player);
+			case (player->level == 2):
+			level3(infos, player);
+			case (player->level == 3):
+			level4(infos, player);
+			case (player->level == 4):
+			level5(infos, player);
+			case (player->level == 5):
+			level6(infos, player);
+			case (player->level == 6):
+			level7(infos, player);
+			case (player->level == 7):
+			level8(infos, player);
+		}
+		return ("Elevation underway\nCurrent level %d\n", player->level);
+	}
+	return ('ko');
 }
 
 char *death(void)
