@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: rikorose/gcc-cmake:gcc-8
+      - image: epitechcontent/epitest-docker
     steps:
       - checkout
       - run:
