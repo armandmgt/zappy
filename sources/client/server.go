@@ -1,6 +1,6 @@
 package main
 
-var Responses = map[string]interface{} {
+var Responses = map[string]func(c *Client, s string) {
 	"msz": getMapSize,
 	"bct": nil,
 	"tna": nil,
