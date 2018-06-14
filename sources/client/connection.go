@@ -14,8 +14,20 @@ func openConnection() *net.TCPConn {
 	}
 
 	if c, err = net.DialTCP("tcp", nil, tcpAddr); err != nil {
-	log.Fatalln("Failed to DialTCP, reason:", err.Error())
+	log.Fatalln(err.Error())
 	}
 
 	return c
+}
+
+func gameLoop(c Client) {
+	buffer := make([]byte, 1024)
+	isRunning := true
+
+	if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
+		log.Fatalln("Received invalid first response\nGot:", s)
+	}
+	for isRunning {
+		isRunning = false
+	}
 }
