@@ -22,7 +22,11 @@ func runCmd(c *Client, s string) {
 	if function, ok := Responses[s[:3]]; !ok {
 		fmt.Println("Invalid command provided")
 	} else {
-		function(c, s)
+		if function == nil {
+			fmt.Println("Function not implemented")
+		} else {
+			function(c, s)
+		}
 	}
 }
 
