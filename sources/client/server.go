@@ -106,7 +106,4 @@ func getNewPlayerInformations(_ *Client, s string) {
 	}
 	newPlayer.Level = int64(l)
 	//TODO: Keep the new player somewhere
-
-	j, _ := json.MarshalIndent(newPlayer, "", "\t")
-	fmt.Println(j)
 }
