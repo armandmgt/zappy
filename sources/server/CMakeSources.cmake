@@ -7,7 +7,7 @@ set(CORE
     connexion/connexion.c
     connexion/communication.c
 
-	common/linked_list.c
+    ../common/linked_list.c
 )
 
 set(SRCS
