@@ -35,8 +35,8 @@ func getMapSize(c *Client, s string) {
 			arr[i] = int64(v)
 		}
 	}
-	c.MapSize.X = arr[0]
-	c.MapSize.Y = arr[1]
+	c.Player.MapSize.X = arr[0]
+	c.Player.MapSize.Y = arr[1]
 }
 
 func getTileContent(_ *Client, s string) {
@@ -77,7 +77,7 @@ func getNewPlayerInformations(_ *Client, s string) {
 		log.Println("[pnw]\tGot invalid player number")
 		return
 	}
-	newPlayer.Number = int64(num)
+	newPlayer.id = int64(num)
 
 	x, e := strconv.Atoi(data[1])
 	if e != nil {

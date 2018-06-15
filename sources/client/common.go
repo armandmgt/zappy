@@ -8,13 +8,6 @@ type Map struct {
 	X int64 `json:"x"`
 	Y int64 `json:"y"`
 }
-type Player struct {
-	Number int64 `json:"number"`
-	Team string `json:"team"`
-	Pos Map `json:"position"`
-	Orientation Direction `json:"orientation"`
-	Level int64 `json:"level"`
-}
 
 type Direction int8
 const (
