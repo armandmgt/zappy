@@ -29,9 +29,7 @@ bool add_random_resource_to_cell(cell_t *cell)
 		return (false);
 	}
 	for (; i < NB_RESOURCE; i++) {
-		if (gamble[i].pct < rd)
-			continue;
-		else
+		if (gamble[i].pct > rd)
 			break;
 	}
 	cell->resource[i] += 1;
@@ -48,7 +46,7 @@ bool remove_resource_on_cell(cell_t *cell, resource res)
 	return (true);
 }
 
-size_t get_resource_on_cell(cell_t const *cell, resource res)
+size_t get_resource_on_cell(cell_t const *const cell, resource res)
 {
 	if (!cell) {
 		perror("invalid pointer cell");
