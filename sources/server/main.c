@@ -6,9 +6,46 @@
 */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include "server.h"
+#include "common/tools.h"
 
-int main()
+static char const USAGE[] = "USAGE: %s -p port -x width -y height"
+	" -n name1 name2 ... -c clientsNb -f freq\n"
+	"port\t\tis the port number\n"
+	"width\t\tis the width of the world\n"
+	"height\t\tis the height of the world\n"
+	"nameX\t\tis the name of the team X\n"
+	"clientsNb\tis the number of authorized clients per team\n"
+	"freq\t\tis the reciprocal of time unit for execution of actions\n";
+
+static void free_teams(team_t *list);
+
+int main(int argc, char * const *argv)
 {
-	fprintf(stdout, "hello world from server\n");
-	return (0);
+	options_t opts = {0};
+	server_t server = {0};
+
+	if (parse_options(argc, argv, &opts)) {
+		fprintf(stderr, USAGE, argv[0]);
+		return (FAILURE);
+	}
+	if (init_server(&opts, &server) == -1 ||
+		run_server(&opts, &server) == -1)
+		return (FAILURE);
+	free_teams(server.teams);
+	close(server.sock);
+	return (SUCCESS);
+}
+
+static void free_teams(team_t *list)
+{
+	team_t *prev;
+
+	while (list) {
+		prev = list;
+		list = list->next;
+		free(prev);
+	}
 }
