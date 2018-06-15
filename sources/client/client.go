@@ -81,12 +81,11 @@ func (c *Client) turnLeft() {
 }
 
 func (c *Client) look(b []byte) (bool) {
-//	c.Write("Look")
-	//content, e := c.Read(b)
-	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
-	//if e == nil {
-	//	return false
-	//}
+	c.Write("Look")
+	content, e := c.Read(b)
+	if e == nil {
+		return false
+	}
 	getDataFromSring(content)
 	return true
 }
