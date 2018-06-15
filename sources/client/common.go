@@ -26,7 +26,7 @@ const (
 
 type Inventory [7]int64
 
-func getResponseData(s string) []string {
+func getProtocolResponseData(s string) []string {
 	// Since all server responses start with xxx, we always cut at the 4th index
 	if len(s) == 3 {
 		return []string{}
