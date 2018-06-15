@@ -11,6 +11,12 @@
 
 static const int CMD_LEN = 13;
 
+typedef struct cell_s
+{
+	int x;
+	int y;
+} cell_t;
+
 typedef struct command_s
 {
 	char *cmd;
@@ -24,7 +30,7 @@ char *look(cell_t *cells);
 char *inventory(cell_t *cells);
 char *broadcast(cell_t *cells);
 char *connect(cell_t *cells);
-char *born(cell_t *cells);
+char *birth(cell_t *cells);
 char *eject(cell_t *cells);
 char *take(cell_t *cells);
 char *set(cell_t *cells);
