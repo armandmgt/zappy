@@ -16,6 +16,7 @@ bool add_resource_to_cell(cell_t *cell, resource res)
 		return (false);
 	}
 	cell->resource[res] += 1;
+	return (true);
 }
 
 bool add_random_resource_to_cell(cell_t *cell)
