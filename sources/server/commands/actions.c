@@ -6,9 +6,9 @@
 */
 
 #include <stddef.h>
-#include "server/server.h"
+#include "server/commands.h"
 
-static const command_t command[] = {
+static command_t const command[] = {
 	{"Forward", &forward}, {"Right", &right}, {"Left", &left},
 	{"Look", &look}, {"Inventory", &inventory},
 	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect},
@@ -17,17 +17,17 @@ static const command_t command[] = {
 	{"Death", &death}
 };
 
-char *connect(void)
+char *connect(cell_t *cells)
 {
 	return ("value\n");
 }
 
-char *born(void)
+char *born(cell_t *cells)
 {
 	return ("ok\n");
 }
 
-char *eject(void)
+char *eject(cell_t *cells)
 {
 	return ("ko\n");
 }
@@ -39,7 +39,7 @@ char *take(cell_t *cells)
 			cells[y][x]->player->inventory += cells[y][x]->ressources;
 			cells[y][x]->ressources -= cells[y][x]->ressources;
 		}
-		return ("ok");
+		return ("ok\n");
 	}
 	return ("ko\n");
 }

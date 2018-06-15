@@ -5,52 +5,46 @@
 ** none
 */
 
-#include "server/server.h"
+#include "server/commands.h"
 
-char *broadcast(void)
+char *broadcast(cell_t *cells)
 {
 	return ("ok\n");
 }
 
-char *inventory(player_t *player)
+char *inventory(cell_t *cells)
 {
-	if (player && player->inventory) {
+	if (cells->player && cells->player->inventory) {
 		printf("food %d, linemate %d, deraumere %d, sibur %d, "
 			"mendiane %d, phiras %d, thystame %d\n",
-			player->inventory[0], player->inventory[1],
-			player->inventory[2], player->inventory[3],
-			player->inventory[4], player->inventory[5],
-			player->inventory[6]);
+			cells->player->inventory[0], cells->player->inventory[1],
+			cells->player->inventory[2], cells->player->inventory[3],
+			cells->player->inventory[4], cells->player->inventory[5],
+			cells->player->inventory[6]);
 	}
 	return ("[minerals]\n");
 }
 
-char *incantation(player_t *player)
+char *incantation(cell_t *cells)
 {
-	if (player && player->level) {
-		switch (player->level)
-		{
-			case (player->level == 1):
-			level2(infos, player);
-			case (player->level == 2):
-			level3(infos, player);
-			case (player->level == 3):
-			level4(infos, player);
-			case (player->level == 4):
-			level5(infos, player);
-			case (player->level == 5):
-			level6(infos, player);
-			case (player->level == 6):
-			level7(infos, player);
-			case (player->level == 7):
-			level8(infos, player);
-		}
-		return ("Elevation underway\nCurrent level %d\n", player->level);
+	int idx = cells->player->level - 1;
+	static const size_t *tab[7] = {{1, 1, 0, 0, 0, 0, 0},
+	{2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
+	{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0},
+	{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
+
+	for (int i = 0; i < 7; i++) {
+		if (cells->player->ressources[i] < tab[idx][i])
+			return ("ko\n");
 	}
-	return ('ko');
+	cells->player->level += 1;
+	for (int i = 0; i < 7; i++) {
+		cells->player->ressources[i] -= tab[idx][i];
+	}
+	return ("Elevation underway\nCurrent level %d\n", cells->player->level);
 }
 
-char *death(void)
+char *death(cell_t *cells)
 {
 	return ("dead\n");
 }
