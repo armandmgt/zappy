@@ -11,9 +11,9 @@
 #include <unistd.h>
 #include "../common/linked_list.h"
 
-static size_t const NB_RESSOURCE = 7;
+static size_t const NB_RESOURCE = 7;
 
-typedef enum ressource_e {
+typedef enum resource_e {
 	FOOD,
 	LINEMATE,
 	DERAUMERE,
@@ -21,11 +21,11 @@ typedef enum ressource_e {
 	MENDIANE,
 	PHIRAS,
 	THYSTAME
-}		ressource;
+}		resource;
 
 typedef struct cmp_s {
 	size_t pct;
-	ressource rss;
+	resource rss;
 }		cmp_t;
 
 static cmp_t const gamble[] = {
@@ -40,7 +40,7 @@ static cmp_t const gamble[] = {
 
 typedef struct cell_s {
 	void *players;
-	size_t *ressource;
+	size_t *resource;
 }	cell_t;
 
 typedef struct map_s {
@@ -54,7 +54,7 @@ bool generate_map(size_t, size_t, map_t *);
 void print_map(map_t *);
 void free_map(map_t *);
 
-bool add_random_ressource_to_cell(cell_t *);
-bool add_ressource_to_cell(cell_t *, ressource);
-bool remove_ressource_on_cell(cell_t *, ressource);
-size_t get_ressource_on_cell(cell_t const *, ressource);
+bool add_random_resource_to_cell(cell_t *);
+bool add_resource_to_cell(cell_t *, resource);
+bool remove_resource_on_cell(cell_t *, resource);
+size_t get_resource_on_cell(cell_t const *, resource);
