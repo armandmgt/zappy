@@ -11,7 +11,7 @@ type Inhabitant interface {
 	turnLeft() // Never fails
 
 	look(b []byte) bool
-	inventory() []string
+	inventory(b []byte) []string
 	broadcast() // Never fails
 
 	getUnusedSlots() int64
@@ -82,15 +82,24 @@ func (c *Client) look(b []byte) (bool) {
 //	c.Write("Look")
 	//content, e := c.Read(b)
 	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
-	//if e != nil {
+	//if e == nil {
 	//	return false
 	//}
-	values := getDataFromSring(content)
+	getDataFromSring(content)
 	return true
 }
 
-func (c *Client) inventory() (s []string) {
-
+func (c *Client) inventory(b []byte) (s []string) {
+	//c.Write("Inventory")
+	//content, e := c.Read(b)
+	//if e == nil {
+	//	return nil
+	//}
+	content := "[ food 345 , sibur 3 , phiras 5 , mendiane 0, trystame 45,linemate 7 , deraumere 0]"
+	values := getDataFromSring(content)
+	for i := range values {
+		fmt.Printf("[%d] = %s\n", i, values[i])
+	}
 	return s
 }
 
