@@ -30,6 +30,7 @@ type Client struct {
 
 	MapSize Map `json:"map"`
 
+	Vision []string
 	Team string `json:"team"`
 	Inventory Inventory `json:"inventory"`
 	Orientation Direction `json:"rotation"`
@@ -81,12 +82,16 @@ func (c *Client) turnLeft() {
 }
 
 func (c *Client) look(b []byte) (bool) {
-	c.Write("Look")
-	content, e := c.Read(b)
-	if e == nil {
-		return false
+//	c.Write("Look")
+	//content, e := c.Read(b)
+	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
+	//if e == nil {
+	//	return false
+	//}
+	c.Vision = getDataFromSring(content)
+	for i := range c.Vision {
+		fmt.Printf("[%d] = %s\n", i, c.Vision[i])
 	}
-	getDataFromSring(content)
 	return true
 }
 
