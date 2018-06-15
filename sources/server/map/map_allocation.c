@@ -7,13 +7,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "server/map.h"
 
 static void fill_line(size_t size, cell_t *line)
 {
 	for (int j = 0; j < size; j++) {
 		line[j].players = NULL;
-		line[j].resource = calloc(NB_RESOURCE, sizeof(size_t));
+		memset(line[j].resource, 0, sizeof(size_t) * NB_RESOURCE);
 	}
 }
 
@@ -39,7 +40,7 @@ bool allocate_map(map_t *map)
 	return (true);
 }
 
-static void print_cell_resource(int x, int y, cell_t *cell)
+static void print_cell_resource(int x, int y, cell_t const *const cell)
 {
 	printf("[%d][%d] -> ", x, y);
 	for (int i = 0; i < NB_RESOURCE; i++) {
@@ -50,7 +51,7 @@ static void print_cell_resource(int x, int y, cell_t *cell)
 	printf("\n");
 }
 
-void print_map(map_t *map)
+void print_map(map_t const *const map)
 {
 	for (int y = 0; map->map[y]; y++) {
 		for (int x = 0; x < map->x; x++) {
