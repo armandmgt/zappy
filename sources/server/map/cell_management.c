@@ -9,42 +9,49 @@
 #include <stdio.h>
 #include "../../../include/server/map.h"
 
-bool add_ressource_to_cell(cell_t *cell, ressource res)
+bool add_resource_to_cell(cell_t *cell, resource res)
 {
 	if (!cell) {
 		perror("invalid cell pointer");
 		return (false);
 	}
-	cell->ressource[res] += 1;
+	cell->resource[res] += 1;
 }
 
-bool add_random_ressource_to_cell(cell_t *cell)
+bool add_random_resource_to_cell(cell_t *cell)
 {
-	int rd = rand() % (NB_RESSOURCE);
+	int rd = rand() % (100);
+	int i = 0;
 
 	if (!cell) {
 		perror("invalid cell pointer");
 		return (false);
 	}
-	cell->ressource[rd] += 1;
+	for (; i < NB_RESOURCE; i++) {
+		if (gamble[i].pct < rd)
+			continue;
+		else
+			break;
+	}
+	cell->resource[i] += 1;
 	return (true);
 }
 
-bool remove_ressource_on_cell(cell_t *cell, ressource res)
+bool remove_resource_on_cell(cell_t *cell, resource res)
 {
 	if (!cell) {
 		perror("invalid cell pointer");
 		return (false);
 	}
-	cell->ressource[res] -= 1;
+	cell->resource[res] -= 1;
 	return (true);
 }
 
-size_t get_ressource_on_cell(cell_t const *cell, ressource res)
+size_t get_resource_on_cell(cell_t const *cell, resource res)
 {
 	if (!cell) {
 		perror("invalid pointer cell");
 		return (0);
 	}
-	return (cell->ressource[res]);
+	return (cell->resource[res]);
 }

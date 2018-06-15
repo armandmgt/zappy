@@ -9,29 +9,29 @@
 #include <stdio.h>
 #include "../../../include/server/map.h"
 
-static bool fill_map(map_t *map, size_t pct, size_t nb_ressource);
+static bool fill_map(map_t *map, size_t pct, size_t nb_resource);
 
-bool generate_map(size_t pct, size_t nb_ressource, map_t *map)
+bool generate_map(size_t pct, size_t nb_resource, map_t *map)
 {
 	if (!allocate_map(map))
 		return (false);
-	if (!fill_map(map, pct, nb_ressource))
+	if (!fill_map(map, pct, nb_resource))
 		return (false);
 	return (true);
 }
 
-static void randomly_add_ressource(cell_t *cell, int random,
-	size_t pct, size_t nb_ressource)
+static void randomly_add_resource(cell_t *cell, int random,
+	size_t pct, size_t nb_resource)
 {
-	int res = rand() % nb_ressource + 1;
+	int res = rand() % nb_resource + 1;
 
 	if (pct < random)
 		return;
 	for (int i = 0; i < res; i++)
-		add_random_ressource_to_cell(cell);
+		add_random_resource_to_cell(cell);
 }
 
-static bool fill_map(map_t *map, size_t pct, size_t nb_ressource)
+static bool fill_map(map_t *map, size_t pct, size_t nb_resource)
 {
 	unsigned int random;
 
@@ -39,8 +39,8 @@ static bool fill_map(map_t *map, size_t pct, size_t nb_ressource)
 	for (int y = 0; y < map->y; y++) {
 		for (int x = 0; x < map->x; x++) {
 			random = rand() % (100);
-			randomly_add_ressource(&map->map[y][x],
-				random, pct, nb_ressource);
+			randomly_add_resource(&map->map[y][x],
+				random, pct, nb_resource);
 		}
 	}
 	return (true);
