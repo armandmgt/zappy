@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <stddef.h>
-
 static const int CMD_LEN = 13;
 
 typedef struct cell_s

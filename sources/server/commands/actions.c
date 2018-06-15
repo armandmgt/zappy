@@ -19,19 +19,29 @@ static command_t const command[] = {
 
 char *connect(cell_t *cells)
 {
-	return ("value\n");
+	cells->player->nb_player += cells->player->nb_player;
+	return ("%d\n", cells->player->nb_player);
 }
 
 char *birth(cell_t *cells)
 {
-	pid_t pid;
+	// pid_t pid;
+	// int new = 0;
 
-	pid = fork();
-	if (pid == -1)
-		return (-1);
-	else if (pid == 0) {
-		/* créer un oeuf et attendre qu'un client puisse se co*/
-	}
+	// pid = fork();
+	// if (pid == -1)
+	// 	return ("ko\n");
+	// else if (pid == 0) {
+	// 	new = accept(cells->player->socket, (struct sockaddr *)&addr,
+	// 		&client_size);
+	// }
+
+	/* créer un oeuf et attendre qu'un client puisse se co*/
+	/* augmenter le nombre de client qui peuvent se connecter dans la team*/
+	cells->player->nb_player += 1;
+	//new:
+	cells->player->direction = rand() % 4 - 1;
+	cells->player->level = cells->player->level; /*parent*/
 	return ("ok\n");
 }
 
@@ -62,10 +72,11 @@ char *eject(cell_t *cells)
 char *take(cell_t *cells)
 {
 	if (cells[y][x] && cells[y][x]->ressources) {
-		while (cells[y][x]->ressources != NULL) {
+		//while (cells[y][x]->ressources != NULL) {
 			cells[y][x]->player->inventory += cells[y][x]->ressources;
-			cells[y][x]->ressources -= 1;
-		}
+			remove_resource_to_cell(cells[y][x], cells[y][x]->ressources);
+			//cells[y][x]->ressources -= 1;
+		//}
 		return ("ok\n");
 	}
 	return ("ko\n");
@@ -74,10 +85,11 @@ char *take(cell_t *cells)
 char *set(cell_t *cells)
 {
 	if (cells[y][x] && cells->player->inventory) {
-		while (cells->player->inventory != NULL) {
+		//while (cells->player->inventory != NULL) {
 			cells[y][x]->player->inventory -= cells[y][x]->ressources;
-			cells[y][x]->ressources += 1;
-		}
+			add_resource_to_cell(cells[y][x], cells[y][x]->ressources);
+			//cells[y][x]->ressources += 1;
+		//}
 		return ("ok\n");
 	}
 	return ("ko\n");
