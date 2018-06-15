@@ -33,3 +33,13 @@ func getResponseData(s string) []string {
 	}
 	return strings.Split(s[4:], " ")
 }
+
+func getDataFromSring(s string) []string  {
+	s = strings.Trim(s, "[]")
+	values := strings.Split(s, ",")
+	for i := range values {
+		values[i] = strings.TrimLeft(values[i], " ")
+		values[i] = strings.TrimRight(values[i], " ")
+	}
+	return values
+}
