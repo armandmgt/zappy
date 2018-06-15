@@ -1,6 +1,12 @@
 set(CORE
-	main.c
-)
+        main.c
+        )
+
+set(SFML_SRCS
+        gui/Sfml/ResourceManager.cpp
+        )
 
 set(SRCS
-	${CORE})
+        ${CORE}
+        ${SFML_SRCS}
+        )
