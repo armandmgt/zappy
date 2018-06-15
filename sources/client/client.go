@@ -92,12 +92,11 @@ func (c *Client) look(b []byte) (bool) {
 }
 
 func (c *Client) inventory(b []byte) (s []string) {
-	//c.Write("Inventory")
-	//content, e := c.Read(b)
-	//if e == nil {
-	//	return nil
-	//}
-	content := "[ food 345 , sibur 3 , phiras 5 ,mendiane 0, trystame 45,linemate 7 , deraumere 0]"
+	c.Write("Inventory")
+	content, e := c.Read(b)
+	if e == nil {
+		return nil
+	}
 	resources := getDataFromSring(content)
 	for i := range resources {
 		resource := strings.Split(resources[i], " ")
