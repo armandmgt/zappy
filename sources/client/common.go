@@ -3,6 +3,7 @@ package main
 import (
 	`strings`
 	`strconv`
+	`log`
 )
 
 type Map struct {
@@ -66,4 +67,18 @@ func getProtocolResponseDataWithPlayerNumber(s string) (a []string, _ int64) {
 		return a, 0
 	}
 	return a[1:], int64(t)
+}
+
+func getPosition(s1, s2 string) (m Map, e error) {
+	x, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("Got invalid player X position")
+		return Map{}, e
+	}
+	y, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("Got invalid player Y position")
+		return Map{}, e
+	}
+	return Map{int64(x), int64(y)}, nil
 }

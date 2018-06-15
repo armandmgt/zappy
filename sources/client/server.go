@@ -11,7 +11,7 @@ var (
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
-		"pic": startIncantation, "pie": endIncantation, "pfk": nil,
+		"pic": startIncantation, "pie": endIncantation, "pfk": layEgg,
 		"pdr": nil, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
 		"edi": nil, "sgt": nil, "sst": nil,
@@ -70,29 +70,26 @@ func getTeamsNames(_ *Client, s string) {
 }
 
 func getNewPlayerInformations(_ *Client, s string) {
+	var pos Map
 	newPlayer := Player{}
 	data, newPlayer.id = getProtocolResponseDataWithPlayerNumber(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
+
 	num, e := strconv.Atoi(data[0])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player number")
 		return
 	}
 	newPlayer.id = int64(num)
-	x, e := strconv.Atoi(data[0])
+
+	pos, e = getPosition(data[1], data[2])
 	if e != nil {
-		log.Println("[pnw]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[1])
-	if e != nil {
-		log.Println("[pnw]\tGot invalid player Y position")
-		return
-	}
-	newPlayer.Pos = Map{int64(x), int64(y)}
+	newPlayer.Pos = pos
 
 	o, e := strconv.Atoi(data[2])
 	if e != nil {
@@ -112,30 +109,27 @@ func getNewPlayerInformations(_ *Client, s string) {
 }
 
 func getPlayerPosition(_ *Client, s string) {
+	var pos Map
+	var e error
 	var n int64
 	data, n = getProtocolResponseDataWithPlayerNumber(s)
-
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
-	x, e := strconv.Atoi(data[0])
+
+	pos, e = getPosition(data[0], data[1])
 	if e != nil {
-		log.Println("[pnw]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[1])
-	if e != nil {
-		log.Println("[pnw]\tGot invalid player Y position")
-		return
-	}
+
 	o, e := strconv.Atoi(data[2])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player orientation")
 		return
 	}
 	//TODO: Keep those informations somewhere in the client and attach them to the correct player
-	_ = n; _ = x; _ = y; _ = o
+	_ = n; _ = pos; _ = o
 }
 
 func getPlayerLevel(_ *Client, s string) {
@@ -188,19 +182,16 @@ func broadcast(_ *Client, s string) {
 }
 
 func startIncantation(_ *Client, s string) {
+	var pos Map
+	var e error
 	var playerNames []int64
 	data = getProtocolResponseData(s)
 
-	x, e := strconv.Atoi(data[0])
+	pos, e = getPosition(data[0], data[1])
 	if e != nil {
-		log.Println("[pic]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[1])
-	if e != nil {
-		log.Println("[pic]\tGot invalid player Y position")
-		return
-	}
+
 	l, e := strconv.Atoi(data[2])
 	if e != nil {
 		log.Println("[pic]\tGot invalid player level")
@@ -215,26 +206,28 @@ func startIncantation(_ *Client, s string) {
 		playerNames = append(playerNames, int64(num))
 	}
 	//TODO: ???
-	_ = x; _ = y; _ = l
+	_ = pos; _ = l
 }
 
 func endIncantation(_ *Client, s string) {
+	var pos Map
+	var e error
 	data := getProtocolResponseData(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
 
-	x, e := strconv.Atoi(data[0])
+	pos, e = getPosition(data[0], data[1])
 	if e != nil {
-		log.Println("[pie]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[1])
-	if e != nil {
-		log.Println("[pie]\tGot invalid player Y position")
-		return
-	}
+
 	//TODO: use data[2] once we get the correct format
-	_ = x; _ = y
+	_ = pos
+}
+
+func layEgg(_ *Client, s string) {
+	_, n := getProtocolResponseDataWithPlayerNumber(s)
+	_ = n
 }
