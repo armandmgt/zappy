@@ -10,7 +10,7 @@ var (
 	Responses = map[string]func(*Client, string) {
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
-		"pin": getPlayerInventory, "pex": nil, "pbc": nil,
+		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": nil,
 		"pic": nil, "pie": nil, "pfk": nil,
 		"pdr": nil, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
@@ -164,5 +164,12 @@ func getPlayerInventory(_ *Client, s string) {
 		}
 	}
 	//TODO: keep the information somewhere...
+	_ = n
+}
+
+func excludePlayer(_ *Client, s string) {
+	var n int64
+	data, n = getProtocolResponseDataWithPlayerNumber(s)
+	//TODO: remove player from player array
 	_ = n
 }
