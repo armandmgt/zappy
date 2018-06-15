@@ -3,6 +3,8 @@ package main
 import (
 	`net`
 	`fmt`
+	`strings`
+	`strconv`
 )
 
 type Inhabitant interface {
@@ -95,10 +97,15 @@ func (c *Client) inventory(b []byte) (s []string) {
 	//if e == nil {
 	//	return nil
 	//}
-	content := "[ food 345 , sibur 3 , phiras 5 , mendiane 0, trystame 45,linemate 7 , deraumere 0]"
-	values := getDataFromSring(content)
-	for i := range values {
-		fmt.Printf("[%d] = %s\n", i, values[i])
+	content := "[ food 345 , sibur 3 , phiras 5 ,mendiane 0, trystame 45,linemate 7 , deraumere 0]"
+	resources := getDataFromSring(content)
+	for i := range resources {
+		resource := strings.Split(resources[i], " ")
+		value, e := strconv.Atoi(resource[1])
+		if e != nil {
+			fmt.Println("Error invalid number")
+		}
+		c.Inventory[MapType[resource[0]]] = value
 	}
 	return s
 }

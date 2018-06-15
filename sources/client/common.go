@@ -24,7 +24,26 @@ const (
 	W	Direction = 4
 )
 
-type Inventory [7]int64
+type InventoryType int
+const (
+	FOOD InventoryType = 0
+	SIBUR InventoryType = 1
+	PHIRAS InventoryType = 2
+	MENDIANE InventoryType = 3
+	TRYSTAME InventoryType = 4
+	LINEMATE InventoryType = 5
+	DERAUMERE InventoryType = 6
+)
+
+//Map type to concord string into index in Inventory array
+
+var MapType = map[string]InventoryType {
+	"food": FOOD, "sibur": SIBUR, "phiras": PHIRAS,
+	"mendiane": MENDIANE, "trystame": TRYSTAME, "linemate": LINEMATE, "deraumere": DERAUMERE,
+}
+
+
+type Inventory [7]int
 
 func getResponseData(s string) []string {
 	// Since all server responses start with xxx, we always cut at the 4th index
