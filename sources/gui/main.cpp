@@ -8,7 +8,7 @@
 #include "ResourceManager.hpp"
 
 namespace {
-    using ResourceManager = resource::ResourceManager<sfml::ResourceManager, std::string>;
+    using ResourceManager = resource::ResourceManager<sfml::ResourceManager>;
 }
 
 int main()
