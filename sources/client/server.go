@@ -10,7 +10,7 @@ var (
 	Responses = map[string]func(*Client, string) {
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
-		"pin": nil, "pex": nil, "pbc": nil,
+		"pin": getPlayerInventory, "pex": nil, "pbc": nil,
 		"pic": nil, "pie": nil, "pfk": nil,
 		"pdr": nil, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
@@ -143,4 +143,26 @@ func getPlayerLevel(_ *Client, s string) {
 	}
 	//TODO: Attach the information to the corresponding player
 	_ = level; _ = n
+}
+
+func getPlayerInventory(_ *Client, s string) {
+	var arr []int64
+	var n int64
+	data, n = getProtocolResponseDataWithPlayerNumber(s)
+	if len(data) == 0 {
+		log.Println("Got incomplete server response")
+		return
+	}
+
+	for _, d := range data {
+		if v, e := strconv.Atoi(d); e != nil {
+			log.Println("[pin]\tFailed to parse server response")
+			fmt.Println(e.Error())
+			return
+		} else {
+			arr = append(arr, int64(v))
+		}
+	}
+	//TODO: keep the information somewhere...
+	_ = n
 }
