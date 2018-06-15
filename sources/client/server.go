@@ -11,7 +11,7 @@ var (
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
-		"pic": startIncantation, "pie": nil, "pfk": nil,
+		"pic": startIncantation, "pie": endIncantation, "pfk": nil,
 		"pdr": nil, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
 		"edi": nil, "sgt": nil, "sst": nil,
@@ -216,4 +216,25 @@ func startIncantation(_ *Client, s string) {
 	}
 	//TODO: ???
 	_ = x; _ = y; _ = l
+}
+
+func endIncantation(_ *Client, s string) {
+	data := getProtocolResponseData(s)
+	if len(data) == 0 {
+		log.Println("Got incomplete server response")
+		return
+	}
+
+	x, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[pie]\tGot invalid player X position")
+		return
+	}
+	y, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pie]\tGot invalid player Y position")
+		return
+	}
+	//TODO: use data[2] once we get the correct format
+	_ = x; _ = y
 }
