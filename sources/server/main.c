@@ -39,6 +39,7 @@ int main(int argc, char * const *argv)
 }
 
 static void free_teams(team_t *list)
+{
 	team_t *prev;
 
 	while (list) {
@@ -46,3 +47,4 @@ static void free_teams(team_t *list)
 		list = list->next;
 		free(prev);
 	}
+}
