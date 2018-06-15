@@ -10,14 +10,6 @@
 #include <string.h>
 #include "server/map.h"
 
-static void fill_line(size_t size, cell_t *line)
-{
-	for (int j = 0; j < size; j++) {
-		line[j].players = NULL;
-		memset(line[j].resource, 0, sizeof(size_t) * NB_RESOURCE);
-	}
-}
-
 bool allocate_map(map_t *map)
 {
 	int i = 0;
@@ -28,12 +20,11 @@ bool allocate_map(map_t *map)
 		return (false);
 	}
 	while (i < map->y) {
-		map->map[i] = malloc(sizeof(cell_t) * (map->x + 1));
+		map->map[i] = calloc(map->x, sizeof(cell_t));
 		if (!map->map[i]) {
-			perror("Malloc:");
+			perror("Calloc:");
 			return (false);
 		}
-		fill_line(map->x, map->map[i]);
 		i++;
 	}
 	map->map[i] = NULL;
@@ -42,13 +33,13 @@ bool allocate_map(map_t *map)
 
 static void print_cell_resource(int x, int y, cell_t const *const cell)
 {
-	printf("[%d][%d] -> ", x, y);
+	fprintf(stdout, "[%d][%d] -> ", x, y);
 	for (int i = 0; i < NB_RESOURCE; i++) {
-		printf("%ld", cell->resource[i]);
+		fprintf(stdout, "%ld", cell->resource[i]);
 		if (i + 1 < NB_RESOURCE)
-			printf(" ");
+			fprintf(stdout, " ");
 	}
-	printf("\n");
+	fprintf(stdout, "\n");
 }
 
 void print_map(map_t const *const map)
