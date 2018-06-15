@@ -6,26 +6,31 @@ import (
 	`fmt`
 )
 
-var Responses = map[string]func(*Client, string) {
-	"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
-	"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": nil,
-	"pin": nil, "pex": nil, "pbc": nil,
-	"pic": nil, "pie": nil, "pfk": nil,
-	"pdr": nil, "pgt": nil, "pdi": nil,
-	"enw": nil, "eht": nil, "ebo": nil,
-	"edi": nil, "sgt": nil, "sst": nil,
-	"seg": nil, "smg": nil, "suc": nil,
-	"sbp": nil,
-}
+var (
+	Responses = map[string]func(*Client, string) {
+		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
+		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": nil,
+		"pin": nil, "pex": nil, "pbc": nil,
+		"pic": nil, "pie": nil, "pfk": nil,
+		"pdr": nil, "pgt": nil, "pdi": nil,
+		"enw": nil, "eht": nil, "ebo": nil,
+		"edi": nil, "sgt": nil, "sst": nil,
+		"seg": nil, "smg": nil, "suc": nil,
+		"sbp": nil,
+	}
+
+	data []string
+)
+
 
 func getMapSize(c *Client, s string) {
 	arr := make([]int64, 2)
-	data := getProtocolResponseData(s)
-
+	data = getProtocolResponseData(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
+
 	for i, d := range data {
 		if v, e := strconv.Atoi(d); e != nil {
 			log.Println("[msz]\tFailed to parse server response")
@@ -41,12 +46,12 @@ func getMapSize(c *Client, s string) {
 
 func getTileContent(_ *Client, s string) {
 	var arr []int64
-	data := getProtocolResponseData(s)
-
+	data = getProtocolResponseData(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
+
 	for _, d := range data {
 		if v, e := strconv.Atoi(d); e != nil {
 			log.Println("[bct]\tFailed to parse server response")
@@ -66,18 +71,11 @@ func getTeamsNames(_ *Client, s string) {
 
 func getNewPlayerInformations(_ *Client, s string) {
 	newPlayer := Player{}
-	data := getProtocolResponseData(s)
-
+	data, newPlayer.Number = getProtocolResponseDataWithPlayerNumber(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
 	}
-	num, e := strconv.Atoi(data[0])
-	if e != nil {
-		log.Println("[pnw]\tGot invalid player number")
-		return
-	}
-	newPlayer.Number = int64(num)
 
 	x, e := strconv.Atoi(data[1])
 	if e != nil {
@@ -109,14 +107,11 @@ func getNewPlayerInformations(_ *Client, s string) {
 }
 
 func getPlayerPosition(_ *Client, s string) {
-	data := getProtocolResponseData(s)
+	var n int64
+	data, n = getProtocolResponseDataWithPlayerNumber(s)
+
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
-		return
-	}
-	num, e := strconv.Atoi(data[0])
-	if e != nil {
-		log.Println("[ppo]\tGot invalid player number")
 		return
 	}
 	x, e := strconv.Atoi(data[1])
@@ -135,8 +130,5 @@ func getPlayerPosition(_ *Client, s string) {
 		return
 	}
 	//TODO: Keep those informations somewhere in the client and attach them to the correct player
-	_ = num
-	_ = x
-	_ = y
-	_ = o
+	_ = n; _ = x; _ = y; _ = o
 }
