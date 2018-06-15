@@ -3,7 +3,7 @@ set(CORE
         )
 
 set(SFML_SRCS
-        Sfml/ResourceManager.cpp
+        Sfml/App.cpp
         )
 
 set(SRCS

@@ -5,14 +5,11 @@
 ** main
 */
 
-#include "ResourceManager.hpp"
-
-namespace {
-    using ResourceManager = resource::ResourceManager<sfml::ResourceManager>;
-}
+#include "App.hpp"
 
 int main()
 {
-	ResourceManager resourceMgr;
-	return 0;
+	App app;
+	app.run();
+	return (0);
 }
