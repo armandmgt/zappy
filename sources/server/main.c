@@ -31,7 +31,8 @@ int main(int argc, char * const *argv)
 		fprintf(stderr, USAGE, argv[0]);
 		return (FAILURE);
 	}
-	if (init_server(&opts, &server) == -1 || run_server(&opts, &server))
+	if (init_server(&opts, &server) == -1 ||
+		run_server(&opts, &server) == -1)
 		return (FAILURE);
 	free_teams(server.teams);
 	close(server.sock);
