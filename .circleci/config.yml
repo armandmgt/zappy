@@ -3,8 +3,12 @@ jobs:
   build:
     docker:
       - image: rikorose/gcc-cmake:gcc-8
+      - image: circleci/golang:1.10
     steps:
       - checkout
       - run:
           name: Compile project
           command: mkdir -p build && cd build && cmake .. && make
+      - run:
+          name: Compile client
+          command: go build -o zappy_ai -v ./sources/client/
