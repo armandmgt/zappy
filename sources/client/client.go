@@ -2,7 +2,7 @@ package main
 
 import (
 	`net`
-	`strings`
+	`fmt`
 )
 
 type Inhabitant interface {
@@ -34,6 +34,8 @@ type Client struct {
 	X int64 `json:"x"`
 	Y int64 `json:"y"`
 }
+
+
 
 ///
 // Socket functions
@@ -77,22 +79,18 @@ func (c *Client) turnLeft() {
 }
 
 func (c *Client) look(b []byte) (bool) {
-	c.Write("Look")
-	content, e := c.Read(b);
-	if e != nil {
-		return false
-	}
-	//content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
-	content = strings.Trim(content, "[]")
-	values := strings.Split(content, ",")
-	for i := range values {
-		values[i] = strings.TrimLeft(values[i], " ")
-		values[i] = strings.TrimRight(values[i], " ")
-	}
+//	c.Write("Look")
+	//content, e := c.Read(b)
+	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
+	//if e != nil {
+	//	return false
+	//}
+	values := getDataFromSring(content)
 	return true
 }
 
 func (c *Client) inventory() (s []string) {
+
 	return s
 }
 
