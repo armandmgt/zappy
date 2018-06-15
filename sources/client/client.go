@@ -2,7 +2,7 @@ package main
 
 import (
 	`net`
-	`fmt`
+	`strings`
 )
 
 type Inhabitant interface {
@@ -78,13 +78,16 @@ func (c *Client) turnLeft() {
 
 func (c *Client) look(b []byte) (bool) {
 	c.Write("Look")
-//	content, e := c.Read(b);
-//	if e != nil {
-//		return false
-//	}
-	content := "[player,,, thystame,, food,,,,,thystame,,, player deraumere,,,]"
-	for i, rune := range content {
-		fmt.Printf("%d: %c\n", i, rune)
+	content, e := c.Read(b);
+	if e != nil {
+		return false
+	}
+	//content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
+	content = strings.Trim(content, "[]")
+	values := strings.Split(content, ",")
+	for i := range values {
+		values[i] = strings.TrimLeft(values[i], " ")
+		values[i] = strings.TrimRight(values[i], " ")
 	}
 	return true
 }

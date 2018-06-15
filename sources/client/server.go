@@ -4,7 +4,6 @@ import (
 	`strconv`
 	`log`
 	`fmt`
-	`encoding/json`
 )
 
 var Responses = map[string]func(*Client, string) {
