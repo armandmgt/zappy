@@ -15,14 +15,6 @@ typedef struct list_s {
 	struct list_s *next;
 } list_t;
 
-typedef struct player_s {
-	char *team_name;
-	size_t life_time;
-	size_t *inventory;
-	size_t level;
-	int socket;
-	struct player_s *next;
-}		player_t;
-
-bool add_elem(list_t **, char const *, size_t, int);
-void free_list(list_t *);
+bool add_elem_at_front(list_t **, void *data);
+void free_list(list_t *, void (*free_func)(void *));
+size_t list_len(list_t *);
