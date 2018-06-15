@@ -3,6 +3,7 @@ project(zappy_gui)
 include(CMakeSources.cmake)
 
 
+set(CMAKE_CXX_FLAGS "-Wextra -Wall")
 add_executable(${PROJECT_NAME} ${SRCS})
 
 #GUI

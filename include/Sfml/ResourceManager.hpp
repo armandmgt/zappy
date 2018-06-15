@@ -8,7 +8,7 @@
 #pragma once
 
 #include <iostream>
-#include <filesystem>
+#include <experimental/filesystem>
 #include <unordered_map>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -74,16 +74,16 @@ namespace sfml {
 	using TexturesRegistry = ResourceHolder<sf::Texture, ResourceIdentifier>;
 
     public:
-	explicit ResourceManager(std::filesystem::path resourceDirectoryPath = std::filesystem::current_path() / "assets") noexcept : _resourceDirectoryPath(std::move(resourceDirectoryPath))
+	explicit ResourceManager(std::experimental::filesystem::path resourceDirectoryPath = std::experimental::filesystem::current_path() / "assets") noexcept : _resourceDirectoryPath(std::move(resourceDirectoryPath))
 	{
 		std::cout << _resourceDirectoryPath << std::endl;
 	}
     private:
 	template<typename Resource, typename Registry>
-	Resource &_load(Registry &registry, const std::string &resourceTypePath, const std::filesystem::path &&filename) noexcept
+	Resource &_load(Registry &registry, const std::string &resourceTypePath, const std::experimental::filesystem::path &&filename) noexcept
 	{
-		ResourceIdentifier id = std::filesystem::path(filename).replace_extension("").string();
-		return registry.load(id, std::filesystem::path(_resourceDirectoryPath / resourceTypePath / filename).string());
+		ResourceIdentifier id = std::experimental::filesystem::path(filename).replace_extension("").string();
+		return registry.load(id, std::experimental::filesystem::path(_resourceDirectoryPath / resourceTypePath / filename).string());
 	}
 
 	template<typename Registry>
@@ -94,7 +94,7 @@ namespace sfml {
 
     protected:
 
-	TTexture &loadTexture(std::filesystem::path &&filename)
+	TTexture &loadTexture(std::experimental::filesystem::path &&filename)
 	{
 		return _load<TTexture>(_texturesRegistry, "textures", std::move(filename));
 	}
@@ -110,7 +110,7 @@ namespace sfml {
 	}
 
     private:
-	std::filesystem::path _resourceDirectoryPath;
+	std::experimental::filesystem::path _resourceDirectoryPath;
 	TexturesRegistry _texturesRegistry;
     };
 }
@@ -123,7 +123,7 @@ namespace resource {
 	using TTexture = typename TResourceManager::TTexture;
 
     public:
-	TTexture &loadTexture(std::filesystem::path filename)
+	TTexture &loadTexture(std::experimental::filesystem::path filename)
 	{
 		return TResourceManager::loadTexture(std::move(filename));
 	}
@@ -134,3 +134,5 @@ namespace resource {
 	}
     };
 }
+
+using ResourceManager = resource::ResourceManager<sfml::ResourceManager>;
