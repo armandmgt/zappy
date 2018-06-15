@@ -2,12 +2,13 @@ version: 2
 jobs:
   build:
     docker:
-      - image: rikorose/gcc-cmake:gcc-8
+      - image: armandmgt/epitest-docker:1.0
     steps:
       - checkout
       - run:
           name: Compile project
           command: mkdir -p build && cd build && cmake .. && make
+          command: make
 
   build:
     docker:
