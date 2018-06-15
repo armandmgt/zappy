@@ -9,7 +9,7 @@
 
 #include <stdbool.h>
 #include <unistd.h>
-#include "../common/linked_list.h"
+#include "common/linked_list.h"
 
 static size_t const NB_RESOURCE = 7;
 

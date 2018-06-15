@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../../include/server/map.h"
+#include "server/map.h"
 
 bool add_resource_to_cell(cell_t *cell, resource res)
 {

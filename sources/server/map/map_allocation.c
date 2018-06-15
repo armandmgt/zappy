@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../include/server/map.h"
+#include "server/map.h"
 
 static void fill_line(size_t size, cell_t *line)
 {
