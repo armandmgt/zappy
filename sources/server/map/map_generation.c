@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../../include/server/map.h"
+#include "server/map.h"
 
 static bool fill_map(map_t *map, size_t pct, size_t nb_resource);
 
