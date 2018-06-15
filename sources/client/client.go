@@ -25,17 +25,22 @@ type Inhabitant interface {
 	incantation() int64
 }
 
+type Player struct {
+	MapSize Map `json:"map"`
+
+	Vision      []string
+	Pos         Map       `json:"position"`
+	id          int64     `json:"number"`
+	Team        string    `json:"team"`
+	Level       int64     `json:"level"`
+	Inventory   Inventory `json:"inventory"`
+	Orientation Direction `json:"rotation"`
+}
+
 type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
-	MapSize Map `json:"map"`
-
-	Vision []string
-	Team string `json:"team"`
-	Inventory Inventory `json:"inventory"`
-	Orientation Direction `json:"rotation"`
-	X int64 `json:"x"`
-	Y int64 `json:"y"`
+	Player *Player
 }
 
 
@@ -60,25 +65,25 @@ func (c *Client) Write(cmd string) (e error) {
 
 func (c *Client) moveForward() {
 	c.Write("Forward")
-	if c.Orientation == N {
-		c.X = (c.X + 1) % c.MapSize.X
-	} else if c.Orientation == S {
-		c.X = (c.X - c.MapSize.X) % c.MapSize.X
-	} else if c.Orientation == E {
-		c.Y = (c.Y + 1) % c.MapSize.Y
-	} else if c.Orientation == W {
-		c.Y = (c.Y - c.MapSize.Y) % c.MapSize.Y
+	if c.Player.Orientation == N {
+		c.Player.Pos.X = (c.Player.Pos.X + 1) % c.Player.MapSize.X
+	} else if c.Player.Orientation == S {
+		c.Player.Pos.X = (c.Player.Pos.X - c.Player.MapSize.X) % c.Player.MapSize.X
+	} else if c.Player.Orientation == E {
+		c.Player.Pos.Y = (c.Player.Pos.Y + 1) % c.Player.MapSize.Y
+	} else if c.Player.Orientation == W {
+		c.Player.Pos.Y = (c.Player.Pos.Y - c.Player.MapSize.Y) % c.Player.MapSize.Y
 	}
 }
 
 func (c *Client) turnRight() {
 	c.Write("Right")
-	c.Orientation = (c.Orientation + 1) % 4
+	c.Player.Orientation = (c.Player.Orientation + 1) % 4
 }
 
 func (c *Client) turnLeft() {
 	c.Write("Left")
-	c.Orientation = (c.Orientation - 1) % 4
+	c.Player.Orientation = (c.Player.Orientation - 1) % 4
 }
 
 func (c *Client) look(b []byte) (bool) {
@@ -88,9 +93,9 @@ func (c *Client) look(b []byte) (bool) {
 	//if e == nil {
 	//	return false
 	//}
-	c.Vision = getDataFromSring(content)
-	for i := range c.Vision {
-		fmt.Printf("[%d] = %s\n", i, c.Vision[i])
+	c.Player.Vision = getDataFromSring(content)
+	for i := range c.Player.Vision {
+		fmt.Printf("[%d] = %s\n", i, c.Player.Vision[i])
 	}
 	return true
 }
@@ -108,7 +113,7 @@ func (c *Client) inventory(b []byte) (s []string) {
 		if e != nil {
 			fmt.Println("Error invalid number")
 		}
-		c.Inventory[MapType[resource[0]]] = value
+		c.Player.Inventory[MapType[resource[0]]] = value
 	}
 	return s
 }
