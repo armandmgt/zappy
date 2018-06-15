@@ -3,6 +3,8 @@ package main
 import (
 	`net`
 	`fmt`
+	`strings`
+	`strconv`
 )
 
 type Inhabitant interface {
@@ -11,7 +13,7 @@ type Inhabitant interface {
 	turnLeft() // Never fails
 
 	look(b []byte) bool
-	inventory() []string
+	inventory(b []byte) []string
 	broadcast() // Never fails
 
 	getUnusedSlots() int64
@@ -23,17 +25,25 @@ type Inhabitant interface {
 	incantation() int64
 }
 
+type Player struct {
+	MapSize Map `json:"map"`
+
+	Vision      []string
+	Pos         Map       `json:"position"`
+	id          int64     `json:"number"`
+	Team        string    `json:"team"`
+	Level       int64     `json:"level"`
+	Inventory   Inventory `json:"inventory"`
+	Orientation Direction `json:"rotation"`
+}
+
 type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
-	MapSize Map `json:"map"`
-
-	Team string `json:"team"`
-	Inventory Inventory `json:"inventory"`
-	Orientation Direction `json:"rotation"`
-	X int64 `json:"x"`
-	Y int64 `json:"y"`
+	Player *Player
 }
+
+
 
 ///
 // Socket functions
@@ -55,40 +65,56 @@ func (c *Client) Write(cmd string) (e error) {
 
 func (c *Client) moveForward() {
 	c.Write("Forward")
-	if c.Orientation == N {
-		c.X = (c.X + 1) % c.MapSize.X
-	} else if c.Orientation == S {
-		c.X = (c.X - c.MapSize.X) % c.MapSize.X
-	} else if c.Orientation == E {
-		c.Y = (c.Y + 1) % c.MapSize.Y
-	} else if c.Orientation == W {
-		c.Y = (c.Y - c.MapSize.Y) % c.MapSize.Y
+	if c.Player.Orientation == N {
+		c.Player.Pos.X = (c.Player.Pos.X + 1) % c.Player.MapSize.X
+	} else if c.Player.Orientation == S {
+		c.Player.Pos.X = (c.Player.Pos.X - c.Player.MapSize.X) % c.Player.MapSize.X
+	} else if c.Player.Orientation == E {
+		c.Player.Pos.Y = (c.Player.Pos.Y + 1) % c.Player.MapSize.Y
+	} else if c.Player.Orientation == W {
+		c.Player.Pos.Y = (c.Player.Pos.Y - c.Player.MapSize.Y) % c.Player.MapSize.Y
 	}
 }
 
 func (c *Client) turnRight() {
 	c.Write("Right")
-	c.Orientation = (c.Orientation + 1) % 4
+	c.Player.Orientation = (c.Player.Orientation + 1) % 4
 }
 
 func (c *Client) turnLeft() {
 	c.Write("Left")
-	c.Orientation = (c.Orientation - 1) % 4
+	c.Player.Orientation = (c.Player.Orientation - 1) % 4
 }
 
 func (c *Client) look(b []byte) (bool) {
-	c.Write("Look")
-	content, e := c.Read(b);
-	if e != nil {
-		return false
-	}
-	for i, rune := range content {
-		fmt.Printf("%d : %c\n", i, rune)
+//	c.Write("Look")
+	//content, e := c.Read(b)
+	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
+	//if e == nil {
+	//	return false
+	//}
+	c.Player.Vision = getDataFromSring(content)
+	for i := range c.Player.Vision {
+		fmt.Printf("[%d] = %s\n", i, c.Player.Vision[i])
 	}
 	return true
 }
 
-func (c *Client) inventory() (s []string) {
+func (c *Client) inventory(b []byte) (s []string) {
+	c.Write("Inventory")
+	content, e := c.Read(b)
+	if e == nil {
+		return nil
+	}
+	resources := getDataFromSring(content)
+	for i := range resources {
+		resource := strings.Split(resources[i], " ")
+		value, e := strconv.Atoi(resource[1])
+		if e != nil {
+			fmt.Println("Error invalid number")
+		}
+		c.Player.Inventory[MapType[resource[0]]] = value
+	}
 	return s
 }
 
