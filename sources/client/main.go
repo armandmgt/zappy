@@ -1,4 +1,4 @@
-package main
+ package main
 
 import (
 	`flag`
@@ -38,6 +38,6 @@ func main() {
 
 func initClient(c *Client, co *net.TCPConn) {
 	c.Connection = co
-	c.Team = *Name
-	c.Orientation = N
+	c.Player = &Player{Map{0, 0}, nil, Map{0, 0},
+	0, *Name, 1, Inventory{0,0,0,0,0,0,0}, N}
 }
