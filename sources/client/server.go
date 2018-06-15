@@ -11,7 +11,7 @@ var (
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
-		"pic": nil, "pie": nil, "pfk": nil,
+		"pic": startIncantation, "pie": nil, "pfk": nil,
 		"pdr": nil, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
 		"edi": nil, "sgt": nil, "sst": nil,
@@ -180,4 +180,35 @@ func broadcast(_ *Client, s string) {
 	msg := data[0]
 	//TODO: ???
 	_ = n; _ = msg
+}
+
+func startIncantation(_ *Client, s string) {
+	var playerNames []int64
+	data = getProtocolResponseData(s)
+
+	x, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[pic]\tGot invalid player X position")
+		return
+	}
+	y, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[pic]\tGot invalid player Y position")
+		return
+	}
+	l, e := strconv.Atoi(data[2])
+	if e != nil {
+		log.Println("[pic]\tGot invalid player level")
+		return
+	}
+	for _, n := range data[2:] {
+		num, e := strconv.Atoi(n)
+		if e != nil {
+			log.Println("[pic]\tGot invalid player number")
+			return
+		}
+		playerNames = append(playerNames, int64(num))
+	}
+	//TODO: ???
+	_ = x; _ = y; _ = l
 }
