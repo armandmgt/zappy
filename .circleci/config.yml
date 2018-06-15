@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: armandmgt/epitest-docker
+      - image: armandmgt/epitest-docker:1.0
     steps:
       - checkout
       - run:
