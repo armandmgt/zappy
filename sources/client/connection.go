@@ -28,6 +28,7 @@ func gameLoop(c *Client) {
 		log.Fatalln("Received invalid first response\nGot:", s)
 	}
 	for isRunning {
+		c.look(buffer)
 		isRunning = false
 	}
 }
