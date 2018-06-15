@@ -35,7 +35,7 @@ func execDebug() {
 	c := &Client{}
 
 	initClient(c, nil)
-	c.Team = "DevTeam"
+	c.Player.Team = "DevTeam"
 
 	reader := bufio.NewReader(os.Stdin)
 
