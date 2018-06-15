@@ -36,5 +36,53 @@ char *left(cell_t *cells)
 
 char *look(cell_t *cells)
 {
+	int vision = cells->player->level;
+	int vision_x = 1;
+	int vision_y = 0;
+
+	if (cells->player->level == 1)
+		printf("player, %s\n", cells->player->ressources[y + 1][x - 1]);
+	else if (cells->player->level == 2)
+		printf("player, %s, %s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x]);
+	else if (cells->player->level == 3)
+		printf("player, %s ,%s ,%s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y  + 1][x],
+			cells->player->ressources[y + 1][x + 1]);
+	else if (cells->player->level == 4)
+		printf("player, %s ,%s ,%s ,%s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x],
+			cells->player->ressources[y + 1][x + 1],
+			cells->player->ressources[y + 2][x - 2]);
+	else if (cells->player->level == 5)
+		printf("player, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x],
+			cells->player->ressources[y + 1][x + 1],
+			cells->player->ressources[y + 2][x - 2],
+			cells->player->ressources[y + 2][x - 1]);
+	else if (cells->player->level == 6)
+		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x],
+			cells->player->ressources[y + 1][x + 1],
+			cells->player->ressources[y + 2][x - 2],
+			cells->player->ressources[y + 2][x - 1],
+			cells->player->ressources[y + 2][x]);
+	else if (cells->player->level == 7)
+		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x],
+			cells->player->ressources[y + 1][x + 1],
+			cells->player->ressources[y + 2][x - 2],
+			cells->player->ressources[y + 2][x - 1],
+			cells->player->ressources[y + 2][x],
+			cells->player->ressources[y + 2][x + 1]);
+	else if (cells->player->level == 8)
+		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
+			cells->player->ressources[y + 1][x],
+			cells->player->ressources[y + 1][x + 1],
+			cells->player->ressources[y + 2][x - 2],
+			cells->player->ressources[y + 2][x - 1],
+			cells->player->ressources[y + 2][x],
+			cells->player->ressources[y + 2][x + 1],
+			cells->player->ressources[y + 2][x + 2]);
 	return ("tile1 [...]\n");
 }
