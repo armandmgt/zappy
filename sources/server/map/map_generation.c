@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "server/map.h"
 
 static bool fill_map(map_t *map, size_t pct, size_t nb_resource);
@@ -33,9 +34,9 @@ static void randomly_add_resource(cell_t *cell, int random,
 
 static bool fill_map(map_t *map, size_t pct, size_t nb_resource)
 {
-	unsigned int random;
+	unsigned int random = 0;
 
-	srand(random);
+	srand(time(NULL));
 	for (int y = 0; y < map->y; y++) {
 		for (int x = 0; x < map->x; x++) {
 			random = rand() % (100);
