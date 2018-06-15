@@ -17,13 +17,7 @@ namespace sfml {
     template<typename Resource, typename Identifier>
     class ResourceHolder {
     public:
-	ResourceHolder(const ResourceHolder &) = delete;
-
-	ResourceHolder &operator=(const ResourceHolder &) = delete;
-
-	ResourceHolder() noexcept
-	{
-	}
+	explicit ResourceHolder() noexcept = default;
 
 	template<typename ...Args>
 	Resource &load(const Identifier &id, Args &&...args)
@@ -34,34 +28,29 @@ namespace sfml {
 			throw std::runtime_error("Impossible to load file");
 		}
 
-		if (!_resourcesRegistry.emplace(id, std::move(res)).second) {
+		if (!_resources.emplace(id, std::move(res)).second) {
 			throw std::runtime_error("Impossible to emplace in map. Object already exists?");
 		}
 
-		return _resourcesRegistry[id];
+		return _resources[id];
 	}
 
 	void remove(const Identifier &id) noexcept
 	{
-		if (_resourcesRegistry.count(id) == 1) {
-			_resourcesRegistry.erase(id);
+		if (_resources.find(id) != _resources.end()) {
+			_resources.erase(id);
 		}
-	}
-
-	const Resource &get(const Identifier &id) const
-	{
-		return _resourcesRegistry.at(id);
 	}
 
 	Resource &get(const Identifier &id)
 	{
-		return _resourcesRegistry.at(id);
+		return _resources.at(id);
 	}
 
 	template<typename ...Args>
 	Resource &getOrLoad(const Identifier &id, Args &&...args)
 	{
-		if (_resourcesRegistry.count(id) == 0) {
+		if (_resources.find(id) == _resources.end()) {
 			return load(id, std::forward<Args>(args)...);
 		}
 		return get(id);
@@ -69,11 +58,11 @@ namespace sfml {
 
 	void clear() noexcept
 	{
-		_resourcesRegistry.clear();
+		_resources.clear();
 	}
 
     private:
-	std::unordered_map<Identifier, Resource> _resourcesRegistry;
+	std::unordered_map<Identifier, Resource> _resources;
     };
 
     template<typename ResourceIdentifier>
@@ -85,11 +74,10 @@ namespace sfml {
 	using TexturesRegistry = ResourceHolder<sf::Texture, ResourceIdentifier>;
 
     public:
-	explicit ResourceManager(std::filesystem::path resourceDirectoryPath = std::filesystem::current_path()) noexcept : _resourceDirectoryPath(std::move(resourceDirectoryPath)) = default;
+	explicit ResourceManager(std::filesystem::path resourceDirectoryPath = std::filesystem::current_path() / "assets") noexcept : _resourceDirectoryPath(std::move(resourceDirectoryPath))
 	{
-
+		std::cout << _resourceDirectoryPath << std::endl;
 	}
-
     private:
 	template<typename Resource, typename Registry>
 	Resource &_load(Registry &registry, const std::string &resourceTypePath, const std::filesystem::path &&filename) noexcept
