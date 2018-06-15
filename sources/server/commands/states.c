@@ -46,5 +46,6 @@ char *incantation(cell_t *cells)
 
 char *death(cell_t *cells)
 {
+	close (cells->player->socket);
 	return ("dead\n");
 }
