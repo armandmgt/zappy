@@ -9,7 +9,7 @@ import (
 var (
 	Responses = map[string]func(*Client, string) {
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
-		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": nil,
+		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": nil, "pex": nil, "pbc": nil,
 		"pic": nil, "pie": nil, "pfk": nil,
 		"pdr": nil, "pgt": nil, "pdi": nil,
@@ -77,32 +77,32 @@ func getNewPlayerInformations(_ *Client, s string) {
 		return
 	}
 
-	x, e := strconv.Atoi(data[1])
+	x, e := strconv.Atoi(data[0])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[2])
+	y, e := strconv.Atoi(data[1])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player Y position")
 		return
 	}
 	newPlayer.Pos = Map{int64(x), int64(y)}
 
-	o, e := strconv.Atoi(data[3])
+	o, e := strconv.Atoi(data[2])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player orientation")
 		return
 	}
 	newPlayer.Orientation = Direction(o)
 
-	l, e := strconv.Atoi(data[4])
+	l, e := strconv.Atoi(data[3])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player level")
 		return
 	}
 	newPlayer.Level = int64(l)
-	newPlayer.Team = data[5]
+	newPlayer.Team = data[4]
 	//TODO: Keep the new player somewhere
 }
 
@@ -114,21 +114,33 @@ func getPlayerPosition(_ *Client, s string) {
 		log.Println("Got incomplete server response")
 		return
 	}
-	x, e := strconv.Atoi(data[1])
+	x, e := strconv.Atoi(data[0])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player X position")
 		return
 	}
-	y, e := strconv.Atoi(data[2])
+	y, e := strconv.Atoi(data[1])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player Y position")
 		return
 	}
-	o, e := strconv.Atoi(data[3])
+	o, e := strconv.Atoi(data[2])
 	if e != nil {
 		log.Println("[pnw]\tGot invalid player orientation")
 		return
 	}
 	//TODO: Keep those informations somewhere in the client and attach them to the correct player
 	_ = n; _ = x; _ = y; _ = o
+}
+
+func getPlayerLevel(_ *Client, s string) {
+	var n int64
+	data, n = getProtocolResponseDataWithPlayerNumber(s)
+	level, e := strconv.Atoi(data[1])
+	if e != nil {
+		log.Println("[plv]\tGot invalid player level")
+		return
+	}
+	//TODO: Attach the information to the corresponding player
+	_ = level; _ = n
 }

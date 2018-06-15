@@ -45,5 +45,5 @@ func getProtocolResponseDataWithPlayerNumber(s string) (a []string, _ int64) {
 	if e != nil {
 		return a, 0
 	}
-	return a, int64(t)
+	return a[1:], int64(t)
 }
