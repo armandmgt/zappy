@@ -12,7 +12,7 @@ var (
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
 		"pic": startIncantation, "pie": endIncantation, "pfk": layEgg,
-		"pdr": nil, "pgt": nil, "pdi": nil,
+		"pdr": dropRessource, "pgt": nil, "pdi": nil,
 		"enw": nil, "eht": nil, "ebo": nil,
 		"edi": nil, "sgt": nil, "sst": nil,
 		"seg": nil, "smg": nil, "suc": nil,
@@ -230,4 +230,15 @@ func endIncantation(_ *Client, s string) {
 func layEgg(_ *Client, s string) {
 	_, n := getProtocolResponseDataWithPlayerNumber(s)
 	_ = n
+}
+
+func dropRessource(_ *Client, s string) {
+	data, n := getProtocolResponseDataWithPlayerNumber(s)
+	i, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[pdr]\tGot invalid ressource quantity")
+		return
+	}
+	//TODO: use data
+	_ = n; _ = i
 }
