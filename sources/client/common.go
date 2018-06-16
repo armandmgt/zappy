@@ -64,7 +64,7 @@ func getProtocolResponseDataWithPlayerNumber(s string) (a []string, _ int64) {
 	a = strings.Split(s[4:], " ")
 	t, e := strconv.Atoi(a[0])
 	if e != nil {
-		return a, 0
+		return a, -1
 	}
 	return a[1:], int64(t)
 }
