@@ -41,7 +41,7 @@ type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
 	Player *Player
-	MapSize Map
+	MapSize Map `json:"mapSize"`
 }
 
 
