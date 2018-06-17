@@ -9,6 +9,10 @@ set(CORE
     connexion/new_connection.c
 
     ../common/linked_list.c
+
+	map/map_generation.c
+	map/map_allocation.c
+	map/cell_management.c
 )
 
 set(SRCS
