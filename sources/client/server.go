@@ -12,11 +12,11 @@ var (
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
 		"pic": startIncantation, "pie": endIncantation, "pfk": layEgg,
-		"pdr": dropRessource, "pgt": nil, "pdi": nil,
-		"enw": nil, "eht": nil, "ebo": nil,
-		"edi": nil, "sgt": nil, "sst": nil,
-		"seg": nil, "smg": nil, "suc": nil,
-		"sbp": nil,
+		"pdr": dropRessource, "pgt": collectRessource, "pdi": handlePlayerDeath,
+		"enw": getLayingData, "eht": eggHatching, "ebo": handleEggConnection,
+		"edi": eggDeath, "sgt": getTimeUnit, "sst": getTimeUnitModification,
+		"seg": endGame, "smg": handleServerMessage, "suc": unknownCommand,
+		"sbp": commandParameter,
 	}
 
 	data []string
@@ -241,4 +241,98 @@ func dropRessource(_ *Client, s string) {
 	}
 	//TODO: use data
 	_ = n; _ = i
+}
+
+func collectRessource(_ *Client, s string) {
+	data, n := getProtocolResponseDataWithPlayerNumber(s)
+	i, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[pgt]\tGot invalid ressource quantity")
+		return
+	}
+	//TODO: use data
+	_ = n; _ = 1
+}
+
+func handlePlayerDeath(_ *Client, s string) {
+	_, n := getProtocolResponseDataWithPlayerNumber(s)
+	//TODO: remove player from list of active players
+	_ = n
+}
+
+func getLayingData(_ *Client, s string) {
+	data, egg := getProtocolResponseDataWithPlayerNumber(s) //WARN: e is the egg number -> not the player
+	n, e := strconv.Atoi(data[0])
+	if e != nil {
+		log.Println("[enw]\tGot invalid player number")
+		return
+	}
+	pos, e := getPosition(data[1], data[2])
+	if e != nil {
+		return
+	}
+	//TODO: keep this info somewhere
+	_ = egg; _ = n; _ = pos
+}
+
+func eggHatching(_ *Client, s string) {
+	_, egg := getProtocolResponseDataWithPlayerNumber(s)
+	//TODO: keep the info somewhere
+	_ = egg
+}
+
+func handleEggConnection(_ *Client, s string) {
+	_, egg := getProtocolResponseDataWithPlayerNumber(s)
+	//TODO: handle the connection
+	_ = egg
+}
+
+func eggDeath(_ *Client, s string) {
+	_, egg := getProtocolResponseDataWithPlayerNumber(s)
+	//TODO: pop the egg from the egg list I guess...
+	_ = egg
+}
+
+func getTimeUnit(_ *Client, s string) {
+	data := getProtocolResponseData(s)
+	if len(data) == 0 {
+		log.Println("[sgt]\tGot empty time unit")
+		return
+	}
+	//TODO: what the fuck is this supposed to be ?
+}
+
+func getTimeUnitModification(_ *Client, s string) {
+	data := getProtocolResponseData(s)
+	if len(data) == 0 {
+		log.Println("[sgt]\tGot empty time unit")
+		return
+	}
+	//TODO: what the fuck is this supposed to be ?
+}
+
+func endGame(_ *Client, s string) {
+	data := getProtocolResponseData(s)
+	if len(data) == 0 {
+		log.Println("[seg]\tGot empty team name")
+		return
+	}
+	winnerTeam := data[0] //TODO: I guess ???
+	_ = winnerTeam
+}
+
+func handleServerMessage(_ *Client, s string) {
+	data := getProtocolResponseData(s)
+	if len(data) == 0 {
+		return
+	}
+	fmt.Println("[SERVER]\t", data[0])
+}
+
+func unknownCommand(_ *Client, _ string) {
+	return
+}
+
+func commandParameter(_ *Client, _ string) {
+	return
 }
