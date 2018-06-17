@@ -24,24 +24,16 @@ var (
 
 
 func getMapSize(c *Client, s string) {
-	arr := make([]int64, 2)
-	data = getProtocolResponseData(s)
+	var e error
+	data := getProtocolResponseData(s)
 	if len(data) == 0 {
-		log.Println("Got incomplete server response")
+		log.Println("[msz]\tGot incomplete server response")
 		return
 	}
-
-	for i, d := range data {
-		if v, e := strconv.Atoi(d); e != nil {
-			log.Println("[msz]\tFailed to parse server response")
-			fmt.Println(e.Error())
-			return
-		} else {
-			arr[i] = int64(v)
-		}
+	c.MapSize, e = getPosition(data[0], data[1])
+	if e != nil {
+		return
 	}
-	c.Player.MapSize.X = arr[0]
-	c.Player.MapSize.Y = arr[1]
 }
 
 func getTileContent(_ *Client, s string) {
@@ -251,7 +243,7 @@ func collectRessource(_ *Client, s string) {
 		return
 	}
 	//TODO: use data
-	_ = n; _ = 1
+	_ = n; _ = 1; _ = i
 }
 
 func handlePlayerDeath(_ *Client, s string) {
