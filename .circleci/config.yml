@@ -7,8 +7,13 @@ jobs:
       - checkout
       - run:
           name: Compile project
-          command: mkdir -p build && cd build && cmake .. && make
           command: make
+      - run:
+          name: Run norm errors check
+          command: |
+            curl -s https://raw.githubusercontent.com/armandmgt/NormEZ/master/NormEZ.rb > norm
+            chmod +x norm
+            ./norm -u -i
 
   build_client:
     docker:
