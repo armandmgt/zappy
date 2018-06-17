@@ -70,12 +70,12 @@ func getProtocolResponseDataWithPlayerNumber(s string) (a []string, _ int64) {
 }
 
 func getPosition(s1, s2 string) (m Map, e error) {
-	x, e := strconv.Atoi(data[0])
+	x, e := strconv.Atoi(s1)
 	if e != nil {
 		log.Println("Got invalid player X position")
 		return Map{}, e
 	}
-	y, e := strconv.Atoi(data[1])
+	y, e := strconv.Atoi(s2)
 	if e != nil {
 		log.Println("Got invalid player Y position")
 		return Map{}, e
