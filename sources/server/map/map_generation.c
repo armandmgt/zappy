@@ -8,9 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <event.h>
-#include <stdint-gcc.h>
-#include "server/map.h"
+#include "map.h"
 
 static bool fill_map(map_t *map, uint8_t pct, uint8_t nb_resource);
 
