@@ -5,25 +5,8 @@ import (
 	`fmt`
 	`strings`
 	`strconv`
+	`log`
 )
-
-type Inhabitant interface {
-	moveForward() // Never fails
-	turnRight() // Never fails
-	turnLeft() // Never fails
-
-	look(b []byte) bool
-	inventory(b []byte) []string
-	broadcast() // Never fails
-
-	getUnusedSlots() int64
-	fork() // Never fails
-	eject() bool
-
-	take() bool
-	set() bool
-	incantation() int64
-}
 
 type Player struct {
 	MapSize Map `json:"map"`
@@ -42,6 +25,7 @@ type Client struct {
 
 	Player *Player
 	MapSize Map `json:"mapSize"`
+	SlotsLeft int64 `json:"slotsLeft"`
 }
 
 ///
@@ -127,18 +111,53 @@ func (c *Client) inventory(b []byte) (s []string) {
 	return s
 }
 
-func (c *Client) broadcast() {
+func (c *Client) broadcast(b []byte, text string) {
 }
 
-func (c *Client) getUnusedSlots() (n int64) {
-	return n
+func (c *Client) getUnusedSlots(b []byte) (n int64) {
+	c.Write("Connect_nbr")
+	r, e := c.Read(b)
+	if e != nil {
+		log.Println(e.Error())
+		return
+	}
+	data := strings.Split(r, " ")
+	v, _ := strconv.Atoi(data[0])
+	c.SlotsLeft = int64(v)
+	return c.SlotsLeft
 }
 
 func (c *Client) fork() {
+	c.Write("Fork") // We don't need to reed since fork cannot fail
 }
 
-func (c *Client) eject() (b bool) {
-	return b
+func (c *Client) eject(b []byte) bool {
+	c.Write("Eject")
+	r, e := c.Read(b)
+	if e != nil {
+		log.Println(e.Error())
+		return false
+	}
+	data := strings.Split(r, " ")
+	tmp, _ := strconv.Atoi(data[1])
+	dir := Direction(tmp)
+	switch dir {
+	case N:
+		c.Player.Pos.Y--
+		break
+	case E:
+		c.Player.Pos.X--
+		break
+	case S:
+		c.Player.Pos.Y++
+		break
+	case W:
+		c.Player.Pos.X++
+		break
+	default:
+		log.Println("Got invalid eject direction")
+	}
+	return true
 }
 
 func (c *Client) take() (b bool) {
