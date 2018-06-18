@@ -28,7 +28,7 @@ type Inhabitant interface {
 type Player struct {
 	MapSize Map `json:"map"`
 
-	Vision      []string  `json:"vision"`
+	Vision      []Content  `json:"vision"`
 	Pos         Map       `json:"position"`
 	Id          int64     `json:"number"`
 	Team        string    `json:"team"`
@@ -43,8 +43,6 @@ type Client struct {
 	Player *Player
 	MapSize Map `json:"mapSize"`
 }
-
-
 
 ///
 // Socket functions
@@ -88,23 +86,27 @@ func (c *Client) turnLeft() {
 }
 
 func (c *Client) look(b []byte) (bool) {
-	c.Write("Look")
+	c.Write("Look\n")
 	content, e := c.Read(b)
 	fmt.Println(content)
-	if e == nil {
+	if e != nil {
 		return false
 	}
-	c.Player.Vision = getDataFromSring(content)
-	for i := range c.Player.Vision {
-		fmt.Printf("[%d] = %s\n", i, c.Player.Vision[i])
+	contents := getDataFromSring(content)
+	for i := range contents {
+		cell := strings.Split(contents[i], " ")
+		for y := range cell {
+			fmt.Printf("[%s]\n", cell[y])
+			c.Player.Vision[i][CellType[cell[y]]] += 1
+		}
 	}
 	return true
 }
 
 func (c *Client) inventory(b []byte) (s []string) {
-	c.Write("Inventory")
+	c.Write("Inventory\n")
 	content, e := c.Read(b)
-	if e == nil {
+	if e != nil {
 		return nil
 	}
 	resources := getDataFromSring(content)
@@ -114,7 +116,7 @@ func (c *Client) inventory(b []byte) (s []string) {
 		if e != nil {
 			fmt.Println("Error invalid number")
 		}
-		c.Player.Inventory[MapType[resource[0]]] = value
+		c.Player.Inventory[CellType[resource[0]]] = value
 	}
 	return s
 }
