@@ -55,20 +55,19 @@ unsigned long parse_number(int *error)
 	}
 }
 
-team_t *parse_teams(int *error, char * const *argv)
+list_t *parse_teams(int *error, char *const *argv)
 {
-	team_t *teams = NULL;
+	list_t *teams = NULL;
 	team_t *elem;
 	int i = optind;
 
 	while (argv[i]) {
-		if (!(elem = malloc(sizeof(*teams)))) {
+		if (!(elem = calloc(1, sizeof(*elem)))) {
 			*error = 1;
 			return (NULL);
 		}
 		strncpy(elem->name, argv[i++], TEAM_NAME_LEN);
-		elem->next = teams;
-		teams = elem;
+		add_elem_at_front(&teams, elem);
 	}
 	return (teams);
 }
