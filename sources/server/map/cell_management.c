@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "server/map.h"
 
-bool add_resource_to_cell(cell_t *cell, resource res)
+bool add_resource_to_cell(cell_t *cell, resource_t res)
 {
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");
@@ -36,7 +36,7 @@ bool add_random_resource_to_cell(cell_t *cell)
 	return (true);
 }
 
-bool remove_resource_on_cell(cell_t *cell, resource res)
+bool remove_resource_on_cell(cell_t *cell, resource_t res)
 {
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");
@@ -46,7 +46,7 @@ bool remove_resource_on_cell(cell_t *cell, resource res)
 	return (true);
 }
 
-size_t get_resource_on_cell(cell_t const *const cell, resource res)
+size_t get_resource_on_cell(cell_t const *const cell, resource_t res)
 {
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");

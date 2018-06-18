@@ -31,7 +31,7 @@ bool allocate_map(map_t *map)
 	return (true);
 }
 
-static void print_cell_resource(int x, int y, cell_t const *const cell)
+static void print_cell_resource(int x, int y, cell_t const *cell)
 {
 	fprintf(stdout, "[%d][%d] -> ", x, y);
 	for (int i = 0; i < NB_RESOURCE; i++) {
@@ -42,7 +42,7 @@ static void print_cell_resource(int x, int y, cell_t const *const cell)
 	fprintf(stdout, "\n");
 }
 
-void print_map(map_t const *const map)
+void print_map(map_t const *map)
 {
 	for (int y = 0; map->map[y]; y++) {
 		for (int x = 0; x < map->x; x++) {
