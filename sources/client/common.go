@@ -35,6 +35,7 @@ const (
 var CellType = map[string]InventoryType {
 	"food": FOOD, "sibur": SIBUR, "phiras": PHIRAS,
 	"mendiane": MENDIANE, "thystame": TRYSTAME, "linemate": LINEMATE, "deraumere": DERAUMERE,
+	"player": PLAYER,
 }
 
 type Content [8]int

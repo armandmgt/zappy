@@ -96,9 +96,15 @@ func (c *Client) look(b []byte) (bool) {
 	for i := range contents {
 		cell := strings.Split(contents[i], " ")
 		for y := range cell {
-			fmt.Printf("[%s]\n", cell[y])
 			c.Player.Vision[i][CellType[cell[y]]] += 1
 		}
+	}
+	for i := range c.Player.Vision {
+		fmt.Printf("{%d}", i)
+		for y := range c.Player.Vision[i] {
+			fmt.Printf("[%d]", c.Player.Vision[i][y])
+		}
+		fmt.Printf("\n")
 	}
 	return true
 }
