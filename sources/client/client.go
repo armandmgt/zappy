@@ -175,8 +175,19 @@ func (c *Client) take(b []byte, item string) bool {
 	return false
 }
 
-func (c *Client) set() (b bool) {
-	return b
+func (c *Client) set(b []byte, item string) bool {
+	c.Write("Set " + item)
+	res, e := c.Read(b)
+	if e != nil {
+		log.Println(e.Error())
+		return false
+	}
+	data := strings.Split(res, " ")
+	if data[1] == "ok" {
+		c.Player.Inventory[CellType[item]]--
+		return true
+	}
+	return false
 }
 
 func (c *Client) incantation() (n int64) {
