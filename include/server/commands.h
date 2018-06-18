@@ -9,6 +9,14 @@
 
 static const int CMD_LEN = 13;
 
+enum direction
+{
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST
+};
+
 typedef struct cell_s
 {
 	int x;
@@ -21,16 +29,16 @@ typedef struct command_s
 	char *(*ptr_func)(cell_t *cells);
 } command_t;
 
-char *forward(cell_t *cells);
-char *right(cell_t *cells);
-char *left(cell_t *cells);
+char *forward(cell_t *cells, player_t *player);
+char *right(cell_t *cells, player_t *player);
+char *left(cell_t *cells, player_t *player);
 char *look(cell_t *cells);
-char *inventory(cell_t *cells);
+char *inventory(player_t *player);
 char *broadcast(cell_t *cells);
-char *connect(cell_t *cells);
+char *connect(client_t *client, char *team, unsigned int max_clients);
 char *birth(cell_t *cells);
 char *eject(cell_t *cells);
-char *take(cell_t *cells);
-char *set(cell_t *cells);
-char *incantation(cell_t *cells);
+char *take(cell_t *cells, resources nb);
+char *set(cell_t *cells, resources nb);
+char *incantation(player_t *player);
 char *death(cell_t *cells);
