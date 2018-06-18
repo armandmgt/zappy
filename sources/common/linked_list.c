@@ -9,15 +9,15 @@
 #include <stdlib.h>
 #include "common/linked_list.h"
 
-bool add_elem_at_front(list_t **players, void *data)
+bool add_elem_at_front(list_t **list, void *data)
 {
-	list_t *node = calloc(sizeof(**players), 1);
+	list_t *node = calloc(1, sizeof(list_t));
 
 	if (!node)
 		return (false);
-	node->next = *players;
+	node->next = *list;
 	node->data = data;
-	*players = node;
+	*list = node;
 	return (true);
 }
 
