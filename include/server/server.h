@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "resources.h"
 #include "linked_list.h"
 
 #define TEAM_NAME_LEN 64
@@ -21,6 +22,11 @@ typedef struct team_s {
 	size_t max_members;
 	list_t *members;
 } team_t;
+
+typedef struct player_s {
+	uint16_t level;
+	uint32_t inventory[NB_RESOURCE];
+};
 
 typedef struct client_s {
 	int sock;
@@ -51,3 +57,6 @@ client_t *get_new_client(int server_socket);
 
 int check_fds(server_t *server, fd_set *readfds);
 int handle_new_connections(server_t *server, fd_set *readfds);
+
+int poll_client_commands(server_t *server, fd_set *readfds);
+int do_pending_actions(server_t *server);
