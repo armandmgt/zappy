@@ -15,7 +15,7 @@ typedef struct option_parser_s {
 } option_parser_t;
 
 unsigned long parse_number(int *);
-team_t *parse_teams(int *, char * const *);
+list_t *parse_teams(int *, char *const *);
 int port(options_t *, int *, char * const *);
 int size(options_t *, int *, char * const *);
 int names(options_t *, int *, char * const *);
