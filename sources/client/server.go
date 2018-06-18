@@ -1,13 +1,14 @@
 package main
 
 import (
-	`strconv`
-	`log`
-	`fmt`
+	"fmt"
+	"log"
+	"strconv"
 )
 
 var (
-	Responses = map[string]func(*Client, string) {
+	//Responses ...All server protocol responses
+	Responses = map[string]func(*Client, string){
 		"msz": getMapSize, "bct": getTileContent, "tna": getTeamsNames,
 		"pnw": getNewPlayerInformations, "ppo": getPlayerPosition, "plv": getPlayerLevel,
 		"pin": getPlayerInventory, "pex": excludePlayer, "pbc": broadcast,
@@ -22,18 +23,13 @@ var (
 	data []string
 )
 
-
 func getMapSize(c *Client, s string) {
-	var e error
 	data := getProtocolResponseData(s)
 	if len(data) == 0 {
 		log.Println("[msz]\tGot incomplete server response")
 		return
 	}
-	c.MapSize, e = getPosition(data[0], data[1])
-	if e != nil {
-		return
-	}
+	c.MapSize, _ = getPosition(data[0], data[1]) // Can not handle the error here
 }
 
 func getTileContent(_ *Client, s string) {
@@ -121,7 +117,9 @@ func getPlayerPosition(_ *Client, s string) {
 		return
 	}
 	//TODO: Keep those informations somewhere in the client and attach them to the correct player
-	_ = n; _ = pos; _ = o
+	_ = n
+	_ = pos
+	_ = o
 }
 
 func getPlayerLevel(_ *Client, s string) {
@@ -133,7 +131,8 @@ func getPlayerLevel(_ *Client, s string) {
 		return
 	}
 	//TODO: Attach the information to the corresponding player
-	_ = level; _ = n
+	_ = level
+	_ = n
 }
 
 func getPlayerInventory(_ *Client, s string) {
@@ -170,7 +169,8 @@ func broadcast(_ *Client, s string) {
 	data, n = getProtocolResponseDataWithPlayerNumber(s)
 	msg := data[0]
 	//TODO: ???
-	_ = n; _ = msg
+	_ = n
+	_ = msg
 }
 
 func startIncantation(_ *Client, s string) {
@@ -198,7 +198,8 @@ func startIncantation(_ *Client, s string) {
 		playerNames = append(playerNames, int64(num))
 	}
 	//TODO: ???
-	_ = pos; _ = l
+	_ = pos
+	_ = l
 }
 
 func endIncantation(_ *Client, s string) {
@@ -232,7 +233,8 @@ func dropRessource(_ *Client, s string) {
 		return
 	}
 	//TODO: use data
-	_ = n; _ = i
+	_ = n
+	_ = i
 }
 
 func collectRessource(_ *Client, s string) {
@@ -243,7 +245,9 @@ func collectRessource(_ *Client, s string) {
 		return
 	}
 	//TODO: use data
-	_ = n; _ = 1; _ = i
+	_ = n
+	_ = 1
+	_ = i
 }
 
 func handlePlayerDeath(_ *Client, s string) {
@@ -264,7 +268,9 @@ func getLayingData(_ *Client, s string) {
 		return
 	}
 	//TODO: keep this info somewhere
-	_ = egg; _ = n; _ = pos
+	_ = egg
+	_ = n
+	_ = pos
 }
 
 func eggHatching(_ *Client, s string) {
