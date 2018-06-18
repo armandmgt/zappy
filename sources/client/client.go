@@ -28,7 +28,7 @@ type Inhabitant interface {
 type Player struct {
 	MapSize Map `json:"map"`
 
-	Vision      []string
+	Vision      []string  `json:"vision"`
 	Pos         Map       `json:"position"`
 	id          int64     `json:"number"`
 	Team        string    `json:"team"`
@@ -41,6 +41,7 @@ type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
 	Player *Player
+	MapSize Map `json:"mapSize"`
 }
 
 
