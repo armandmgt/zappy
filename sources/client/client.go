@@ -89,6 +89,7 @@ func (c *Client) turnLeft() {
 func (c *Client) look(b []byte) (bool) {
 	c.Write("Look")
 	content, e := c.Read(b)
+	fmt.Println(content)
 	if e == nil {
 		return false
 	}
