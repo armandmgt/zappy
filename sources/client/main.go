@@ -44,7 +44,7 @@ func initClient(c *Client, co *net.TCPConn)  {
 	Y, _ :=  strconv.Atoi(posArr[1])
 	invent := make([]Content, 49)
 	c.Player = &Player{Map{0, 0}, invent, Map{int64(X), int64(Y)},
-		int64(id), *Name, 1, Inventory{0,0,0,0,0,0,0}, N}
+		int64(id), *Name, 1, Inventory{}, N}
 	c.look(buffer)
 }
 
