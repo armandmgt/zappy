@@ -6,6 +6,7 @@
 */
 
 #include <stddef.h>
+#include <stdio.h>
 #include "server/commands.h"
 
 static command_t const command[] = {
@@ -17,59 +18,48 @@ static command_t const command[] = {
 	{"Death", &death}
 };
 
-char *connect(client_t *client, char *team, unsigned int max_clients)
+char *connect(client_t *client)
 {
 	int cmpt = 0;
 	char *result[256] = {0};
 
 	while (client) {
-		if (strcmp(team, client->team->name) == 0)
+		if (strcmp(client->team, client->team->name) == 0)
 			cmpt += 1;
 	}
-	sprintf(result, "%d", max_clients - cmpt);
+	sprintf(result, "%d", client->team->max_members - cmpt);
 	return (result);
 }
 
-char *birth(cell_t *cells,)
+char *birth(client_t *client)
 {
-	// pid_t pid;
-	// int new = 0;
-
-	// pid = fork();
-	// if (pid == -1)
-	// 	return ("ko\n");
-	// else if (pid == 0) {
-	// 	new = accept(cells->player->socket, (struct sockaddr *)&addr,
-	// 		&client_size);
-	// }
-
 	/* créer un oeuf et attendre qu'un client puisse se co*/
 	/* augmenter le nombre de client qui peuvent se connecter dans la team*/
-	cells->player->nb_player += 1;
+	client->team->max_members += 1;
 	//new:
-	cells->player->direction = rand() % 4 - 1;
-	cells->player->level = cells->player->level; /*parent*/
+	client->player->direction = rand() % 4;
+	client->player->level = 1;
 	return ("ok\n");
 }
 
-char *eject(cell_t *cells)
+char *eject(client_t *client)
 {
 	switch (cells->player->direction)
 	{
-		case (cells->player->direction == NORTH):
-		cells->player->pos[y][x] = cells->player->pos[y + 1][x];
+		case (client->player->direction == NORTH):
+		client->player->pos[y][x] = client->player->pos[y + 1][x];
 		return ("ok\n");
 		//return ("eject: S\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == EAST):
-		cells->player->pos[y][x] = cells->player->pos[y][x + 1];
+		case (client->player->direction == EAST):
+		client->player->pos[y][x] = client->player->pos[y][x + 1];
 		return ("ok");
 		//return ("eject: W\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == SOUTH):
-		cells->player->pos[y][x] = cells->player->pos[y - 1][x];
+		case (client->player->direction == SOUTH):
+		client->player->pos[y][x] = client->player->pos[y - 1][x];
 		return ("ok");
 		//return ("eject: N\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == WEST):
-		cells->player->pos[y][x] = cells->player->pos[y][x - 1];
+		case (client->player->direction == WEST):
+		client->player->pos[y][x] = client->player->pos[y][x - 1];
 		return ("ok");
 		//return ("eject: E\n"); /* si y a des gens sur la case */
 	}

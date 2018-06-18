@@ -5,6 +5,7 @@
 ** none
 */
 
+#include <stdio.h>
 #include "server/commands.h"
 
 char *forward(cell_t *cells, player_t *player)
