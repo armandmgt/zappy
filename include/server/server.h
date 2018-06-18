@@ -26,10 +26,12 @@ typedef struct team_s {
 typedef struct player_s {
 	uint16_t level;
 	uint32_t inventory[NB_RESOURCE];
-};
+	uint32_t lifetime;
+} player_t;
 
 typedef struct client_s {
 	int sock;
+	player_t *infos;
 	team_t *team;
 } client_t;
 
