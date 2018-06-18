@@ -34,6 +34,7 @@ func initClient(c *Client, co *net.TCPConn)  {
 	if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
 		log.Fatalln("Received invalid first response\nGot:", s)
 	}
+
 	c.Write(*Name+"\n")
 	numStr, _ := c.Read(buffer)
 	lines := strings.Split(numStr, "\n")
