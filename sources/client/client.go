@@ -106,7 +106,7 @@ func (c *Client) inventory(b []byte) (s []string) {
 		if e != nil {
 			fmt.Println("Error invalid number")
 		}
-		c.Player.Inventory[CellType[resource[0]]] = value
+		c.Player.Inventory[CellType[resource[0]]] = int64(value)
 	}
 	return s
 }
@@ -160,8 +160,19 @@ func (c *Client) eject(b []byte) bool {
 	return true
 }
 
-func (c *Client) take() (b bool) {
-	return b
+func (c *Client) take(b []byte, item string) bool {
+	c.Write("Take " + item)
+	res, e := c.Read(b)
+	if e != nil {
+		log.Println(e.Error())
+		return false
+	}
+	data := strings.Split(res, " ")
+	if data[1] == "ok" {
+		c.Player.Inventory[CellType[item]]++
+		return true
+	}
+	return false
 }
 
 func (c *Client) set() (b bool) {

@@ -40,7 +40,8 @@ var CellType = map[string]InventoryType {
 
 type Content [8]int
 
-type Inventory [7]int
+//type Inventory [7]int
+type Inventory map[InventoryType]int64
 
 func getProtocolResponseData(s string) (a []string) {
 	// Since all server responses start with xxx, we always cut at the 4th index
