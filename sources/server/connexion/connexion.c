@@ -13,6 +13,7 @@
 
 static int get_socket(char const *protocol);
 static int listen_socket(int sock, struct sockaddr_in *addr);
+static void init_teams(list_t *list, unsigned int max_clients);
 
 int run_server(options_t *opts, server_t *server)
 {
@@ -21,7 +22,9 @@ int run_server(options_t *opts, server_t *server)
 
 	while (true) {
 		if ((rc = check_fds(server, &readfds)) ||
-			(rc = handle_new_connections(server, &readfds)))
+			(rc = handle_new_connections(server, &readfds)) ||
+			(rc = poll_client_commands(server, &readfds)) ||
+			(rc = do_pending_actions(server)))
 			return (rc);
 	}
 }
@@ -29,6 +32,7 @@ int run_server(options_t *opts, server_t *server)
 int init_server(options_t *opts, server_t *server)
 {
 	server->teams = opts->teams;
+	init_teams(server->teams, opts->max_clients);
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
 	server->addr.sin_addr.s_addr = INADDR_ANY;
@@ -38,6 +42,14 @@ int init_server(options_t *opts, server_t *server)
 		return (-1);
 	}
 	return (0);
+}
+
+static void init_teams(list_t *list, unsigned int max_clients)
+{
+	for (list_t *cur = list; cur; cur = cur->next) {
+		team_t *team = cur->data;
+		team->max_members = max_clients;
+	}
 }
 
 static int get_socket(char const *protocol)
