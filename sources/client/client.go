@@ -30,7 +30,7 @@ type Player struct {
 
 	Vision      []string  `json:"vision"`
 	Pos         Map       `json:"position"`
-	id          int64     `json:"number"`
+	Id          int64     `json:"number"`
 	Team        string    `json:"team"`
 	Level       int64     `json:"level"`
 	Inventory   Inventory `json:"inventory"`
