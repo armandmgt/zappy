@@ -4,8 +4,8 @@ import (
 	`flag`
 	`log`
 	`net`
-	`strconv`
 	`strings`
+	`strconv`
 )
 
 var (
@@ -29,23 +29,22 @@ func init() {
 	}
 }
 
- func initClient(c *Client, co *net.TCPConn)  {
-	 c.Connection = co
-	 buffer := make([]byte, 1024)
-	 if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
-		 log.Fatalln("Received invalid first response\nGot:", s)
-	 }
-	 c.Write(*Name+"\n")
-	 numStr, _ := c.Read(buffer)
-	 lines := strings.Split(numStr, "\n")
-	 id , _ := strconv.Atoi(lines[0])
-	 posArr := strings.Split(lines[1], " ")
-	 X, _ :=  strconv.Atoi(posArr[0])
-	 Y, _ :=  strconv.Atoi(posArr[1])
-	 c.Player = &Player{Map{0, 0}, nil, Map{int64(X), int64(Y)},
-		 int64(id), *Name, 1, Inventory{0,0,0,0,0,0,0}, N}
+func initClient(c *Client, co *net.TCPConn)  {
+	c.Connection = co
+	buffer := make([]byte, 1024)
+	if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
+		log.Fatalln("Received invalid first response\nGot:", s)
+	}
+	c.Write(*Name+"\n")
+	numStr, _ := c.Read(buffer)
+	lines := strings.Split(numStr, "\n")
+	id , _ := strconv.Atoi(lines[0])
+	posArr := strings.Split(lines[1], " ")
+	X, _ :=  strconv.Atoi(posArr[0])
+	Y, _ :=  strconv.Atoi(posArr[1])
+	c.Player = &Player{Map{0, 0}, nil, Map{int64(X), int64(Y)},
+		int64(id), *Name, 1, Inventory{0,0,0,0,0,0,0}, N}
 }
-
 
 func main() {
 	co := openConnection()
