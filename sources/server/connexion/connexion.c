@@ -11,7 +11,7 @@
 #include <netdb.h>
 #include "server.h"
 
-static int get_socket();
+static int get_socket(void);
 static int listen_socket(int sock, struct sockaddr_in *addr);
 static void init_teams(list_t *list, unsigned int max_clients);
 
@@ -54,7 +54,7 @@ static void init_teams(list_t *list, unsigned int max_clients)
 	}
 }
 
-static int get_socket()
+static int get_socket(void)
 {
 	struct protoent *proto = getprotobyname("TCP");
 
