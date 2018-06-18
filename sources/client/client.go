@@ -28,9 +28,9 @@ type Inhabitant interface {
 type Player struct {
 	MapSize Map `json:"map"`
 
-	Vision      []string
+	Vision      []string  `json:"vision"`
 	Pos         Map       `json:"position"`
-	id          int64     `json:"number"`
+	Id          int64     `json:"number"`
 	Team        string    `json:"team"`
 	Level       int64     `json:"level"`
 	Inventory   Inventory `json:"inventory"`
@@ -41,6 +41,7 @@ type Client struct {
 	Connection *net.TCPConn `json:"connection"`
 
 	Player *Player
+	MapSize Map `json:"mapSize"`
 }
 
 
@@ -87,12 +88,12 @@ func (c *Client) turnLeft() {
 }
 
 func (c *Client) look(b []byte) (bool) {
-//	c.Write("Look")
-	//content, e := c.Read(b)
-	content := "[player,,, thystame,, food,,,,,thystame ,,, player deraumere,,,]"
-	//if e == nil {
-	//	return false
-	//}
+	c.Write("Look")
+	content, e := c.Read(b)
+	fmt.Println(content)
+	if e == nil {
+		return false
+	}
 	c.Player.Vision = getDataFromSring(content)
 	for i := range c.Player.Vision {
 		fmt.Printf("[%d] = %s\n", i, c.Player.Vision[i])
