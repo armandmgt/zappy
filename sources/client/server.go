@@ -60,7 +60,7 @@ func getTeamsNames(_ *Client, s string) {
 func getNewPlayerInformations(_ *Client, s string) {
 	var pos Map
 	newPlayer := Player{}
-	data, newPlayer.id = getProtocolResponseDataWithPlayerNumber(s)
+	data, newPlayer.Id = getProtocolResponseDataWithPlayerNumber(s)
 	if len(data) == 0 {
 		log.Println("Got incomplete server response")
 		return
@@ -71,7 +71,7 @@ func getNewPlayerInformations(_ *Client, s string) {
 		log.Println("[pnw]\tGot invalid player number")
 		return
 	}
-	newPlayer.id = int64(num)
+	newPlayer.Id = int64(num)
 
 	pos, e = getPosition(data[1], data[2])
 	if e != nil {
