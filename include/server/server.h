@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include "resources.h"
 #include "linked_list.h"
+#include "map.h"
 
 #define TEAM_NAME_LEN 64
 
@@ -53,9 +54,10 @@ typedef struct command_s {
 	char **args;
 } command_t;
 
-struct server_t {
+struct server_s {
 	int sock;
 	struct sockaddr_in addr;
+	map_t map_infos;
 	list_t *teams;
 	list_t *clients;
 	list_t *commands;
