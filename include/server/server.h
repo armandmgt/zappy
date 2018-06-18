@@ -19,7 +19,7 @@
 
 typedef struct team_s {
 	char name[TEAM_NAME_LEN];
-	size_t max_members;
+	uint32_t max_members;
 	list_t *members;
 } team_t;
 
@@ -37,11 +37,11 @@ typedef struct client_s {
 
 typedef struct options_s {
 	uint16_t port;
-	unsigned int width;
-	unsigned int height;
+	uint32_t width;
+	uint32_t height;
 	list_t *teams;
-	unsigned int maxClients;
-	unsigned int freq;
+	uint32_t max_clients;
+	uint32_t freq;
 } options_t;
 
 typedef struct server_t {
