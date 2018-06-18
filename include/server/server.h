@@ -17,6 +17,15 @@
 
 #define TEAM_NAME_LEN 64
 
+typedef struct options_s {
+	uint16_t port;
+	uint32_t width;
+	uint32_t height;
+	list_t *teams;
+	uint32_t max_clients;
+	uint32_t freq;
+} options_t;
+
 typedef struct team_s {
 	char name[TEAM_NAME_LEN];
 	uint32_t max_members;
@@ -35,21 +44,22 @@ typedef struct client_s {
 	team_t *team;
 } client_t;
 
-typedef struct options_s {
-	uint16_t port;
-	uint32_t width;
-	uint32_t height;
-	list_t *teams;
-	uint32_t max_clients;
-	uint32_t freq;
-} options_t;
+typedef struct server_s server_t;
 
-typedef struct server_t {
+typedef struct command_s {
+	bool (*do_action)(server_t *, client_t *, cell_t *, char **);
+	clock_t start_time;
+	uint32_t timeout;
+	char **args;
+} command_t;
+
+struct server_t {
 	int sock;
 	struct sockaddr_in addr;
 	list_t *teams;
 	list_t *clients;
-} server_t;
+	list_t *commands;
+};
 
 int parse_options(int argc, char * const *argv, options_t *opts);
 
