@@ -10,8 +10,19 @@
 
 char *forward(cell_t *cells, player_t *player)
 {
-	if (cells[y + 1][x]) {
-		cells->player->pos[y][x] = cells->player->pos[y + 1][x];
+	switch (client->player->direction)
+	{
+		case (NORTH):
+		client->player->pos[y][x] = client->player->pos[y + 1][x];
+		return ("ok\n");
+		case (EAST):
+		client->player->pos[y][x] = client->player->pos[y][x + 1];
+		return ("ok\n");
+		case (SOUTH):
+		client->player->pos[y][x] = client->player->pos[y - 1][x];
+		return ("ok\n");
+		case (WEST):
+		client->player->pos[y][x] = client->player->pos[y][x - 1];
 		return ("ok\n");
 	}
 	return ("ko\n");

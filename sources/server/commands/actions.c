@@ -33,35 +33,35 @@ char *connect(client_t *client)
 
 char *birth(client_t *client)
 {
-	/* créer un oeuf et attendre qu'un client puisse se co*/
-	/* augmenter le nombre de client qui peuvent se connecter dans la team*/
 	client->team->max_members += 1;
-	//new:
 	client->player->direction = rand() % 4;
 	client->player->level = 1;
 	return ("ok\n");
 }
 
-char *eject(client_t *client)
+char *eject(client_t *client, cell_t *cells)
 {
-	switch (cells->player->direction)
+	while (cells->members) {
+
+	}
+	switch (client->player->direction)
 	{
-		case (client->player->direction == NORTH):
+		case (NORTH):
 		client->player->pos[y][x] = client->player->pos[y + 1][x];
+		dprintf(client->sock, "eject: S\n");
 		return ("ok\n");
-		//return ("eject: S\n"); /* si y a des gens sur la case */
-		case (client->player->direction == EAST):
+		case (EAST):
 		client->player->pos[y][x] = client->player->pos[y][x + 1];
+		dprintf(client->sock, "eject: W\n");
 		return ("ok");
-		//return ("eject: W\n"); /* si y a des gens sur la case */
-		case (client->player->direction == SOUTH):
+		case (SOUTH):
 		client->player->pos[y][x] = client->player->pos[y - 1][x];
+		dprintf(client->sock, "eject: N\n");
 		return ("ok");
-		//return ("eject: N\n"); /* si y a des gens sur la case */
-		case (client->player->direction == WEST):
+		case (WEST):
 		client->player->pos[y][x] = client->player->pos[y][x - 1];
+		dprintf(client->sock, "eject: E\n");
 		return ("ok");
-		//return ("eject: E\n"); /* si y a des gens sur la case */
 	}
 	return ("ko\n");
 }
