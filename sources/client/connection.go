@@ -21,14 +21,11 @@ func openConnection() *net.TCPConn {
 }
 
 func gameLoop(c *Client) {
-	buffer := make([]byte, 1024)
+	//buffer := make([]byte, 1024)
 	isRunning := true
 
-	if s, e := c.Read(buffer); s != "WELCOME\n" || e != nil {
-		log.Fatalln("Received invalid first response\nGot:", s)
-	}
 	for isRunning {
-		c.look(buffer)
+//		c.look(buffer)
 		isRunning = false
 	}
 }
