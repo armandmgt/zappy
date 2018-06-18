@@ -40,7 +40,6 @@ var CellType = map[string]InventoryType {
 
 type Content [8]int
 
-//type Inventory [7]int
 type Inventory map[InventoryType]int64
 
 func getProtocolResponseData(s string) (a []string) {
