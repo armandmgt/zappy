@@ -4,6 +4,11 @@
 ## File description:
 ## Client_makefile
 
+GO	=	$(shell go 2> /dev/null)
+ifndef GO
+ $(error You need the Go runtime to proceed)
+endif
+
 ifndef GOPATH
  $(info GOPATH is undefined, /usr/local/bin will be used instead)
  IPATH	=	/usr/local/bin
