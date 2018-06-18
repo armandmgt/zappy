@@ -42,8 +42,10 @@ func init() {
 	 posArr := strings.Split(lines[1], " ")
 	 X, _ :=  strconv.Atoi(posArr[0])
 	 Y, _ :=  strconv.Atoi(posArr[1])
-	 c.Player = &Player{Map{0, 0}, nil, Map{int64(X), int64(Y)},
+	 invent := make([]Content, 49)
+	 c.Player = &Player{Map{0, 0}, invent, Map{int64(X), int64(Y)},
 		 int64(id), *Name, 1, Inventory{0,0,0,0,0,0,0}, N}
+		 c.look(buffer)
 }
 
 
