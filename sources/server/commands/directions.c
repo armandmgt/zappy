@@ -7,7 +7,7 @@
 
 #include "server/commands.h"
 
-char *forward(cell_t *cells)
+char *forward(cell_t *cells, player_t *player)
 {
 	if (cells[y + 1][x]) {
 		cells->player->pos[y][x] = cells->player->pos[y + 1][x];
@@ -16,7 +16,7 @@ char *forward(cell_t *cells)
 	return ("ko\n");
 }
 
-char *right(cell_t *cells)
+char *right(cell_t *cells, player_t *player)
 {
 	if (cells[y][x + 1]) {
 		cells->player->pos[y][x] = cells->player->pos[y][x + 1];
@@ -25,7 +25,7 @@ char *right(cell_t *cells)
 	return ("ko\n");
 }
 
-char *left(cell_t *cells)
+char *left(cell_t *cells, player_t *player)
 {
 	if (cells[y][x - 1]) {
 		cells->player->pos[y][x] = cells->player->pos[y][x - 1];
@@ -85,4 +85,9 @@ char *look(cell_t *cells)
 			cells->player->ressources[y + 2][x + 1],
 			cells->player->ressources[y + 2][x + 2]);
 	return ("tile1 [...]\n");
+}
+
+void rotation(cell_t *cells)
+{
+
 }
