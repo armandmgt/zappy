@@ -50,10 +50,12 @@ typedef struct client_s {
 typedef struct server_s server_t;
 
 typedef struct command_s {
-	bool (*do_action)(server_t *, client_t *, cell_t *, char **);
+	bool (*do_action)(server_t *, client_t *, cell_t *, char *);
+	client_t *client;
+	cell_t *cell;
 	clock_t start_time;
-	uint32_t timeout;
-	char **args;
+	double timeout;
+	char *args;
 } command_t;
 
 struct server_s {
