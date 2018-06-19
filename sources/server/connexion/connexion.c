@@ -15,7 +15,7 @@ static int get_socket(void);
 static int listen_socket(int sock, struct sockaddr_in *addr);
 static void init_teams(list_t *list, unsigned int max_clients);
 
-int run_server(options_t *opts, server_t *server)
+int run_server(server_t *server)
 {
 	int rc = 0;
 	fd_set readfds;
@@ -33,7 +33,7 @@ int init_server(options_t *opts, server_t *server)
 {
 	server->teams = opts->teams;
 	init_teams(server->teams, opts->max_clients);
-	server->map_infos = (map_t){opts->width, opts->height};
+	server->map_infos = (map_t){opts->width, opts->height, 0};
 	generate_map(80, 10, &server->map_infos);
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
