@@ -13,12 +13,14 @@
 #include "command_value.h"
 
 static void add_command(server_t *server, client_t *client, cell_t *cell,
-		       char **av);
+	char **av
+);
 
 bool do_action(server_t *s, client_t *c, cell_t *cell, char *av)
 {
 	printf("coucou\n");
 }
+
 static  command_values_t const command_assg[] = {
 	/*{"Forward", &forward, 7}, {"Right", &right, 7}, {"Left", &left, 7},
 	{"Look", &look, 7}, {"Inventory", &inventory, 1},
@@ -32,8 +34,8 @@ static  command_values_t const command_assg[] = {
 	{"Fork", &do_action, 42}, {"Eject", &do_action, 7},
 	{"Take", &do_action, 7}, {"Set", &do_action, 7},
 	{"Incantation", &do_action, 300}
-
 };
+
 int poll_client_commands(server_t *server, fd_set *readfds)
 {
 	client_t *client;
@@ -42,17 +44,17 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		client = cur->data;
-		if (FD_ISSET(client->sock, readfds)) {
+		if (FD_ISSET(client->sock, readfds))
 			write_cbuf(&client->buffer, client->sock);
-			if (read_cbuf(&client->buffer, (uint8_t **)&line)) {
-				fprintf(stderr, "received line [%s]\n", line);
-				command[0] = strtok(line, " ");
-				command[1] = strtok(NULL, "");
-				printf("%s \n %s \n", command[0],
-				       command[1]);
-				add_command(server, client, NULL, command);
-				free(line);
-			}
+		if (!client->buffer.empty &&
+			read_cbuf(&client->buffer, (uint8_t **)&line)) {
+			fprintf(stderr, "received line [%s]\n", line);
+			command[0] = strtok(line, " ");
+			command[1] = strtok(NULL, "");
+			printf("%s \n %s \n", command[0],
+			       command[1]);
+			add_command(server, client, NULL, command);
+			free(line);
 		}
 	}
 	return (0);
@@ -73,13 +75,12 @@ int do_pending_actions(server_t *server)
 					   command->cell, command->args);
 			cur = remove_elem(&server->commands, cur->data);
 		}
-
 	}
 	return (0);
 }
 
 static void add_command(server_t *server, client_t *client, cell_t *cell,
-		       char **av)
+	char **av)
 {
 	command_t *command = calloc(1, sizeof(*command));
 
@@ -95,6 +96,7 @@ static void add_command(server_t *server, client_t *client, cell_t *cell,
 			command->do_action = command_assg[i].do_action;
 			command->start_time =  clock();
 			add_elem_at_back(&server->commands, command);
+			return;
 		}
 	}
 	free(command);
