@@ -69,7 +69,7 @@ struct server_s {
 int parse_options(int argc, char *const *argv, options_t *opts);
 
 int init_server(options_t *opts, server_t *server);
-int run_server(options_t *opts, server_t *server);
+int run_server(server_t *server);
 client_t *get_new_client(int server_socket);
 
 int check_fds(server_t *server, fd_set *readfds);
