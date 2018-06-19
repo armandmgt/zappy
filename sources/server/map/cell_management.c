@@ -46,7 +46,7 @@ bool remove_resource_on_cell(cell_t *cell, resource_t res, uint16_t nb)
 	return (true);
 }
 
-size_t get_resource_on_cell(cell_t const *const cell, resource_t res)
+int get_resource_on_cell(cell_t const *const cell, resource_t res)
 {
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");
