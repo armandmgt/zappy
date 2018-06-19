@@ -8,8 +8,8 @@ set(CORE
     connexion/communication.c
     connexion/new_connection.c
 
-    commands/client_commands.c
-    commands/content_command.c
+    commands/client_parsing.c
+    commands/content.c
 
     ../common/linked_list.c
     ../common/cir_buffer.c
