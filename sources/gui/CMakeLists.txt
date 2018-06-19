@@ -6,6 +6,9 @@ find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SRCS})
 
+#CXXFlags
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wfatal-errors")
+
 #Imgui
 target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 
