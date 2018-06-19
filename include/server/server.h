@@ -39,6 +39,7 @@ typedef struct player_s {
 	uint32_t inventory[NB_RESOURCE];
 	uint32_t lifetime;
 	vec2i_t pos;
+	direction_t direction;
 } player_t;
 
 typedef struct client_s {

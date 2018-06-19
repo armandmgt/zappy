@@ -20,13 +20,12 @@ bool do_action(server_t *s, client_t *c, const char *av)
 }
 
 static  command_values_t const command_assg[] = {
-	{"Forward", &do_action, 7}, {"Right", &do_action, 7}, {"Left",
-		&do_action, 7},
-	{"Look", &do_action, 7}, {"Inventory", &do_action, 1},
-	{"Broadcast", &do_action, 7}, {"Connect_nbr", &do_action, 0},
-	{"Fork", &do_action, 42}, {"Eject", &do_action, 7},
-	{"Take", &do_action, 7}, {"Set", &do_action, 7},
-	{"Incantation", &do_action, 300}
+	{"Forward", &forward, 7}, {"Right", &right, 7}, {"Left", &left, 7},
+	{"Look", &look, 7}, {"Inventory", &inventory, 1},
+	{"Broadcast text", &broadcast, 7}, {"Connect_nbr", &connect_nbr, 0},
+	{"Fork", &birth, 42}, {"Eject", &eject, 7},
+	{"Take object", &take, 7}, {"Set object", &set, 7},
+	{"Incantation", &incantation, 300}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
