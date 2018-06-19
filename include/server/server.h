@@ -38,6 +38,7 @@ typedef struct player_s {
 	uint16_t level;
 	uint32_t inventory[NB_RESOURCE];
 	uint32_t lifetime;
+	vec2i_t pos;
 } player_t;
 
 typedef struct client_s {
@@ -50,7 +51,7 @@ typedef struct client_s {
 typedef struct server_s server_t;
 
 typedef struct command_s {
-	bool (*do_action)(server_t *, client_t *, cell_t *, char *);
+	bool (*do_action)(server_t *, client_t *, char const *);
 	client_t *client;
 	cell_t *cell;
 	clock_t start_time;
@@ -67,7 +68,7 @@ struct server_s {
 	list_t *commands;
 };
 
-int parse_options(int argc, char * const *argv, options_t *opts);
+int parse_options(int argc, char *const *argv, options_t *opts);
 
 int init_server(options_t *opts, server_t *server);
 int run_server(options_t *opts, server_t *server);
