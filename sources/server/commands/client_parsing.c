@@ -9,7 +9,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include <server/gui_commands.h>
+#include "gui_commands.h"
+#include "gui_magic.h"
 #include "server.h"
 #include "command_value.h"
 
@@ -31,7 +32,9 @@ static  command_values_t const command_assg[] = {
 	{"Incantation", &do_action, 300, false},
 	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
 	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
-	{"plv", &plv, 0, true}, {"pin", &pin, 0, true}
+	{"plv", &plv, 0, true}, {"pin", &pin, 0, true},
+	{"tna", &tna, 0, true}, {"sgt", &sgt, 0, true},
+	{"sst", &sst, 0, true}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
