@@ -15,12 +15,6 @@ typedef struct go_forward_s
 	vec2i_t pos;
 } go_forward_t;
 
-typedef struct rotation_s
-{
-	direction_t dir;
-	direction_t new_dir;
-} rotation_t;
-
 bool forward(server_t *server, client_t *client, char *args);
 bool right(server_t *server, client_t *client, char *args);
 bool left(server_t *server, client_t *client, char *args);

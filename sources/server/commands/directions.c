@@ -28,22 +28,14 @@ bool forward(server_t *server, client_t *client, char *args)
 
 bool right(server_t *server, client_t *client, char *args)
 {
-	rotation_t look_at[] = {
-		{NORTH, EAST}, {EAST, SOUTH}, {SOUTH, WEST}, {WEST, NORTH}
-	};
-
-	client->infos->direction = look_at[client->infos->direction].new_dir;
+	client->infos->direction = (client->infos->direction + 1) + 4 % 4;
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
 
 bool left(server_t *server, client_t *client, char *args)
 {
-	rotation_t look_at[] = {
-		{NORTH, WEST}, {WEST, SOUTH}, {SOUTH, EAST}, {EAST, NORTH}
-	};
-
-	client->infos->direction = look_at[client->infos->direction].new_dir;
+	client->infos->direction = (client->infos->direction - 1) + 4 % 4;
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
