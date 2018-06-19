@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "server.h"
+
 static const int CMD_LEN = 13;
 
 enum direction
@@ -20,8 +22,7 @@ enum direction
 typedef struct command_s
 {
 	char *cmd;
-	bool (*do_action)(server_t *server, client_t *client, cell_t *cells,
-		char **args);
+	bool (*do_action)(server_t *server, client_t *client, char *args);
 } command_t;
 
 typedef struct vec2i_s
@@ -30,27 +31,28 @@ typedef struct vec2i_s
 	int y;
 } vec2i_t;
 
-char *forward(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *right(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *left(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *look(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *inventory(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *broadcast(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *connect_nbr(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *birth(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *eject(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *take(cell_t *cells, resources nb);
-char *set(cell_t *cells, resources nb);
-char *incantation(server_t *server, client_t *client, cell_t *cells,
-		char **args);
-char *death(server_t *server, client_t *client, cell_t *cells,
-		char **args);
+typedef struct go_forward_s
+{
+	direction dir;
+	vec2i_t pos;
+} go_forward_t;
+
+typedef struct rotation_s
+{
+	direction dir;
+	direction new_dir;
+} rotation_t;
+
+bool forward(server_t *server, client_t *client, char *args);
+bool right(server_t *server, client_t *client, char *args);
+bool left(server_t *server, client_t *client, char *args);
+bool look(server_t *server, client_t *client, char *args);
+bool inventory(server_t *server, client_t *client, char *args);
+bool broadcast(server_t *server, client_t *client, char *args);
+bool connect_nbr(server_t *server, client_t *client, char *args);
+bool birth(server_t *server, client_t *client, char *args);
+bool eject(server_t *server, client_t *client, char *args);
+bool take(server_t *server, client_t *client, char *args);
+bool set(server_t *server, client_t *client, char *args);
+bool incantation(server_t *server, client_t *client, char *args);
+bool death(server_t *server, client_t *client, char *args);
