@@ -7,32 +7,38 @@
 
 #pragma once
 
-#include <stddef.h>
+#include "server.h"
 
-static const int CMD_LEN = 13;
-
-typedef struct cell_s
+enum direction
 {
-	int x;
-	int y;
-} cell_t;
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST
+};
 
-typedef struct command_s
+typedef struct go_forward_s
 {
-	char *cmd;
-	char *(*ptr_func)(cell_t *cells);
-} command_t;
+	direction dir;
+	vec2i_t pos;
+} go_forward_t;
 
-char *forward(cell_t *cells);
-char *right(cell_t *cells);
-char *left(cell_t *cells);
-char *look(cell_t *cells);
-char *inventory(cell_t *cells);
-char *broadcast(cell_t *cells);
-char *connect(cell_t *cells);
-char *birth(cell_t *cells);
-char *eject(cell_t *cells);
-char *take(cell_t *cells);
-char *set(cell_t *cells);
-char *incantation(cell_t *cells);
-char *death(cell_t *cells);
+typedef struct rotation_s
+{
+	direction dir;
+	direction new_dir;
+} rotation_t;
+
+bool forward(server_t *server, client_t *client, char *args);
+bool right(server_t *server, client_t *client, char *args);
+bool left(server_t *server, client_t *client, char *args);
+bool look(server_t *server, client_t *client, char *args);
+bool inventory(server_t *server, client_t *client, char *args);
+bool broadcast(server_t *server, client_t *client, char *args);
+bool connect_nbr(server_t *server, client_t *client, char *args);
+bool birth(server_t *server, client_t *client, char *args);
+bool eject(server_t *server, client_t *client, char *args);
+bool take(server_t *server, client_t *client, char *args);
+bool set(server_t *server, client_t *client, char *args);
+bool incantation(server_t *server, client_t *client, char *args);
+bool death(server_t *server, client_t *client, char *args);

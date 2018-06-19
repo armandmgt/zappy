@@ -5,47 +5,71 @@
 ** none
 */
 
+#include <stdio.h>
 #include "server/commands.h"
+#include "common/tools.h"
 
-char *broadcast(cell_t *cells)
+bool broadcast(server_t *server, client_t *client, char *args)
 {
-	return ("ok\n");
+	return (true);
 }
 
-char *inventory(cell_t *cells)
+bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
-	if (cells->player && cells->player->inventory) {
-		printf("food %d, linemate %d, deraumere %d, sibur %d, "
-			"mendiane %d, phiras %d, thystame %d\n",
-			cells->player->inventory[0], cells->player->inventory[1],
-			cells->player->inventory[2], cells->player->inventory[3],
-			cells->player->inventory[4], cells->player->inventory[5],
-			cells->player->inventory[6]);
+	player_t *tmp = client->infos;
+
+	if (client && client->infos) {
+		dprintf(client->sock, "food %d, linemate %d, deraumere %d, "
+			"sibur %d, mendiane %d, phiras %d, thystame %d\n",
+			tmp->inventory[0], tmp->inventory[1],
+			tmp->inventory[2], tmp->inventory[3],
+			tmp->inventory[4], tmp->inventory[5],
+			tmp->inventory[6]);
 	}
-	return ("[minerals]\n");
+	return (true);
 }
 
-char *incantation(cell_t *cells)
+int count_player(cell_t *cell, client_t *client)
 {
-	int idx = cells->player->level - 1;
-	static const size_t *tab[7] = {{1, 1, 0, 0, 0, 0, 0},
+	int cmpt = 0;
+
+	for (client_t *tmp = cells->players; tmp != NULL; tmp = tmp->next) {
+		if (strcmp(tmp->team, cells->players->team) == 0)
+			cmpt = cmpt + 1;
+	}
+	return (cmpt);
+}
+
+bool incantation(server_t *server, client_t *client, char *UNUSED(args))
+{
+	int idx = client->infos->level - 1;
+	static size_t const *tab[7] = {{1, 1, 0, 0, 0, 0, 0},
 	{2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
 	{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0},
 	{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
+	cell_t cell = server->map_infos->cells[client->infos.y][client->infos.x];
 
-	for (int i = 0; i < 7; i++) {
-		if (cells->player->ressources[i] < tab[idx][i])
-			return ("ko\n");
+	if (count_player(cell, client) != tab[idx][0])
+		return (false);
+	for (int i = 0; i < NB_RESOURCES; i++) {
+		if (client->infos->inventory[i] < tab[idx][i + 1])
+			return (false);
 	}
-	cells->player->level += 1;
-	for (int i = 0; i < 7; i++) {
-		cells->player->ressources[i] -= tab[idx][i];
+	client->infos->level += 1;
+	for (int i = 0; i < NB_RESOURCES; i++) {
+		client->infos->inventory[i] -= tab[idx][i + 1];
+		remove_resource_to_cell(cell, i);
 	}
-	return ("Elevation underway\nCurrent level %d\n", cells->player->level);
+	dprintf(client->sock, "Elevation underway\nCurrent level "
+		"%d\n", client->infos->level);
+	return (true);
 }
 
-char *death(cell_t *cells)
+bool death(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
-	close (cells->player->socket);
-	return ("dead\n");
+	if (client->infos->life_time == 0) {
+		dprintf(client->sock, "dead\n");
+		return (true);
+	}
+	return (false);
 }
