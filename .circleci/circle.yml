@@ -1,0 +1,56 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: armandmgt/epitest-docker:1.0
+    steps:
+      - checkout
+      - run:
+          name: Compile project
+          command: make
+      - run:
+          name: Run norm errors check
+          command: |
+            curl -s https://raw.githubusercontent.com/armandmgt/NormEZ/master/NormEZ.rb > norm
+            chmod +x norm
+            ./norm -u -i
+
+  build_client:
+    docker:
+      - image: circleci/golang:1.10
+    steps:
+      - checkout
+      - run:
+          name: Compile client
+          command: go build -o zappy_ai -v ./sources/client/
+
+  deploy:
+    docker:
+      - image: gotechnies/alpine-ssh:latest
+    steps:
+      - checkout
+      - run:
+          name: Push to epitech's git
+          command: |
+            git remote add epitech $EPITECH_REMOTE
+            git push epitech
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
+      - build_client:
+          filters:
+            branches:
+              ignore:
+                - master
