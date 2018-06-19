@@ -14,5 +14,3 @@ typedef struct	command_values_s {
 	bool (*do_action)(server_t *, client_t *, const char *);
 	double timeout;
 }			command_values_t;
-
-#endif //PROJECT_COMMAND_VALUE_H
