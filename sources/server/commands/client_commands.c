@@ -12,7 +12,7 @@
 #include "server.h"
 #include "command_value.h"
 
-static int add_command(server_t *server, client_t *client, cell_t *cell,
+static void add_command(server_t *server, client_t *client, cell_t *cell,
 		       char **av);
 
 bool do_action(server_t *s, client_t *c, cell_t *cell, char *av)
@@ -62,11 +62,12 @@ int do_pending_actions(server_t *server)
 {
 	command_t *command;
 	clock_t end = clock();
-	clock_t total;
+	double total;
 
 	for (list_t *cur = server->commands; cur; cur = cur->next) {
 		command = cur->data;
-		total = end - command->start_time;
+		total = (double)(end - command->start_time) / CLOCKS_PER_SEC;
+		printf("[%f] = [%f] ?", command->timeout, total);
 		if (command->timeout < total) {
 			command->do_action(server, command->client,
 					   command->cell, command->args);
@@ -77,11 +78,13 @@ int do_pending_actions(server_t *server)
 	return (0);
 }
 
-static int add_command(server_t *server, client_t *client, cell_t *cell,
+static void add_command(server_t *server, client_t *client, cell_t *cell,
 		       char **av)
 {
-	command_t *command = calloc(sizeof(command_t), 1);
+	command_t *command = calloc(1, sizeof(*command));
 
+	if (!command)
+		return;
 	for (size_t i = 0; i < sizeof(command_assg) /
 		sizeof(*command_assg); i++) {
 		if (strcmp(av[0], command_assg[i].command) == 0) {
@@ -94,4 +97,5 @@ static int add_command(server_t *server, client_t *client, cell_t *cell,
 			add_elem_at_back(&server->commands, command);
 		}
 	}
+	free(command);
 }
