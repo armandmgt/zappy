@@ -13,7 +13,7 @@
 #include "command_value.h"
 
 static int add_command(server_t *server, client_t *client, cell_t *cell,
-		       char *av);
+		       char **av);
 
 bool do_action(server_t *s, client_t *c, cell_t *cell, char *av)
 {
