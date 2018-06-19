@@ -15,8 +15,8 @@
 
 typedef struct vec2i_s
 {
-	unsigned int x;
-	unsigned int y;
+	uint32_t x;
+	uint32_t y;
 } vec2i_t;
 
 typedef struct cmp_s {
