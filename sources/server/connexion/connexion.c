@@ -34,7 +34,7 @@ int init_server(options_t *opts, server_t *server)
 	server->teams = opts->teams;
 	init_teams(server->teams, opts->max_clients);
 	server->map_infos = (map_t){opts->width, opts->height};
-	generate_map(20, 10, &server->map_infos);
+	generate_map(80, 10, &server->map_infos);
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
 	server->addr.sin_addr.s_addr = INADDR_ANY;
