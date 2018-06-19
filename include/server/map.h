@@ -38,8 +38,8 @@ typedef struct cell_s {
 } cell_t;
 
 typedef struct map_s {
-	size_t x;
-	size_t y;
+	uint32_t x;
+	uint32_t y;
 	cell_t **map;
 } map_t;
 
