@@ -9,6 +9,7 @@ set(CORE
     connexion/new_connection.c
 
     commands/client_commands.c
+    commands/content_command.c
 
     ../common/linked_list.c
     ../common/cir_buffer.c
