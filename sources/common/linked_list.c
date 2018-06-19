@@ -44,7 +44,10 @@ list_t *remove_elem(list_t **list, void *elem)
 
 	for (list_t *cur = *list; cur; cur = cur->next) {
 		if (cur->data == elem) {
-			prev ? prev->next = cur->next : *list = cur->next;
+			if (prev)
+				prev->next = cur->next;
+			else
+				*list = cur->next;
 			free(cur);
 			return (prev);
 		}
