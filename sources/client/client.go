@@ -115,7 +115,7 @@ func (c *Client) inventory(b []byte) (s []string) {
 func (c *Client) broadcast(b []byte, text string) {
 }
 
-func (c *Client) getUnusedSlots(b []byte) (n int64) {
+func (c *Client) getUnusedSlots(b []byte) {
 	c.Write("Connect_nbr")
 	r, e := c.Read(b)
 	if e != nil {
@@ -125,7 +125,6 @@ func (c *Client) getUnusedSlots(b []byte) (n int64) {
 	data := strings.Split(r, " ")
 	v, _ := strconv.Atoi(data[0])
 	c.SlotsLeft = int64(v)
-	return c.SlotsLeft
 }
 
 func (c *Client) fork() {
@@ -194,7 +193,7 @@ func (c *Client) set(b []byte, item string) bool {
 	return false
 }
 
-func (c *Client) incantation(b []byte) (lvl int64) {
+func (c *Client) incantation(b []byte) {
 	if c.IsPerformingIncantion {
 		return
 	}
@@ -218,5 +217,4 @@ func (c *Client) incantation(b []byte) (lvl int64) {
 	}
 	c.IsPerformingIncantion = false
 	c.Player.Level = int64(newLvl)
-	return c.Player.Level
 }
