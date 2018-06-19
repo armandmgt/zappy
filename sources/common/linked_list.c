@@ -28,6 +28,7 @@ bool add_elem_at_back(list_t **list, void *data)
 
 	if (!node)
 		return (false);
+	node->data = data;
 	if (!cur) {
 		*list = node;
 		return (true);
