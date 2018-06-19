@@ -12,43 +12,19 @@
 
 bool allocate_map(map_t *map)
 {
-	int i = 0;
-
-	map->map = malloc(sizeof(cell_t *) * (map->y + 1));
+	map->map = calloc(map->y + 1, sizeof(cell_t *));
 	if (!map->map) {
-		perror("malloc:");
+		perror("calloc:");
 		return (false);
 	}
-	while (i < map->y) {
+	for (size_t i = 0; i < map->y; i++) {
 		map->map[i] = calloc(map->x, sizeof(cell_t));
 		if (!map->map[i]) {
 			perror("calloc:");
 			return (false);
 		}
-		i++;
 	}
-	map->map[i] = NULL;
 	return (true);
-}
-
-static void print_cell_resource(int x, int y, cell_t const *cell)
-{
-	fprintf(stdout, "[%d][%d] -> ", x, y);
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		fprintf(stdout, "%ld", cell->resource[i]);
-		if (i + 1 < NB_RESOURCE)
-			fprintf(stdout, " ");
-	}
-	fprintf(stdout, "\n");
-}
-
-void print_map(map_t const *map)
-{
-	for (int y = 0; map->map[y]; y++) {
-		for (int x = 0; x < map->x; x++) {
-			print_cell_resource(x, y, &map->map[y][x]);
-		}
-	}
 }
 
 void free_map(map_t *map)
@@ -57,7 +33,7 @@ void free_map(map_t *map)
 		fprintf(stderr, "Invalid map pointer\n");
 		return;
 	}
-	for (int i = 0; i < map->y; i++) {
+	for (size_t i = 0; i < map->y; i++) {
 		free(map->map[i]);
 	}
 	free(map->map);

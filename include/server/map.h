@@ -47,7 +47,7 @@ static cmp_t const gamble[] = {
 
 bool allocate_map(map_t *map_infos);
 bool generate_map(uint8_t pct, uint8_t nb_resource, map_t *map_infos);
-void print_map(map_t const *map_infos);
+
 void free_map(map_t *map_infos);
 
 bool add_random_resource_to_cell(cell_t *cell);
