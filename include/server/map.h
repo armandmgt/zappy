@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <unistd.h>
+#include <stdint.h>
 #include "resources.h"
 #include "common/linked_list.h"
 
@@ -38,12 +39,12 @@ static cmp_t const gamble[] = {
 	{100, THYSTAME},
 };
 
-bool allocate_map(map_t *);
-bool generate_map(size_t, size_t, map_t *);
-void print_map(map_t const *);
-void free_map(map_t *);
+bool allocate_map(map_t *map_infos);
+bool generate_map(uint8_t pct, uint8_t nb_resource, map_t *map_infos);
+void print_map(map_t const *map_infos);
+void free_map(map_t *map_infos);
 
-bool add_random_resource_to_cell(cell_t *);
-bool add_resource_to_cell(cell_t *, resource_t);
-bool remove_resource_on_cell(cell_t *, resource_t);
-size_t get_resource_on_cell(cell_t const *, resource_t);
+bool add_random_resource_to_cell(cell_t *cell);
+bool add_resource_to_cell(cell_t *cell, resource_t resource);
+bool remove_resource_on_cell(cell_t *cell, resource_t resource);
+size_t get_resource_on_cell(cell_t const *cell, resource_t resource);
