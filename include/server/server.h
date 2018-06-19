@@ -53,7 +53,6 @@ typedef struct server_s server_t;
 typedef struct command_s {
 	bool (*do_action)(server_t *, client_t *, char const *);
 	client_t *client;
-	cell_t *cell;
 	clock_t start_time;
 	double timeout;
 	char *args;
@@ -66,6 +65,7 @@ struct server_s {
 	list_t *teams;
 	list_t *clients;
 	list_t *commands;
+	uint32_t freq;
 };
 
 int parse_options(int argc, char *const *argv, options_t *opts);

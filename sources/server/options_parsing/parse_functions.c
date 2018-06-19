@@ -43,5 +43,7 @@ int client_nb(options_t *opts, int *error, char * const *
 int freq(options_t *opts, int *error, char * const * UNUSED(argv))
 {
 	opts->freq = (unsigned int)parse_number(error);
+	if (opts->freq == 0)
+		*error = 1;
 	return (0);
 }
