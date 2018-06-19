@@ -26,6 +26,7 @@ type Client struct {
 	Player *Player
 	MapSize Map `json:"mapSize"`
 	SlotsLeft int64 `json:"slotsLeft"`
+	IsPerformingIncantion bool `json:"isPerformingIncantion"`
 }
 
 ///
@@ -190,6 +191,29 @@ func (c *Client) set(b []byte, item string) bool {
 	return false
 }
 
-func (c *Client) incantation() (n int64) {
-	return n
+func (c *Client) incantation(b []byte) (lvl int64) {
+	if c.IsPerformingIncantion {
+		return
+	}
+	c.Write("Incantation")
+	c.IsPerformingIncantion = true
+	res, e := c.Read(b)
+	if e != nil {
+		log.Println(e.Error())
+		return
+	}
+	data := strings.Split(res,  " ")
+	if data[0] == "ko" {
+		c.IsPerformingIncantion = false
+		return
+	}
+	newLvl, e := strconv.Atoi(data[len(data) - 1])
+	if e != nil {
+		log.Println(e.Error())
+		c.IsPerformingIncantion = false
+		return
+	}
+	c.IsPerformingIncantion = false
+	c.Player.Level = int64(newLvl)
+	return c.Player.Level
 }
