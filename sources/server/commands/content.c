@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include "gui_commands.h"
 
 bool msz(server_t *serv, client_t *client, char const *av)
 {
