@@ -21,8 +21,7 @@ int check_fds(server_t *server, fd_set *readfds)
 		FD_SET(client->sock, readfds);
 		maxfd = client->sock > maxfd ? client->sock : maxfd;
 	}
-	if (select(maxfd + 1, readfds, NULL, NULL,
-		&(struct timeval){0, 1000}) == -1) {
+	if (select(maxfd + 1, readfds, NULL, NULL, NULL) == -1) {
 		perror("select");
 		return (-1);
 	}

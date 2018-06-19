@@ -16,13 +16,13 @@ bool allocate_map(map_t *map)
 
 	map->map = malloc(sizeof(cell_t *) * (map->y + 1));
 	if (!map->map) {
-		perror("Malloc:");
+		perror("malloc:");
 		return (false);
 	}
 	while (i < map->y) {
 		map->map[i] = calloc(map->x, sizeof(cell_t));
 		if (!map->map[i]) {
-			perror("Calloc:");
+			perror("calloc:");
 			return (false);
 		}
 		i++;

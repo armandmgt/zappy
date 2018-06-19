@@ -11,8 +11,9 @@
 #include <netdb.h>
 #include "server.h"
 
-static int get_socket(char const *protocol);
+static int get_socket(void);
 static int listen_socket(int sock, struct sockaddr_in *addr);
+static void init_teams(list_t *list, unsigned int max_clients);
 
 int run_server(options_t *opts, server_t *server)
 {
@@ -21,7 +22,9 @@ int run_server(options_t *opts, server_t *server)
 
 	while (true) {
 		if ((rc = check_fds(server, &readfds)) ||
-			(rc = handle_new_connections(server, &readfds)))
+			(rc = handle_new_connections(server, &readfds)) ||
+			(rc = poll_client_commands(server, &readfds)) ||
+			(rc = do_pending_actions(server)))
 			return (rc);
 	}
 }
@@ -29,10 +32,13 @@ int run_server(options_t *opts, server_t *server)
 int init_server(options_t *opts, server_t *server)
 {
 	server->teams = opts->teams;
+	init_teams(server->teams, opts->max_clients);
+	server->map_infos = (map_t){opts->width, opts->height};
+	generate_map(20, 10, &server->map_infos);
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
 	server->addr.sin_addr.s_addr = INADDR_ANY;
-	if ((server->sock = get_socket("TCP")) == -1 ||
+	if ((server->sock = get_socket()) == -1 ||
 		listen_socket(server->sock, &server->addr) == -1) {
 		perror("server initialisation");
 		return (-1);
@@ -40,9 +46,17 @@ int init_server(options_t *opts, server_t *server)
 	return (0);
 }
 
-static int get_socket(char const *protocol)
+static void init_teams(list_t *list, unsigned int max_clients)
 {
-	struct protoent *proto = getprotobyname(protocol);
+	for (list_t *cur = list; cur; cur = cur->next) {
+		team_t *team = cur->data;
+		team->max_members = max_clients;
+	}
+}
+
+static int get_socket(void)
+{
+	struct protoent *proto = getprotobyname("TCP");
 
 	if (!proto)
 		return (-1);
