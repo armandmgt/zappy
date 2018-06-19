@@ -25,7 +25,7 @@ Dear ImGui is self-contained within a few files that you can easily copy and com
 - imgui_internal.h
 - imconfig.h (empty by default, user-editable)
 - stb_rect_pack.h
-- stb_textedit.h
+- stb_textedit.hpp
 - stb_truetype.h
 
 No specific build process is required. You can add the .cpp files to your project or #include them from an existing file.
@@ -298,7 +298,7 @@ I first discovered imgui principles at [Q-Games](http://www.q-games.com) where A
 
 Embeds [ProggyClean.ttf](http://upperbounds.net) font by Tristan Grimmer (MIT license).
 
-Embeds [stb_textedit.h, stb_truetype.h, stb_rectpack.h](https://github.com/nothings/stb/) by Sean Barrett (public domain).
+Embeds [stb_textedit.hpp, stb_truetype.h, stb_rectpack.h](https://github.com/nothings/stb/) by Sean Barrett (public domain).
 
 Inspiration, feedback, and testing for early versions: Casey Muratori, Atman Binstock, Mikko Mononen, Emmanuel Briney, Stefan Kamoda, Anton Mikhailov, Matt Willis. And everybody posting feedback, questions and patches on the GitHub.
 
