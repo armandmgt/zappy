@@ -11,6 +11,8 @@ set(CORE
     commands/client_commands.c
 
     ../common/linked_list.c
+    ../common/cir_buffer.c
+    ../common/init_cir_buffer.c
 
 	map/map_generation.c
 	map/map_allocation.c
