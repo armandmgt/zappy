@@ -48,7 +48,7 @@ func (c *Client) Write(cmd string) (e error) {
 ///
 
 func (c *Client) moveForward() {
-	c.Write("Forward")
+	c.Write("Forward\n")
 	if c.Player.Orientation == N {
 		c.Player.Pos.X = (c.Player.Pos.X + 1) % c.Player.MapSize.X
 	} else if c.Player.Orientation == S {
@@ -61,12 +61,12 @@ func (c *Client) moveForward() {
 }
 
 func (c *Client) turnRight() {
-	c.Write("Right")
+	c.Write("Right\n")
 	c.Player.Orientation = (c.Player.Orientation + 1) % 4
 }
 
 func (c *Client) turnLeft() {
-	c.Write("Left")
+	c.Write("Left\n")
 	c.Player.Orientation = (c.Player.Orientation - 1) % 4
 }
 
@@ -113,11 +113,11 @@ func (c *Client) inventory(b []byte) (s []string) {
 }
 
 func (c *Client) broadcast(b []byte, text string) {
-	c.Write("Broadcast " + text) // We don't need to read since we are the one sending the message
+	c.Write("Broadcast " + text + "\n") // We don't need to read since we are the one sending the message
 }
 
 func (c *Client) getUnusedSlots(b []byte) {
-	c.Write("Connect_nbr")
+	c.Write("Connect_nbr\n")
 	r, e := c.Read(b)
 	if e != nil {
 		log.Println(e.Error())
@@ -132,11 +132,11 @@ func (c *Client) fork() {
 	if c.SlotsLeft <= 0 {
 		return
 	}
-	c.Write("Fork") // We don't need to reed since fork cannot fail
+	c.Write("Fork\n") // We don't need to reed since fork cannot fail
 }
 
 func (c *Client) eject(b []byte) bool {
-	c.Write("Eject")
+	c.Write("Eject\n")
 	r, e := c.Read(b)
 	if e != nil {
 		log.Println(e.Error())
@@ -165,7 +165,7 @@ func (c *Client) eject(b []byte) bool {
 }
 
 func (c *Client) take(b []byte, item string) bool {
-	c.Write("Take " + item)
+	c.Write("Take " + item + "\n")
 	res, e := c.Read(b)
 	if e != nil {
 		log.Println(e.Error())
@@ -180,7 +180,7 @@ func (c *Client) take(b []byte, item string) bool {
 }
 
 func (c *Client) set(b []byte, item string) bool {
-	c.Write("Set " + item)
+	c.Write("Set " + item + "\n")
 	res, e := c.Read(b)
 	if e != nil {
 		log.Println(e.Error())
@@ -198,7 +198,7 @@ func (c *Client) incantation(b []byte) {
 	if c.IsPerformingIncantion {
 		return
 	}
-	c.Write("Incantation")
+	c.Write("Incantation\n")
 	c.IsPerformingIncantion = true
 	res, e := c.Read(b)
 	if e != nil {
