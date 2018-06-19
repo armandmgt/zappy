@@ -25,5 +25,5 @@ typedef struct cir_buffer_s {
 } cir_buffer_t;
 
 void init_cbuf(cir_buffer_t *buf);
-ssize_t write_cbuf(cir_buffer_t *, int);
-int read_cbuf(cir_buffer_t *, uint8_t **line);
+ssize_t write_cbuf(cir_buffer_t *buf, int fd);
+int read_cbuf(cir_buffer_t *buf, uint8_t **line);

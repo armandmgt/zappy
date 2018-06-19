@@ -31,6 +31,7 @@ uint8_t *find_line_end(cir_buffer_t *buffer)
 	size_t search_size = buffer->write_ptr <= buffer->read_ptr ?
 		buffer->end - buffer->read_ptr :
 		buffer->write_ptr - buffer->read_ptr;
+
 	delim = memchr(buffer->read_ptr, '\n', search_size);
 	if (!delim && buffer->write_ptr < buffer->read_ptr) {
 		search_size = buffer->write_ptr - buffer->buffer;
