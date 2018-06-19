@@ -21,6 +21,41 @@ bool add_elem_at_front(list_t **list, void *data)
 	return (true);
 }
 
+bool add_elem_at_back(list_t **list, void *data)
+{
+	list_t *node = calloc(1, sizeof(list_t));
+	list_t *cur = *list;
+
+	if (!node)
+		return (false);
+	if (!cur) {
+		*list = node;
+		return (true);
+	}
+	while (cur->next)
+		cur = cur->next;
+	cur->next = node;
+	return (true);
+}
+
+list_t *remove_elem(list_t **list, void *elem)
+{
+	list_t *prev = NULL;
+
+	for (list_t *cur = *list; cur; cur = cur->next) {
+		if (cur->data == elem) {
+			if (prev)
+				prev->next = cur->next;
+			else
+				*list = cur->next;
+			free(cur);
+			return (prev);
+		}
+		prev = cur;
+	}
+	return (NULL);
+}
+
 void free_list(list_t *list, void (*free_func)(void *))
 {
 	list_t *ptr;
