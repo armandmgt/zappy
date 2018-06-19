@@ -20,3 +20,5 @@ char **str_to_word_array(char *str);
 #else
 # define UNUSED(x) x
 #endif
+
+char **str_to_word_array(char *str);
