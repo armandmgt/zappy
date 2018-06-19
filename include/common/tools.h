@@ -18,3 +18,5 @@ static int const SUCCESS = 0;
 #else
 # define UNUSED(x) x
 #endif
+
+char **str_to_word_array(char *str);
