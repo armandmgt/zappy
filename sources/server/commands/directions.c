@@ -8,27 +8,37 @@
 #include <stdio.h>
 #include "server/commands.h"
 
-char *forward(cell_t *cells, player_t *player)
+bool forward(server_t *server, client_t *client, cell_t *UNUSED(cells),
+		char **UNUSED(args))
 {
+	vec2i_t pos;
+
 	switch (client->player->direction)
 	{
 		case (NORTH):
-		client->player->pos[y][x] = client->player->pos[y + 1][x];
-		return ("ok\n");
+		pos = {client->player->pos.x, client->player->pos.y + 1};
+		// client->player->pos[y][x] = client->player->pos[y + 1][x];
+		break;
 		case (EAST):
-		client->player->pos[y][x] = client->player->pos[y][x + 1];
-		return ("ok\n");
+		pos = {client->player->pos.x + 1, client->player->pos.y};
+		// client->player->pos[y][x] = client->player->pos[y][x + 1];
+		break;
 		case (SOUTH):
-		client->player->pos[y][x] = client->player->pos[y - 1][x];
-		return ("ok\n");
+		pos = {client->player->pos.x, client->player->pos.y - 1};
+		// client->player->pos[y][x] = client->player->pos[y - 1][x];
+		break;
 		case (WEST):
-		client->player->pos[y][x] = client->player->pos[y][x - 1];
-		return ("ok\n");
+		pos = {client->player->pos.x - 1, client->player->pos.y};
+		// client->player->pos[y][x] = client->player->pos[y][x - 1];
+		break;
 	}
-	return ("ko\n");
+	add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, client);
+	//call remove_elem
+	return (true);
 }
 
-char *right(cell_t *cells, player_t *player)
+char *right(server_t *server, client_t *client, cell_t *cells,
+		char **args)
 {
 	if (cells[y][x + 1]) {
 		cells->player->pos[y][x] = cells->player->pos[y][x + 1];
@@ -37,7 +47,8 @@ char *right(cell_t *cells, player_t *player)
 	return ("ko\n");
 }
 
-char *left(cell_t *cells, player_t *player)
+char *left(server_t *server, client_t *client, cell_t *cells,
+		char **args)
 {
 	if (cells[y][x - 1]) {
 		cells->player->pos[y][x] = cells->player->pos[y][x - 1];
@@ -46,7 +57,8 @@ char *left(cell_t *cells, player_t *player)
 	return ("ko\n");
 }
 
-char *look(cell_t *cells)
+char *look(server_t *server, client_t *client, cell_t *cells,
+		char **args)
 {
 	int vision = cells->player->level;
 	int vision_x = 1;
