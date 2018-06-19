@@ -40,12 +40,12 @@ int count_player(cell_t *cell, client_t *client)
 	return (cmpt);
 }
 
-void elevation(client_t *client, uint16_t nb, cell_t *cell)
+void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
 {
 	client->infos->level += 1;
 	for (int i = 0; i < NB_RESOURCE; i++) {
-		client->infos->inventory[i] -= nb;
-		remove_resource_on_cell(cell, i, nb);
+		client->infos->inventory[i] -= nb[i + 1];
+		remove_resource_on_cell(cell, i, nb[i + 1]);
 	}
 	dprintf(client->sock, "Elevation underway\nCurrent level "
 		"%d\n", client->infos->level);
@@ -71,7 +71,7 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 			return (false);
 		}
 	}
-	elevation(client, tab[idx][i + 1], cell);
+	elevation(client, tab[idx], cell);
 	return (true);
 }
 

@@ -9,13 +9,12 @@ set(CORE
     connexion/new_connection.c
 
     commands/client_commands.c
-
-    ../common/linked_list.c
-
     commands/actions.c
     commands/directions.c
     commands/states.c
+    commands/eject.c
 
+    ../common/linked_list.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
 
