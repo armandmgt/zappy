@@ -129,6 +129,9 @@ func (c *Client) getUnusedSlots(b []byte) (n int64) {
 }
 
 func (c *Client) fork() {
+	if c.SlotsLeft <= 0 {
+		return
+	}
 	c.Write("Fork") // We don't need to reed since fork cannot fail
 }
 
