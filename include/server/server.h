@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "linked_list.h"
+#include "common/linked_list.h"
 
 #define TEAM_NAME_LEN 64
 

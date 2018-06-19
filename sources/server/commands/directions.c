@@ -20,7 +20,7 @@ bool forward(server_t *server, client_t *client, char *args)
 
 	pos = look_at[client->infos->direction];
 	add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, client);
-	//call remove_elem
+	remove_elem(&server->map_info->map[pos.y][pos.x].players, tmp);
 	return (true);
 }
 
@@ -46,53 +46,37 @@ bool left(server_t *server, client_t *client, char *args)
 
 bool look(server_t *server, client_t *client, char *args)
 {
-	int vision = cells->player->level;
-	int vision_x = 1;
-	int vision_y = 0;
+	cell_t cell = server->map_infos->cells[client->infos.y][client->infos.x];
+	switch (client->infos->direction)
+	{
+		case (NORTH):
+		cell_t left = cell[x - level];
+		cell_t right = cell[x + level];
+		cell_t top = cell[y + level][x];
+		look_at(client, left, right, top);
+		case (EAST):
+		cell_t left = cell[y - level];
+		cell_t right = cell[y + level];
+		cell_t top = cell[y][x + level];
+		look_at(client, left, right, top);
+		case (SOUTH):
+		cell_t left = cell[x + level];
+		cell_t right = cell[x - level];
+		cell_t top = cell[y - level][x];
+		look_at(client, left, right, top);
+		case (WEST):
+		cell_t left = cell[y + level];
+		cell_t right = cell[y - level];
+		cell_t top = cell[y][x - level];
+		look_at(client, left, right, top);
+	}
+	return (true);
+}
 
-	if (cells->player->level == 1)
-		printf("player, %s\n", cells->player->ressources[y + 1][x - 1]);
-	else if (cells->player->level == 2)
-		printf("player, %s, %s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x]);
-	else if (cells->player->level == 3)
-		printf("player, %s ,%s ,%s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y  + 1][x],
-			cells->player->ressources[y + 1][x + 1]);
-	else if (cells->player->level == 4)
-		printf("player, %s ,%s ,%s ,%s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x],
-			cells->player->ressources[y + 1][x + 1],
-			cells->player->ressources[y + 2][x - 2]);
-	else if (cells->player->level == 5)
-		printf("player, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x],
-			cells->player->ressources[y + 1][x + 1],
-			cells->player->ressources[y + 2][x - 2],
-			cells->player->ressources[y + 2][x - 1]);
-	else if (cells->player->level == 6)
-		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x],
-			cells->player->ressources[y + 1][x + 1],
-			cells->player->ressources[y + 2][x - 2],
-			cells->player->ressources[y + 2][x - 1],
-			cells->player->ressources[y + 2][x]);
-	else if (cells->player->level == 7)
-		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x],
-			cells->player->ressources[y + 1][x + 1],
-			cells->player->ressources[y + 2][x - 2],
-			cells->player->ressources[y + 2][x - 1],
-			cells->player->ressources[y + 2][x],
-			cells->player->ressources[y + 2][x + 1]);
-	else if (cells->player->level == 8)
-		printf("player %s, %s, %s, %s, %s, %s\n", cells->player->ressources[y + 1][x - 1],
-			cells->player->ressources[y + 1][x],
-			cells->player->ressources[y + 1][x + 1],
-			cells->player->ressources[y + 2][x - 2],
-			cells->player->ressources[y + 2][x - 1],
-			cells->player->ressources[y + 2][x],
-			cells->player->ressources[y + 2][x + 1],
-			cells->player->ressources[y + 2][x + 2]);
-	return ("tile1 [...]\n");
+void look_at(client_t *client,)
+{
+	while (cell->resources != NULL) {
+		cell[y][x] = cell[y + level][x]
+		dprintf("")
+	}
 }
