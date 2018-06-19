@@ -17,6 +17,7 @@ set(CORE
 	map/map_generation.c
 	map/map_allocation.c
 	map/cell_management.c
+	map/cell_infos.c
 )
 
 set(SRCS
