@@ -14,7 +14,7 @@
 #pragma once
 
 ////////////////////////
-#include "imconfig-SFML.h"
+#include "imconfig-SFML.hpp"
 ///////////////////////
 
 
