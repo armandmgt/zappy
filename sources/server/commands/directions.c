@@ -8,57 +8,43 @@
 #include <stdio.h>
 #include "server/commands.h"
 
-bool forward(server_t *server, client_t *client, cell_t *UNUSED(cells),
-		char **UNUSED(args))
+bool forward(server_t *server, client_t *client, char *args)
 {
 	vec2i_t pos;
+	go_forward_t look_at[] = {
+		{NORTH, {client->infos->pos.x, client->infos->pos.y + 1}},
+		{EAST, {client->infos->pos.x + 1, client->infos->pos.y}},
+		{SOUTH, {client->infos->pos.x, client->infos->pos.y - 1}},
+		{WEST, {client->infos->pos.x - 1, client->infos->pos.y}}
+	};
 
-	switch (client->player->direction)
-	{
-		case (NORTH):
-		pos = {client->player->pos.x, client->player->pos.y + 1};
-		// client->player->pos[y][x] = client->player->pos[y + 1][x];
-		break;
-		case (EAST):
-		pos = {client->player->pos.x + 1, client->player->pos.y};
-		// client->player->pos[y][x] = client->player->pos[y][x + 1];
-		break;
-		case (SOUTH):
-		pos = {client->player->pos.x, client->player->pos.y - 1};
-		// client->player->pos[y][x] = client->player->pos[y - 1][x];
-		break;
-		case (WEST):
-		pos = {client->player->pos.x - 1, client->player->pos.y};
-		// client->player->pos[y][x] = client->player->pos[y][x - 1];
-		break;
-	}
+	pos = look_at[client->infos->direction];
 	add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, client);
 	//call remove_elem
 	return (true);
 }
 
-char *right(server_t *server, client_t *client, cell_t *cells,
-		char **args)
+bool right(server_t *server, client_t *client, char *args)
 {
-	if (cells[y][x + 1]) {
-		cells->player->pos[y][x] = cells->player->pos[y][x + 1];
-		return ("ok\n");
-	}
-	return ("ko\n");
+	rotation_t look_at[] = {
+		{NORTH, EAST}, {EAST, SOUTH}, {SOUTH, WEST}, {WEST, NORTH}
+	};
+
+	direction = look_at[client->infos->direction];
+	return (true);
 }
 
-char *left(server_t *server, client_t *client, cell_t *cells,
-		char **args)
+bool left(server_t *server, client_t *client, char *args)
 {
-	if (cells[y][x - 1]) {
-		cells->player->pos[y][x] = cells->player->pos[y][x - 1];
-		return ("ok\n");
-	}
-	return ("ko\n");
+	rotation_t look_at[] = {
+		{NORTH, WEST}, {WEST, SOUTH}, {SOUTH, EAST}, {EAST, NORTH}
+	};
+
+	direction = look_at[client->infos->direction];
+	return (true);
 }
 
-char *look(server_t *server, client_t *client, cell_t *cells,
-		char **args)
+bool look(server_t *server, client_t *client, char *args)
 {
 	int vision = cells->player->level;
 	int vision_x = 1;
@@ -109,9 +95,4 @@ char *look(server_t *server, client_t *client, cell_t *cells,
 			cells->player->ressources[y + 2][x + 1],
 			cells->player->ressources[y + 2][x + 2]);
 	return ("tile1 [...]\n");
-}
-
-void rotation(cell_t *cells)
-{
-
 }
