@@ -13,6 +13,14 @@
 #include "resources.h"
 #include "common/linked_list.h"
 
+typedef enum direction_t
+{
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST
+} direction_t;
+
 typedef struct vec2i_s
 {
 	uint32_t x;
@@ -50,9 +58,9 @@ bool generate_map(uint8_t pct, uint8_t nb_resource, map_t *map_infos);
 void print_map(map_t const *map_infos);
 void free_map(map_t *map_infos);
 
-bool add_random_resource_to_cell(cell_t *cell);
-bool add_resource_to_cell(cell_t *cell, resource_t resource);
-bool remove_resource_on_cell(cell_t *cell, resource_t resource);
+bool add_random_resource_to_cell(cell_t *cell, uint16_t nb);
+bool add_resource_to_cell(cell_t *cell, resource_t resource, uint16_t nb);
+bool remove_resource_on_cell(cell_t *cell, resource_t resource, uint16_t nb);
 size_t get_resource_on_cell(cell_t const *cell, resource_t resource);
 
 cell_t *get_player_cell(map_t const *map_infos, list_t const *client);

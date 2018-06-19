@@ -8,6 +8,7 @@
 #pragma once
 
 #include "server.h"
+#include "commands.h"
 
 typedef struct	command_values_s {
 	char *command;
