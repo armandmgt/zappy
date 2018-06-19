@@ -34,7 +34,7 @@ typedef struct cmp_s {
 
 typedef struct cell_s {
 	list_t *players;
-	size_t resource[NB_RESOURCE];
+	int resource[NB_RESOURCE];
 } cell_t;
 
 typedef struct map_s {
@@ -61,7 +61,7 @@ void free_map(map_t *map_infos);
 bool add_random_resource_to_cell(cell_t *cell, uint16_t nb);
 bool add_resource_to_cell(cell_t *cell, resource_t resource, uint16_t nb);
 bool remove_resource_on_cell(cell_t *cell, resource_t resource, uint16_t nb);
-size_t get_resource_on_cell(cell_t const *cell, resource_t resource);
+int get_resource_on_cell(cell_t const *cell, resource_t resource);
 
 cell_t *get_player_cell(map_t const *map_infos, list_t const *client);
 cell_t *get_cell_at(map_t const *map_infos, uint32_t x, uint32_t y);

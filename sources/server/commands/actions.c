@@ -17,7 +17,7 @@ bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 {
 	int cmpt = 0;
 	client_t *tmp;
-	list_t *tmp_list;
+	list_t *tmp_list = server->clients;
 
 	while (tmp_list) {
 		tmp = tmp_list->data;
@@ -32,7 +32,7 @@ bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 bool birth(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	client->team->max_members += 1;
-	client->infos->direction = rand() % 4;
+	client->infos->direction = (direction_t)rand() % 4;
 	client->infos->level = 1;
 	dprintf(client->sock, "ok\n");
 	return (true);
@@ -70,7 +70,7 @@ bool set(server_t *server, client_t *client, char *args)
 	return (false);
 }
 
-bool broadcast(server_t *server, client_t *client, char *args)
+bool broadcast(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	dprintf(client->sock, "ok\n");
 	return (true);

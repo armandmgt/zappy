@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include "commands.h"
 #include "server.h"
+#include "tools.h"
 
-bool forward(server_t *server, client_t *client, char *args)
+bool forward(server_t *server, client_t *client, char *UNUSED(args))
 {
 	vec2i_t pos;
 	go_forward_t look_at[] = {
@@ -26,14 +27,14 @@ bool forward(server_t *server, client_t *client, char *args)
 	return (true);
 }
 
-bool right(server_t *server, client_t *client, char *args)
+bool right(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	client->infos->direction = (client->infos->direction + 1) + 4 % 4;
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
 
-bool left(server_t *server, client_t *client, char *args)
+bool left(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	client->infos->direction = (client->infos->direction - 1) + 4 % 4;
 	dprintf(client->sock, "ok\n");

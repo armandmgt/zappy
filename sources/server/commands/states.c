@@ -12,6 +12,9 @@
 #include "common/linked_list.h"
 #include "server/server.h"
 
+static void elevation(client_t *client, uint16_t const *nb, cell_t *cell);
+static int count_player(cell_t *cell, client_t *client);
+
 bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	player_t *tmp = client->infos;
@@ -25,30 +28,6 @@ bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 			tmp->inventory[6]);
 	}
 	return (true);
-}
-
-int count_player(cell_t *cell, client_t *client)
-{
-	int cmpt = 0;
-	client_t *tmp_client;
-
-	for (list_t *tmp = cell->players; tmp != NULL; tmp = tmp->next) {
-		tmp_client = tmp->data;
-		if (strcmp(tmp_client->team->name, client->team->name) == 0)
-			cmpt = cmpt + 1;
-	}
-	return (cmpt);
-}
-
-void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
-{
-	client->infos->level += 1;
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		client->infos->inventory[i] -= nb[i + 1];
-		remove_resource_on_cell(cell, i, nb[i + 1]);
-	}
-	dprintf(client->sock, "Elevation underway\nCurrent level "
-		"%d\n", client->infos->level);
 }
 
 bool incantation(server_t *server, client_t *client, char *UNUSED(args))
@@ -82,4 +61,28 @@ bool death(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 		return (true);
 	}
 	return (false);
+}
+
+static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
+{
+	client->infos->level += 1;
+	for (int i = 0; i < NB_RESOURCE; i++) {
+		client->infos->inventory[i] -= nb[i + 1];
+		remove_resource_on_cell(cell, (resource_t)i, nb[i + 1]);
+	}
+	dprintf(client->sock, "Elevation underway\nCurrent level "
+			      "%d\n", client->infos->level);
+}
+
+static int count_player(cell_t *cell, client_t *client)
+{
+	int cmpt = 0;
+	client_t *tmp_client;
+
+	for (list_t *tmp = cell->players; tmp != NULL; tmp = tmp->next) {
+		tmp_client = tmp->data;
+		if (strcmp(tmp_client->team->name, client->team->name) == 0)
+			cmpt = cmpt + 1;
+	}
+	return (cmpt);
 }
