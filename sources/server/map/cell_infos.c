@@ -8,9 +8,9 @@
 #include "map.h"
 #include "server/server.h"
 
-cell_t *get_player_cell(map_t const *map_infos, list_t const *player)
+cell_t *get_player_cell(map_t const *map_infos, list_t const *client)
 {
-	client_t *tmp = player->data;
+	client_t *tmp = client->data;
 
 	return (&map_infos->map[tmp->infos->pos.y][tmp->infos->pos.x]);
 }
