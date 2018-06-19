@@ -12,12 +12,7 @@
 #include "common/linked_list.h"
 #include "server/server.h"
 
-bool broadcast(server_t *server, client_t *client, char const *args)
-{
-	return (true);
-}
-
-bool inventory(server_t *UNUSED(server), client_t *client, char const *UNUSED(args))
+bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	player_t *tmp = client->infos;
 
@@ -45,7 +40,18 @@ int count_player(cell_t *cell, client_t *client)
 	return (cmpt);
 }
 
-bool incantation(server_t *server, client_t *client, char const *UNUSED(args))
+void elevation(client_t *client, uint16_t nb, cell_t *cell)
+{
+	client->infos->level += 1;
+	for (int i = 0; i < NB_RESOURCE; i++) {
+		client->infos->inventory[i] -= nb;
+		remove_resource_on_cell(cell, i, nb);
+	}
+	dprintf(client->sock, "Elevation underway\nCurrent level "
+		"%d\n", client->infos->level);
+}
+
+bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 {
 	int idx = client->infos->level - 1;
 	static uint16_t const tab[7][7] = {{1, 1, 0, 0, 0, 0, 0},
@@ -55,23 +61,21 @@ bool incantation(server_t *server, client_t *client, char const *UNUSED(args))
 	cell_t *cell = get_cell_at(&server->map_infos, client->infos->pos.x,
 		client->infos->pos.y);
 
-	if (count_player(cell, client) != tab[idx][0])
+	if (count_player(cell, client) != tab[idx][0]) {
+		dprintf(client->sock, "ko\n");
 		return (false);
+	}
 	for (int i = 0; i < NB_RESOURCE; i++) {
-		if (client->infos->inventory[i] < tab[idx][i + 1])
+		if (client->infos->inventory[i] < tab[idx][i + 1]) {
+			dprintf(client->sock, "ko\n");
 			return (false);
+		}
 	}
-	client->infos->level += 1;
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		client->infos->inventory[i] -= tab[idx][i + 1];
-		remove_resource_on_cell(cell, i, tab[idx][i + 1]);
-	}
-	dprintf(client->sock, "Elevation underway\nCurrent level "
-		"%d\n", client->infos->level);
+	elevation(client, tab[idx][i + 1], cell);
 	return (true);
 }
 
-bool death(server_t *UNUSED(server), client_t *client, char const *UNUSED(args))
+bool death(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	if (client->infos->lifetime == 0) {
 		dprintf(client->sock, "dead\n");

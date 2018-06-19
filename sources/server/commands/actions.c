@@ -13,7 +13,7 @@
 #include "server/map.h"
 #include "server/server.h"
 
-bool connect_nbr(server_t *server, client_t *client, char const *UNUSED(args))
+bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 {
 	int cmpt = 0;
 	client_t *tmp;
@@ -29,49 +29,16 @@ bool connect_nbr(server_t *server, client_t *client, char const *UNUSED(args))
 	return (true);
 }
 
-bool birth(server_t *UNUSED(server), client_t *client, char const *UNUSED(args))
+bool birth(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
 	client->team->max_members += 1;
 	client->infos->direction = rand() % 4;
 	client->infos->level = 1;
+	dprintf(client->sock, "ok\n");
 	return (true);
 }
 
-bool eject(server_t *server, client_t *client, char const *UNUSED(args))
-{
-	vec2i_t pos;
-	list_t *tmp = server->map_infos.map[client->infos->pos.y][client->infos->pos.x].players;
-	client_t *cpy;
-
-	while (tmp) {
-		cpy = tmp->data;
-		switch (cpy->infos->direction)
-		{
-			case (NORTH):
-			pos = (vec2i_t){cpy->infos->pos.x, cpy->infos->pos.y + 1};
-			dprintf(cpy->sock, "eject: S\n");
-			break;
-			case (EAST):
-			pos = (vec2i_t){cpy->infos->pos.x + 1, cpy->infos->pos.y};
-			dprintf(cpy->sock, "eject: W\n");
-			break;
-			case (SOUTH):
-			pos = (vec2i_t){cpy->infos->pos.x, cpy->infos->pos.y - 1};
-			dprintf(cpy->sock, "eject: N\n");
-			break;
-			case (WEST):
-			pos = (vec2i_t){cpy->infos->pos.x - 1, cpy->infos->pos.y};
-			dprintf(cpy->sock, "eject: E\n");
-			break;
-		}
-		add_elem_at_front(&server->map_infos.map[pos.y][pos.x].players, tmp);
-		remove_elem(&server->map_infos.map[pos.y][pos.x].players, tmp);
-		tmp = tmp->next;
-	}
-	return (true);
-}
-
-bool take(server_t *server, client_t *client, char const *args)
+bool take(server_t *server, client_t *client, char *args)
 {
 	int nb = atoi(args);
 	cell_t *cell = get_cell_at(&server->map_infos,
@@ -80,12 +47,14 @@ bool take(server_t *server, client_t *client, char const *args)
 	if (cell && cell->resource[nb]) {
 		client->infos->inventory[nb] += 1;
 		remove_resource_on_cell(cell, (resource_t)nb, 1);
+		dprintf(client->sock, "ok\n");
 		return (true);
 	}
+	dprintf(client->sock, "ko\n");
 	return (false);
 }
 
-bool set(server_t *server, client_t *client, char const *args)
+bool set(server_t *server, client_t *client, char *args)
 {
 	int nb = atoi(args);
 	cell_t *cell = get_cell_at(&server->map_infos,
@@ -94,7 +63,15 @@ bool set(server_t *server, client_t *client, char const *args)
 	if (cell && client->infos->inventory[nb]) {
 		client->infos->inventory[nb] -= 1;
 		add_resource_to_cell(cell, (resource_t)nb, 1);
+		dprintf(client->sock, "ok\n");
 		return (true);
 	}
+	dprintf(client->sock, "ko\n");
 	return (false);
+}
+
+bool broadcast(server_t *server, client_t *client, char *args)
+{
+	dprintf(client->sock, "ok\n");
+	return (true);
 }
