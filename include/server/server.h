@@ -52,7 +52,7 @@ typedef struct client_s {
 typedef struct server_s server_t;
 
 typedef struct command_s {
-	bool (*do_action)(server_t *, client_t *, char const *);
+	bool (*do_action)(server_t *, client_t *, char *);
 	client_t *client;
 	clock_t start_time;
 	double timeout;

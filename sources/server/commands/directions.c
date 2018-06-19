@@ -6,8 +6,8 @@
 */
 
 #include <stdio.h>
-#include "server/commands.h"
-#include "server/server.h"
+#include "commands.h"
+#include "server.h"
 
 bool forward(server_t *server, client_t *client, char *args)
 {
@@ -38,14 +38,4 @@ bool left(server_t *server, client_t *client, char *args)
 	client->infos->direction = (client->infos->direction - 1) + 4 % 4;
 	dprintf(client->sock, "ok\n");
 	return (true);
-}
-
-bool look(server_t *server, client_t *client, char *args)
-{
-	dprintf(client->sock, "tile ...\n");
-	return (true);
-}
-
-void look_at(client_t *client)
-{
 }

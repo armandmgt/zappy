@@ -14,4 +14,4 @@ typedef struct	command_values_s {
 	char *command;
 	bool (*do_action)(server_t *, client_t *, char *);
 	double timeout;
-}			command_values_t;
+} command_values_t;

@@ -13,6 +13,8 @@ set(CORE
     commands/directions.c
     commands/states.c
     commands/eject.c
+	commands/look.c
+	commands/print_content.c
 
     ../common/linked_list.c
     ../common/cir_buffer.c
