@@ -32,6 +32,7 @@ static client_t *new_client(server_t *server)
 	if (!(client = calloc(sizeof(*client), 1)) ||
 		!add_elem_at_front(&server->clients, client))
 		return (NULL);
+	init_cbuf(&client->buffer);
 	return (client);
 }
 
