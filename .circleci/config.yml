@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Push to epitech's git
           command: |
-            git remote add epitech $EPITECH_REMOTE
+            git remote add epitech "$EPITECH_REMOTE"
             git push epitech
 
 workflows:
