@@ -32,7 +32,7 @@ void case_positions(client_t *cpy, vec2i_t pos)
 	}
 }
 
-bool eject(server_t *server, client_t *client, char *UNUSED(args))
+bool eject(server_t *server, client_t *client, char *args)
 {
 	vec2i_t pos;
 	list_t *tmp = server->map_infos.map[client->infos->

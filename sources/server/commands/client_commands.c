@@ -14,7 +14,7 @@
 
 static void add_command(server_t *server, client_t *client, char **av);
 
-bool do_action(server_t *s, client_t *c, const char *av)
+bool do_action(server_t *s, client_t *c, char *av)
 {
 	printf("coucou\n");
 }
