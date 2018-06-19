@@ -28,7 +28,8 @@ static  command_values_t const command_assg[] = {
 	{"Fork", &fork_client, 42}, {"Eject", &eject, 7},
 	{"Take", &take_object, 7}, {"Set", &set_object, 7},
 	{"Incantation", &incantation, 300}*/
-	{"Forward", &do_action, 7}, {"Right", &do_action, 7}, {"Left", &do_action, 7},
+	{"Forward", &do_action, 0.5}, {"Right", &do_action, 7}, {"Left",
+		&do_action, 7},
 	{"Look", &do_action, 7}, {"Inventory", &do_action, 1},
 	{"Broadcast", &do_action, 7}, {"Connect_nbr", &do_action, 0},
 	{"Fork", &do_action, 42}, {"Eject", &do_action, 7},
@@ -69,7 +70,7 @@ int do_pending_actions(server_t *server)
 	for (list_t *cur = server->commands; cur; cur = cur->next) {
 		command = cur->data;
 		total = (double)(end - command->start_time) / CLOCKS_PER_SEC;
-		printf("[%f] = [%f] ?", command->timeout, total);
+		printf("[%f] = [%f] ?\n", command->timeout, total);
 		if (command->timeout < total) {
 			command->do_action(server, command->client,
 					   command->cell, command->args);
