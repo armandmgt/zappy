@@ -21,18 +21,18 @@ bool add_resource_to_cell(cell_t *cell, resource_t res)
 
 bool add_random_resource_to_cell(cell_t *cell)
 {
-	int rd = rand() % (100);
-	int i = 0;
+	size_t rd = (size_t)(rand() % (100));
 
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");
 		return (false);
 	}
-	for (; i < NB_RESOURCE; i++) {
-		if (gamble[i].pct > rd)
+	for (size_t i = 0; i < NB_RESOURCE; i++) {
+		if (gamble[i].pct > rd) {
+			cell->resource[i] += 1;
 			break;
+		}
 	}
-	cell->resource[i] += 1;
 	return (true);
 }
 
