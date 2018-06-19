@@ -13,8 +13,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "resources.h"
-#include "linked_list.h"
 #include "map.h"
+#include "cir_buffer.h"
+#include "linked_list.h"
 
 #define TEAM_NAME_LEN 64
 
@@ -41,6 +42,7 @@ typedef struct player_s {
 
 typedef struct client_s {
 	int sock;
+	cir_buffer_t buffer;
 	player_t *infos;
 	team_t *team;
 } client_t;

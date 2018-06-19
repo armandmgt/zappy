@@ -56,11 +56,15 @@ static void init_teams(list_t *list, unsigned int max_clients)
 
 static int get_socket(void)
 {
-	struct protoent *proto = getprotobyname("TCP");
+	int sd;
+	int const val = 1;
+	socklen_t const len = sizeof(val);
+	struct protoent *p = getprotobyname("TCP");
 
-	if (!proto)
+	if (!p || (sd = socket(AF_INET, SOCK_STREAM, p->p_proto)) == -1)
 		return (-1);
-	return (socket(AF_INET, SOCK_STREAM, proto->p_proto));
+	setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &val, len);
+	return (sd);
 }
 
 static int listen_socket(int sock, struct sockaddr_in *addr)
