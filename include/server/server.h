@@ -38,7 +38,7 @@ typedef struct player_s {
 	uint16_t level;
 	uint32_t inventory[NB_RESOURCE];
 	uint32_t lifetime;
-//	vec2i pos; -> will be added later
+	vec2i_t pos;
 } player_t;
 
 typedef struct client_s {
