@@ -28,15 +28,19 @@ const (
 	TRYSTAME InventoryType = 4
 	LINEMATE InventoryType = 5
 	DERAUMERE InventoryType = 6
+	PLAYER InventoryType = 7
 )
 
 //Map type to concord string into index in Inventory array
-var MapType = map[string]InventoryType {
+var CellType = map[string]InventoryType {
 	"food": FOOD, "sibur": SIBUR, "phiras": PHIRAS,
-	"mendiane": MENDIANE, "trystame": TRYSTAME, "linemate": LINEMATE, "deraumere": DERAUMERE,
+	"mendiane": MENDIANE, "thystame": TRYSTAME, "linemate": LINEMATE, "deraumere": DERAUMERE,
+	"player": PLAYER,
 }
 
-type Inventory [7]int
+type Content [8]int
+
+type Inventory map[InventoryType]int64
 
 func getProtocolResponseData(s string) (a []string) {
 	// Since all server responses start with xxx, we always cut at the 4th index
