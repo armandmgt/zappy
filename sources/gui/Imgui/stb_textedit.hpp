@@ -1,10 +1,10 @@
-// [ImGui] this is a slightly modified version of stb_textedit.h 1.9. Those changes would need to be pushed into nothings/stb
+// [ImGui] this is a slightly modified version of stb_textedit.hpp 1.9. Those changes would need to be pushed into nothings/stb
 // [ImGui] - fixed linestart handler when over last character of multi-line buffer + simplified existing code (#588, #815)
 // [ImGui] - fixed a state corruption/crash bug in stb_text_redo and stb_textedit_discard_redo (#715)
 // [ImGui] - fixed a crash bug in stb_textedit_discard_redo (#681)
 // [ImGui] - fixed some minor warnings
 
-// stb_textedit.h - v1.9  - public domain - Sean Barrett
+// stb_textedit.hpp - v1.9  - public domain - Sean Barrett
 // Development of this library was sponsored by RAD Game Tools
 //
 // This C header file implements the guts of a multi-line text-editing
