@@ -10,6 +10,7 @@ set(CORE
 
     commands/client_parsing.c
     commands/content.c
+    commands/print_in_gui.c
 
     ../common/linked_list.c
     ../common/cir_buffer.c
