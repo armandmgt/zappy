@@ -18,14 +18,14 @@
 #include <limits.h>     // INT_MIN, INT_MAX
 
 #ifdef _MSC_VER
-#pragma warning (push)
+é#pragma warning (push)
 #pragma warning (disable: 4251) // class 'xxx' needs to have dll-interface to be used by clients of struct 'xxx' // when IMGUI_API is set to__declspec(dllexport)
 #endif
 
 #ifdef __clang__
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"        // for stb_textedit.h
-#pragma clang diagnostic ignored "-Wmissing-prototypes"     // for stb_textedit.h
+#pragma clang diagnostic ignored "-Wunused-function"        // for stb_textedit.hpp
+#pragma clang diagnostic ignored "-Wmissing-prototypes"     // for stb_textedit.hpp
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #endif
 
@@ -75,7 +75,7 @@ namespace ImGuiStb
 #define STB_TEXTEDIT_STRING             ImGuiTextEditState
 #define STB_TEXTEDIT_CHARTYPE           ImWchar
 #define STB_TEXTEDIT_GETWIDTH_NEWLINE   -1.0f
-#include "stb_textedit.h"
+#include "stb_textedit.hpp"
 
 } // namespace ImGuiStb
 

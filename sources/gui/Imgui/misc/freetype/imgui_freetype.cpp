@@ -21,8 +21,8 @@
 // - FreeType's memory allocator is not overridden.
 // - cfg.OversampleH, OversampleV are ignored (but perhaps not so necessary with this rasterizer).
 
-#include "imgui_freetype.h"
-#include "imgui_internal.h"   // ImMin,ImMax,ImFontAtlasBuild*,
+#include "imgui_freetype.hpp"
+#include "imgui_internal.hpp"   // ImMin,ImMax,ImFontAtlasBuild*,
 #include <stdint.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -243,7 +243,7 @@ namespace
 #define STBRP_ASSERT(x)    IM_ASSERT(x)
 #define STBRP_STATIC
 #define STB_RECT_PACK_IMPLEMENTATION
-#include "stb_rect_pack.h"
+#include "stb_rect_pack.hpp"
 
 bool ImGuiFreeType::BuildFontAtlas(ImFontAtlas* atlas, unsigned int extra_flags)
 {

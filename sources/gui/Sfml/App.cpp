@@ -6,7 +6,7 @@
 */
 
 #include "App.hpp"
-#include "imgui-SFML.h"
+#include "imgui-SFML.hpp"
 
 void App::init()
 {
@@ -27,8 +27,9 @@ void App::run()
 			_sceneMgr.event(event);
 			ImGui::SFML::ProcessEvent(event);
 		}
-		_sceneMgr.update(deltaClock.getElapsedTime().asSeconds());
+		float timeSinceLastFrame { deltaClock.getElapsedTime().asSeconds() };
 		ImGui::SFML::Update(*this, deltaClock.restart());
+		_sceneMgr.update(timeSinceLastFrame);
 		clear();
 		ImGui::SFML::Render(*this);
 		display();
