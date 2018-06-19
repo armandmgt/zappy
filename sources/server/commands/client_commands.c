@@ -70,11 +70,12 @@ int do_pending_actions(server_t *server)
 	for (list_t *cur = server->commands; cur; cur = cur->next) {
 		command = cur->data;
 		total = (double)(end - command->start_time) / CLOCKS_PER_SEC;
-		printf("[%f] = [%f] ?\n", command->timeout, total);
 		if (command->timeout < total) {
 			command->do_action(server, command->client,
 					   command->cell, command->args);
 			cur = remove_elem(&server->commands, cur->data);
+			if (!cur)
+				break;
 		}
 	}
 	return (0);
