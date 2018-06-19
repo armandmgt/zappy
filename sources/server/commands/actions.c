@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "server/commands.h"
 #include "common/tools.h"
-//#include "server/map.h"
+#include "server/map.h"
 
 static command_t const command[] = {
 	{"Forward", &forward}, {"Right", &right}, {"Left", &left},
@@ -58,27 +58,23 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 		{
 			case (NORTH):
 			pos = (vec2i_t){cpy->infos->pos.x, cpy->player->pos.y + 1};
-			// client->player->pos[y][x] = client->player->pos[y + 1][x];
 			dprintf(cpy->sock, "eject: S\n");
 			break;
 			case (EAST):
 			pos = (vec2i_t){cpy->player->pos.x + 1, cpy->player->pos.y};
-			// client->player->pos[y][x] = client->player->pos[y][x + 1];
 			dprintf(cpy->sock, "eject: W\n");
 			break;
 			case (SOUTH):
 			pos = (vec2i_t){cpy->player->pos.x, cpy->player->pos.y - 1};
-			// client->player->pos[y][x] = client->player->pos[y - 1][x];
 			dprintf(cpy->sock, "eject: N\n");
 			break;
 			case (WEST):
 			pos = (vec2i_t){cpy->player->pos.x - 1, cpy->player->pos.y};
-			// client->player->pos[y][x] = client->player->pos[y][x - 1];
 			dprintf(cpy->sock, "eject: E\n");
 			break;
 		}
 		add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, tmp);
-		//call remove_elem
+		remove_elem(&server->map_info->map[pos.y][pos.x].players, tmp);
 		tmp = tmp->next;
 	}
 	return (true);
