@@ -8,6 +8,8 @@ set(CORE
     connexion/communication.c
     connexion/new_connection.c
 
+    commands/client_commands.c
+
     ../common/linked_list.c
 
 	map/map_generation.c
