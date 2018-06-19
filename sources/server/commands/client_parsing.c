@@ -30,7 +30,8 @@ static  command_values_t const command_assg[] = {
 	{"Take", &do_action, 7, false}, {"Set", &do_action, 7, false},
 	{"Incantation", &do_action, 300, false},
 	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
-	{"mct", &mct, 0, true}
+	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
+	{"plv", &plv, 0, true}, {"pin", &pin, 0, true}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
