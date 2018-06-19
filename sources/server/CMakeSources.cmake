@@ -13,6 +13,7 @@ set(CORE
     commands/print_in_gui.c
 
     ../common/linked_list.c
+    ../common/tools.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
 

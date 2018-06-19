@@ -10,6 +10,8 @@
 static int const FAILURE = 84;
 static int const SUCCESS = 0;
 
+char **str_to_word_array(char *str);
+
 #ifdef UNUSED
 #elif defined(__GNUC__)
 # define UNUSED(x) UNUSED_ ## x __attribute__((unused))
