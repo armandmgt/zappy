@@ -38,6 +38,7 @@ int init_server(options_t *opts, server_t *server)
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
 	server->addr.sin_addr.s_addr = INADDR_ANY;
+	server->freq = opts->freq;
 	if ((server->sock = get_socket()) == -1 ||
 		listen_socket(server->sock, &server->addr) == -1) {
 		perror("server initialisation");

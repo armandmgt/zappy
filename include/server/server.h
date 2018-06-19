@@ -52,9 +52,10 @@ typedef struct server_s server_t;
 
 typedef struct command_s {
 	bool (*do_action)(server_t *, client_t *, char const *);
+	client_t *client;
 	clock_t start_time;
-	uint32_t timeout;
-	char **args;
+	double timeout;
+	char *args;
 } command_t;
 
 struct server_s {
@@ -64,6 +65,7 @@ struct server_s {
 	list_t *teams;
 	list_t *clients;
 	list_t *commands;
+	uint32_t freq;
 };
 
 int parse_options(int argc, char *const *argv, options_t *opts);
