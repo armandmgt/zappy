@@ -13,6 +13,12 @@
 #include "resources.h"
 #include "common/linked_list.h"
 
+typedef struct vec2i_s
+{
+	unsigned int x;
+	unsigned int y;
+} vec2i_t;
+
 typedef struct cmp_s {
 	size_t pct;
 	resource_t rss;
