@@ -5,80 +5,103 @@
 ** none
 */
 
-#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "server/commands.h"
+#include "common/tools.h"
+#include "server/map.h"
 
 static command_t const command[] = {
 	{"Forward", &forward}, {"Right", &right}, {"Left", &left},
 	{"Look", &look}, {"Inventory", &inventory},
-	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect},
-	{"Fork", &born}, {"Eject", &eject}, {"Take object", &take},
+	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect_nbr},
+	{"Fork", &birth}, {"Eject", &eject}, {"Take object", &take},
 	{"Set object", &set}, {"Incantation", &incantation},
 	{"Death", &death}
 };
 
-char *connect(cell_t *cells)
+bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 {
-	return ("value\n");
-}
+	int cmpt = 0;
+	client_t *tmp;
+	list_t *tmp_list;
 
-char *birth(cell_t *cells)
-{
-	pid_t pid;
-
-	pid = fork();
-	if (pid == -1)
-		return (-1);
-	else if (pid == 0) {
-		/* créer un oeuf et attendre qu'un client puisse se co*/
+	while (tmp_list) {
+		tmp = tmp_list->data;
+		if (strcmp(tmp->team->name, client->team->name) == 0)
+			cmpt += 1;
+		tmp_list = tmp_list->next;
 	}
-	return ("ok\n");
+	dprintf(client->sock, "%d\n", client->team->max_members - cmpt);
+	return (true);
 }
 
-char *eject(cell_t *cells)
+bool birth(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
-	switch (cells->player->direction)
-	{
-		case (cells->player->direction == 1):
-		cells->player->pos[y][x] = cells->player->pos[y + 1][x];
-		return ("ok\n");
-		//return ("eject: S\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == 2):
-		cells->player->pos[y][x] = cells->player->pos[y][x + 1];
-		return ("ok");
-		//return ("eject: W\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == 3):
-		cells->player->pos[y][x] = cells->player->pos[y - 1][x];
-		return ("ok");
-		//return ("eject: N\n"); /* si y a des gens sur la case */
-		case (cells->player->direction == 4):
-		cells->player->pos[y][x] = cells->player->pos[y][x - 1];
-		return ("ok");
-		//return ("eject: E\n"); /* si y a des gens sur la case */
-	}
-	return ("ko\n");
+	client->team->max_members += 1;
+	client->infos->direction = rand() % 4;
+	client->infos->level = 1;
+	return (true);
 }
 
-char *take(cell_t *cells)
+bool eject(server_t *server, client_t *client, char *UNUSED(args))
 {
-	if (cells[y][x] && cells[y][x]->ressources) {
-		while (cells[y][x]->ressources != NULL) {
-			cells[y][x]->player->inventory += cells[y][x]->ressources;
-			cells[y][x]->ressources -= 1;
+	vec2i_t pos;
+	list_t *tmp = server->map_infos->cells[client->
+		infos.y][client->infos.x]->players;
+	client_t *cpy;
+
+	while (tmp) {
+		cpy = tmp->data;
+		switch (cpy->infos->direction)
+		{
+			case (NORTH):
+			pos = (vec2i_t){cpy->infos->pos.x, cpy->player->pos.y + 1};
+			dprintf(cpy->sock, "eject: S\n");
+			break;
+			case (EAST):
+			pos = (vec2i_t){cpy->player->pos.x + 1, cpy->player->pos.y};
+			dprintf(cpy->sock, "eject: W\n");
+			break;
+			case (SOUTH):
+			pos = (vec2i_t){cpy->player->pos.x, cpy->player->pos.y - 1};
+			dprintf(cpy->sock, "eject: N\n");
+			break;
+			case (WEST):
+			pos = (vec2i_t){cpy->player->pos.x - 1, cpy->player->pos.y};
+			dprintf(cpy->sock, "eject: E\n");
+			break;
 		}
-		return ("ok\n");
+		add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, tmp);
+		remove_elem(&server->map_info->map[pos.y][pos.x].players, tmp);
+		tmp = tmp->next;
 	}
-	return ("ko\n");
+	return (true);
 }
 
-char *set(cell_t *cells)
+bool take(server_t *server, client_t *client, char *args)
 {
-	if (cells[y][x] && cells->player->inventory) {
-		while (cells->player->inventory != NULL) {
-			cells[y][x]->player->inventory -= cells[y][x]->ressources;
-			cells[y][x]->ressources += 1;
-		}
-		return ("ok\n");
+	int nb = atoi(args);
+	cell_t cell = server->map_infos->cells[client->infos.y][client->infos.x];
+
+	if (cell && cell->resources[nb]) {
+		client->infos->inventory[nb] += 1;
+		remove_resource_to_cell(&cell, nb);
+		return (true);
 	}
-	return ("ko\n");
+	return (false);
+}
+
+bool set(server_t *server, client_t *client, char *args)
+{
+	int nb = atoi(args);
+	cell_t cell = server->map_infos->cells[client->infos.y][client->infos.x];
+
+	if (cell && cell->players->inventory[nb]) {
+		cell->infos->inventory[nb] -= 1;
+		add_resource_to_cell(&cell, nb);
+		return (true);
+	}
+	return (false);
 }

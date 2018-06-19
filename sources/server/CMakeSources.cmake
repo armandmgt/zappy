@@ -11,6 +11,11 @@ set(CORE
     commands/client_commands.c
 
     ../common/linked_list.c
+
+    commands/actions.c
+    commands/directions.c
+    commands/states.c
+
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
 
