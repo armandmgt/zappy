@@ -12,76 +12,89 @@
 static command_t const command[] = {
 	{"Forward", &forward}, {"Right", &right}, {"Left", &left},
 	{"Look", &look}, {"Inventory", &inventory},
-	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect},
+	{"Broadcast text", &broadcast}, {"Connect_nbr", &connect_nbr},
 	{"Fork", &born}, {"Eject", &eject}, {"Take object", &take},
 	{"Set object", &set}, {"Incantation", &incantation},
 	{"Death", &death}
 };
 
-char *connect(client_t *client)
+bool connect_nbr(server_t *server, client_t *client, cell_t *UNUSED(cells),
+		char **UNUSED(args))
 {
 	int cmpt = 0;
-	char *result[256] = {0};
+	client_t *tmp = server->clients;
 
-	while (client) {
-		if (strcmp(client->team, client->team->name) == 0)
+	while (tmp) {
+		if (strcmp(tmp->team->name, client->team->name) == 0)
 			cmpt += 1;
+		tmp = tmp->next;
 	}
-	sprintf(result, "%d", client->team->max_members - cmpt);
-	return (result);
+	dprintf(client->sock, "%d", client->team->max_members - cmpt);
+	return (true);
 }
 
-char *birth(client_t *client)
+bool birth(server_t *server, client_t *client, cell_t *UNUSED(cells),
+		char **UNUSED(args))
 {
-	client->team->max_members += 1;
+	client->team->max_members += 1; // a revoir
 	client->player->direction = rand() % 4;
 	client->player->level = 1;
-	return ("ok\n");
+	return (true);
 }
 
-char *eject(client_t *client, cell_t *cells)
+bool eject(server_t *server, client_t *client, cell_t *cells,
+		char **args)
 {
-	while (cells->members) {
+	vec2i_t pos;
+	client_t *tmp = cells->players;
 
+	while (tmp) {
+		switch (tmp->player->direction)
+		{
+			case (NORTH):
+			pos = {tmp->player->pos.x, tmp->player->pos.y + 1};
+			// client->player->pos[y][x] = client->player->pos[y + 1][x];
+			dprintf(tmp->sock, "eject: S\n");
+			break;
+			case (EAST):
+			pos = {tmp->player->pos.x + 1, tmp->player->pos.y};
+			// client->player->pos[y][x] = client->player->pos[y][x + 1];
+			dprintf(tmp->sock, "eject: W\n");
+			break;
+			case (SOUTH):
+			pos = {tmp->player->pos.x, tmp->player->pos.y - 1};
+			// client->player->pos[y][x] = client->player->pos[y - 1][x];
+			dprintf(tmp->sock, "eject: N\n");
+			break;
+			case (WEST):
+			pos = {tmp->player->pos.x - 1, tmp->player->pos.y};
+			// client->player->pos[y][x] = client->player->pos[y][x - 1];
+			dprintf(tmp->sock, "eject: E\n");
+			break;
+		}
+		add_elem_at_front(&server->map_info->map[pos.y][pos.x].players, tmp);
+		//call remove_elem
+		tmp = tmp->next;
 	}
-	switch (client->player->direction)
-	{
-		case (NORTH):
-		client->player->pos[y][x] = client->player->pos[y + 1][x];
-		dprintf(client->sock, "eject: S\n");
-		return ("ok\n");
-		case (EAST):
-		client->player->pos[y][x] = client->player->pos[y][x + 1];
-		dprintf(client->sock, "eject: W\n");
-		return ("ok");
-		case (SOUTH):
-		client->player->pos[y][x] = client->player->pos[y - 1][x];
-		dprintf(client->sock, "eject: N\n");
-		return ("ok");
-		case (WEST):
-		client->player->pos[y][x] = client->player->pos[y][x - 1];
-		dprintf(client->sock, "eject: E\n");
-		return ("ok");
-	}
-	return ("ko\n");
+	return (true);
 }
 
-char *take(cell_t *cells, resources nb)
+bool take(cell_t *cells, resources nb)
 {
 	if (cells && cells->resources[nb]) {
 		cells->player->inventory[nb] += cells->resources[nb];
 		remove_resource_to_cell(cells, nb);
-		return ("ok\n");
+		return (true);
 	}
-	return ("ko\n");
+	return (false);
 }
 
-char *set(cell_t *cells, resources nb)
+bool set(cell_t *cells, resources nb)
 {
 	if (cells && cells->player->inventory[nb]) {
 		cells->player->inventory[nb] -= cells->resources[nb];
 		add_resource_to_cell(cells, nb);
-		return ("ok\n");
+		return (true);
 	}
-	return ("ko\n");
+	return (false);
 }
