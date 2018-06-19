@@ -113,6 +113,7 @@ func (c *Client) inventory(b []byte) (s []string) {
 }
 
 func (c *Client) broadcast(b []byte, text string) {
+	c.Write("Broadcast " + text) // We don't need to read since we are the one sending the message
 }
 
 func (c *Client) getUnusedSlots(b []byte) {
