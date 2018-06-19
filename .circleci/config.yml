@@ -34,7 +34,7 @@ jobs:
           command: |
             mkdir -p $HOME/.ssh && echo "$SERVER_PUB_KEY" >> $HOME/.ssh/known_hosts
             git remote add epitech "$EPITECH_REMOTE"
-            git push epitech
+            git push epitech master:remotes/epitech/master
 
 workflows:
   version: 2
