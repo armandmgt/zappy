@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include <server/gui_commands.h>
 #include "server.h"
 #include "command_value.h"
 
@@ -20,13 +21,14 @@ bool do_action(server_t *s, client_t *c, const char *av)
 }
 
 static  command_values_t const command_assg[] = {
-	{"Forward", &do_action, 7}, {"Right", &do_action, 7}, {"Left",
-		&do_action, 7},
-	{"Look", &do_action, 7}, {"Inventory", &do_action, 1},
-	{"Broadcast", &do_action, 7}, {"Connect_nbr", &do_action, 0},
-	{"Fork", &do_action, 42}, {"Eject", &do_action, 7},
-	{"Take", &do_action, 7}, {"Set", &do_action, 7},
-	{"Incantation", &do_action, 300}
+	{"Forward", &do_action, 7, false}, {"Right", &do_action, 7, false},
+	{"Left", &do_action, 7, false},	{"Look", &do_action, 7, false},
+	{"Inventory", &do_action, 1, false},
+	{"Broadcast", &do_action, 7, false},
+	{"Connect_nbr", &do_action, 0, false},
+	{"Fork", &do_action, 42, false}, {"Eject", &do_action, 7, false},
+	{"Take", &do_action, 7, false}, {"Set", &do_action, 7, false},
+	{"Incantation", &do_action, 300, false}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
@@ -79,13 +81,15 @@ static void add_command(server_t *server, client_t *client, char **av)
 		return;
 	for (size_t i = 0; i < sizeof(command_assg) /
 		sizeof(*command_assg); i++) {
-		if (strcmp(av[0], command_assg[i].command) == 0) {
+		if (strcmp(av[0], command_assg[i].command) == 0 &&
+				  strcmp(client->team->name, GUI_NAME) !=
+				  command_assg[i].is_gui) {
 			command->args = av[1];
 			command->client = client;
 			command->timeout = command_assg[i].timeout /
 				server->freq;
 			command->do_action = command_assg[i].do_action;
-			command->start_time =  clock();
+			command->start_time = clock();
 			add_elem_at_back(&server->commands, command);
 			return;
 		}
