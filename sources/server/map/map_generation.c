@@ -37,8 +37,8 @@ static bool fill_map(map_t *map, uint8_t pct, uint8_t nb_resource)
 	uint32_t random = 0;
 
 	srand((unsigned int)time(NULL));
-	for (int y = 0; y < map->y; y++) {
-		for (int x = 0; x < map->x; x++) {
+	for (size_t y = 0; y < map->y; y++) {
+		for (size_t x = 0; x < map->x; x++) {
 			random = (uint32_t)(rand() % (100));
 			randomly_add_resource(&map->map[y][x],
 				random, pct, nb_resource);

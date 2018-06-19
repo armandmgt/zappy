@@ -29,10 +29,10 @@ int main(int argc, char * const *argv)
 		fprintf(stderr, USAGE, argv[0]);
 		return (FAILURE);
 	}
-	if (init_server(&opts, &server) == -1 ||
-		run_server(&opts, &server) == -1)
+	if (init_server(&opts, &server) == -1 || run_server(&server) == -1)
 		return (FAILURE);
 	free_list(server.teams, free);
+	free_map(&server.map_infos);
 	close(server.sock);
 	return (SUCCESS);
 }
