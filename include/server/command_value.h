@@ -4,8 +4,8 @@
 ** File description:
 ** command_value
 */
-#ifndef PROJECT_COMMAND_VALUE_H
-#define PROJECT_COMMAND_VALUE_H
+
+#pragma once
 
 #include "server.h"
 
