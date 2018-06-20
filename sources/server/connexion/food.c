@@ -6,9 +6,10 @@
 */
 
 #include <time.h>
+#include "commands.h"
 #include "server.h"
 
-static void take_action(server_t const *server, client_t *client);
+static void take_action(server_t *server, client_t *client);
 
 int eat_food(server_t *server)
 {
@@ -19,14 +20,16 @@ int eat_food(server_t *server)
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		client = cur->data;
 		total = (double)(now - client->last_tick) / CLOCKS_PER_SEC * 10;
-		if (total < 1.f / server->freq)
+		if (total > 1.f / server->freq) {
 			take_action(server, client);
+			client->last_tick = now;
+		}
 	}
 	while (remove_elem(&server->clients, NULL));
 	return (0);
 }
 
-static void take_action(server_t const *server, client_t *client)
+static void take_action(server_t *server, client_t *client)
 {
 	if (!client->infos->lifetime && client->infos->inventory[FOOD]) {
 		client->infos->inventory[FOOD] -= 1;
@@ -34,6 +37,6 @@ static void take_action(server_t const *server, client_t *client)
 	} else if (client->infos->lifetime) {
 		client->infos->lifetime -= 1;
 	} else {
-		//TODO: call dead command
+		death(server, client, NULL);
 	}
 }
