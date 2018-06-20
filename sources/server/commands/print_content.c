@@ -36,9 +36,8 @@ void print_row_content(map_t *map_infos, client_t *client,
 	if (x < 0 || (uint32_t)x >= map_infos->x)
 		x = (x + map_infos->x) % map_infos->x;
 	for (uint32_t j = 0; j < tiles; j++) {
-		if (y < 0 || (uint32_t)y >= map_infos->y) {
+		if (y < 0 || (uint32_t)y >= map_infos->y)
 			y = (y + map_infos->y) % map_infos->y;
-		}
 		tmp = get_cell_at(map_infos, (uint32_t)x, (uint32_t)y);
 		print_cell_content(tmp, client);
 		y++;

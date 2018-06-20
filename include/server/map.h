@@ -34,7 +34,7 @@ typedef struct cmp_s {
 
 typedef struct cell_s {
 	list_t *players;
-	int resource[NB_RESOURCE];
+	size_t resource[NB_RESOURCE];
 } cell_t;
 
 typedef struct map_s {

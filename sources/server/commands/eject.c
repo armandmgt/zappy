@@ -37,8 +37,7 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 
 static void case_positions(client_t *cpy, vec2i_t *pos)
 {
-	switch (cpy->infos->direction)
-	{
+	switch (cpy->infos->direction) {
 	case (NORTH):
 		*pos = (vec2i_t){cpy->infos->pos.x, cpy->infos->pos.y + 1};
 		dprintf(cpy->sock, "eject: S\n");
