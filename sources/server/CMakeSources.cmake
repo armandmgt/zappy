@@ -16,7 +16,6 @@ set(CORE
     commands/eject.c
 	commands/look.c
 	commands/print_content.c
-    commands/client_parsing.c
     commands/content.c
     commands/player_stat.c
     commands/misc.c

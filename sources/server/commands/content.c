@@ -16,7 +16,7 @@ static void print_cell_resources(server_t *server, int sock, vec2i_t *pos);
 
 bool msz(server_t *server, client_t *client, char *UNUSED(av))
 {
-	dprintf(client->sock, "msz %lu %lu\n",
+	dprintf(client->sock, "msz %u %u\n",
 		server->map_infos.x, server->map_infos.y);
 	return (true);
 }
@@ -57,6 +57,6 @@ static void print_cell_resources(server_t *server, int sock, vec2i_t *pos)
 	cell = get_cell_at(&server->map_infos, pos->x, pos->y);
 	dprintf(sock, "bct %u %u", pos->x, pos->y);
 	for (size_t i = 0; i < NB_RESOURCE; i++)
-		dprintf(sock, " %lu", cell->resource[i]);
+		dprintf(sock, " %u", cell->resource[i]);
 	dprintf(sock, "\n");
 }

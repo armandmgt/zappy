@@ -10,7 +10,7 @@
 
 static void take_action(server_t const *server, client_t *client);
 
-int eat_food(const server_t *server)
+int eat_food(server_t *server)
 {
 	client_t *client;
 	clock_t now = clock();
