@@ -16,6 +16,7 @@ static void look_east_west(server_t *server,
 
 bool look(server_t *server, client_t *client, char *UNUSED(args))
 {
+	dprintf(client->sock, "[");
 	switch (client->infos->direction) {
 	case (NORTH):
 		look_north_south(server, client, client->infos->direction);
@@ -30,7 +31,7 @@ bool look(server_t *server, client_t *client, char *UNUSED(args))
 		look_east_west(server, client, client->infos->direction);;
 		break;
 	}
-	dprintf(client->sock, "\n");
+	dprintf(client->sock, "]\n");
 	return (true);
 }
 
