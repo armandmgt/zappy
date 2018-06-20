@@ -23,3 +23,35 @@ jobs:
       - run:
           name: Compile client
           command: go build -o zappy_ai -v ./sources/client/
+
+  deploy:
+    docker:
+      - image: circleci/buildpack-deps:stretch-scm-browsers
+    steps:
+      - checkout
+      - run:
+          name: Push to epitech's git
+          command: |
+            mkdir -p $HOME/.ssh && echo "$SERVER_PUB_KEY" >> $HOME/.ssh/known_hosts
+            git remote add epitech "$EPITECH_REMOTE"
+            git push epitech master:remotes/epitech/master
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
+      - build_client:
+          filters:
+            branches:
+              ignore:
+                - master
