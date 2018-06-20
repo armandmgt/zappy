@@ -21,7 +21,7 @@ bool add_resource_to_cell(cell_t *cell, resource_t res, uint16_t nb)
 
 bool add_random_resource_to_cell(cell_t *cell, uint16_t nb)
 {
-	size_t rd = (size_t)(rand() % (100));
+	size_t rd = (size_t)(rand() % 100);
 
 	if (!cell) {
 		fprintf(stderr, "invalid pointer\n");

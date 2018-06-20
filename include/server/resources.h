@@ -7,7 +7,7 @@
 
 #pragma once
 
-#define NAME_LEN 16
+#define RESOURCES_NAME_LEN 16
 
 typedef enum resource_e {
 	FOOD,
@@ -23,5 +23,5 @@ typedef enum resource_e {
 typedef struct resource_name_s
 {
 	resource_t res;
-	char name[NAME_LEN];
+	char name[RESOURCES_NAME_LEN];
 } resource_name_t;
