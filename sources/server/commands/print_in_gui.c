@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include "gui_magic.h"
 #include "gui_commands.h"
 
 int print_in_gui(list_t *clients, char const *format, ...)
