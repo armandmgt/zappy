@@ -10,6 +10,7 @@
 #include "resources.h"
 #include "cir_buffer.h"
 #include "position.h"
+#include "linked_list.h"
 
 #define TEAM_NAME_LEN 64
 
@@ -32,4 +33,6 @@ typedef struct client_s {
 	cir_buffer_t buffer;
 	player_t *infos;
 	team_t *team;
+	clock_t last_tick;
+	list_t *cmds;
 } client_t;
