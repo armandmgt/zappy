@@ -16,6 +16,8 @@ public:
     void updateGui();
 private:
     int connect();
+    void receive() {};
+    void send() {};
 
     /*
      * Return size of an array as a compile-time constant
