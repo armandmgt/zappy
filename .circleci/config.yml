@@ -28,6 +28,9 @@ jobs:
     docker:
       - image: circleci/buildpack-deps:stretch-scm-browsers
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "ca:f1:91:e4:89:84:07:0c:1a:19:9b:19:50:ac:94:57"
       - checkout
       - run:
           name: Push to epitech's git
