@@ -8,12 +8,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "server/gui_magic.h"
 #include "command_value.h"
 #include "gui_commands.h"
 
 static void add_command(server_t *server, client_t *client, char **av);
 
-static  command_values_t const command_assg[] = {
+static  command_values_t const cmd_ass[] = {
 	{"Forward", &forward, 7, false}, {"Right", &right, 7, false},
 	{"Left", &left, 7, false}, {"Look", &look, 7, false},
 	{"Inventory", &inventory, 1, false},
@@ -81,21 +82,23 @@ static void add_command(server_t *server, client_t *client, char **av)
 {
 	command_t *command = calloc(1, sizeof(*command));
 
-	if (!command)
+	if (!command || !av)
 		return;
-	for (size_t i = 0; i < sizeof(command_assg) /
-		sizeof(*command_assg); i++) {
-		if (strcmp(av[0], command_assg[i].command) == 0/* &&
-				  strcmp(client->team->name, GUI_NAME) !=
-				  command_assg[i].is_gui*/) {
+	for (size_t i = 0; i < sizeof(cmd_ass) / sizeof(*cmd_ass); i++) {
+		if (!strcmp(av[0], cmd_ass[i].command) &&client->team->name[0]
+		 	&& strcmp(client->team->name, GUI_NAME) !=
+						 cmd_ass[i].is_gui) {
 			command->args = av[1];
-			command->timeout = command_assg[i].timeout /
-				server->freq;
-			command->do_action = command_assg[i].do_action;
+			command->timeout = cmd_ass[i].timeout / server->freq;
+			command->do_action = cmd_ass[i].do_action;
 			command->s_time = clock();
 			add_elem_at_back(&client->cmds, command);
 			return;
 		}
 	}
 	free(command);
+	if (client->team->name[0])
+		return;
+	for (uint8_t i = 0; av[0][i]; i++)
+		client->team->name[i] = av[0][i];
 }
