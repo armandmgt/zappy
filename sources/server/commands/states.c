@@ -8,15 +8,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include "server/commands.h"
 #include "common/tools.h"
-#include "common/linked_list.h"
 #include "server/server.h"
 
 static void elevation(client_t *client, uint16_t const *nb, cell_t *cell);
 static int count_same_team_player(cell_t *cell, client_t *client);
 
-bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 {
 	player_t *tmp = client->infos;
 
@@ -27,6 +25,11 @@ bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
+		print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
+			"%s %s\n", server->clients, server->options->width,
+			server->options->height, tmp->inventory[0],
+			tmp->inventory[1], tmp->inventory[2], tmp->inventory[3],
+			tmp->inventory[4], tmp->inventory[5], tmp->inventory[6]);
 	}
 	return (true);
 }
@@ -50,6 +53,8 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 			return (false);
 		}
 	}
+	// print_in_gui(server->clients, "pic %d %d %d %d\n", server->options->width,
+	// 	server->options->height, client->infos->level, server->clients);
 	elevation(client, tab[idx], cell);
 	return (true);
 }
@@ -59,6 +64,7 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
 		if (tmp->data == client && client->infos->lifetime == 0) {
 			dprintf(client->sock, "dead\n");
+			// print_in_gui(server->clients, "pdi %s\n", server->clients);
 			close(client->sock);
 			free(client->infos);
 			free(tmp->data);
@@ -78,6 +84,8 @@ static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
 	}
 	dprintf(client->sock, "Elevation underway\nCurrent level "
 			      "%d\n", client->infos->level);
+	// print_in_gui(server->clients, "pie %d %d %d %d\n", server->options->width,
+	// 	server->options->height, client->infos->level, server->clients);
 }
 
 static int count_same_team_player(cell_t *cell, client_t *client)

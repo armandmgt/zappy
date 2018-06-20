@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include "commands.h"
-#include "server.h"
 #include "tools.h"
 
 bool forward(server_t *server, client_t *client, char *UNUSED(args))

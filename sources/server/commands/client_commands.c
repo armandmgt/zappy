@@ -8,8 +8,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdio.h>
-#include "server.h"
 #include "command_value.h"
 #include "gui_commands.h"
 
