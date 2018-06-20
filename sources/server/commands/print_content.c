@@ -57,6 +57,8 @@ static void print_cell_content(cell_t *cell, client_t *client)
 	};
 	size_t len = list_len(cell->players);
 
+	dprintf(1, "client is at %d %d\n", client->infos->pos.x, client->infos->pos.y);
+	dprintf(1, "there is %ld clients on this tile\n", len);
 	for (size_t i = 0; i < len; i++) {
 		if (i > 0)
 			dprintf(client->sock, " ");
