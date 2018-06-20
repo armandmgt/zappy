@@ -7,7 +7,6 @@
 
 #include "imgui.hpp"
 #include "Network.hpp"
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 

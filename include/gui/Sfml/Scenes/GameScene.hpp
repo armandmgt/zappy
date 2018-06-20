@@ -14,16 +14,20 @@
 
 class GameScene final : public AScene, public Receiver {
 public:
-    explicit GameScene(SceneManager &parent) noexcept : AScene(parent) {
-	    parent.getEventMgr().subscribe<SfmlEvent>(*this);
-    }
+    explicit GameScene(SceneManager &parent) noexcept : AScene(parent) {}
 
+    /*
+     * Scene Manipulation
+     */
+    void enter() override;
+    void exit() override;
     void update(float timeSinceLastFrame) override;
 public:
     /*
      * Events Callback
      */
-    void receive(const SfmlEvent &event[[maybe_unused]]) noexcept {}
+    void receive(const SfmlEvent &event[[maybe_unused]]) noexcept { std::cout << "SFMLEVENT" << std::endl; _parent.getEventMgr().emit<DebugEvent>(); }
+    void receive(const DebugEvent &event[[maybe_unused]]) noexcept { std::cout << "DEBUG" << std::endl; }
 private:
     NetworkGui _networkMgr;
 };

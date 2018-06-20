@@ -17,10 +17,7 @@ class Receiver {
 };
 
 class BaseEvent {
-protected:
-    void showEvent(std::string eventName) noexcept {
-	    std::cout << __PRETTY_FUNCTION__ << " triggered (" << eventName << ")" << std::endl;
-    }
+public:
 };
 
 class ClassTypeId {
@@ -43,7 +40,7 @@ private:
 };
 
 /*
- * static atribute must be impemented
+ * static atribute must be implemented
  */
 inline ClassTypeId::TypeId ClassTypeId::_nextTypeId = 0;
 
@@ -90,6 +87,26 @@ public:
 	    auto callbackPtr = std::make_unique<callbackWrapper<EventType>>(receiverCallback);
 	    _receiversList.emplace(eventType, ReceiverInfo{ &baseReceiver, std::move(callbackPtr) });
     }
+    /*
+     * This function is used to unsubscribe a receiver to a certain type of event
+     * This function is must be called when the receiver is deleted
+     */
+    template<typename EventType, typename Receiver>
+    void unsubscribe(Receiver &receiver) noexcept {
+	    static_assert(std::is_base_of<BaseEvent, EventType>(), "Templated parameter is not based of BaseEvent");
+	    auto &&receivers = _receiversList.equal_range(ClassTypeId::getTypeId<EventType>());
+	    for (auto &it = receivers.first; it != receivers.second; it++) {
+		    if (it->second.receiver == &receiver)
+			    _receiversList.erase(it);
+	    }
+    };
+//    template<typename Receiver>
+//    void unsubscribeAll(Receiver &receiver) noexcept {
+//	    for (auto &it = _receiversList.begin(); it != _receiversList.end(); it++) {
+//		    if (it->second.receiver == &receiver)
+//			    _receiversList.erase(it);
+//	    }
+//    };
     /*
      * This function is used to emit a certain type of event
      */

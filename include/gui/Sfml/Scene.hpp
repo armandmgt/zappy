@@ -50,6 +50,7 @@ protected:
     explicit AScene(SceneManager &parent) : _parent(parent) {}
 
 public:
+    virtual ~AScene() = default;
     /*
      * Create a scene
      */
@@ -63,8 +64,8 @@ public:
     /*
      * Scene Manipulation
      */
-    virtual void enter() {}
-    virtual void exit() {}
+    virtual void enter() = 0;
+    virtual void exit() = 0;
     virtual void pause() {}
     virtual void resume() {}
 
