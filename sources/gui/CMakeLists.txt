@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME} ${SRCS})
 #CXXFlags
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wfatal-errors")
 
-#OpenGl
+#Imgui
 target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 
 #Sfml
@@ -22,9 +22,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
 #Headers
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/common)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Sfml)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Network)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Sfml/Scenes)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/Sfml)
 
 #Imgui
 target_include_directories(${PROJECT_NAME} PRIVATE Imgui)

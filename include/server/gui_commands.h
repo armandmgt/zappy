@@ -9,7 +9,6 @@
 
 #include <stdarg.h>
 #include "server/server.h"
-#include "gui_magic.h"
 
 int print_in_gui(list_t *clients, char const *format, ...);
 bool msz(server_t *serv, client_t *client, char *av);

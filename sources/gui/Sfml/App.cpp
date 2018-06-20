@@ -6,12 +6,11 @@
 */
 
 #include "App.hpp"
-#include "GameScene.hpp"
 #include "imgui-SFML.hpp"
 
 void App::init()
 {
-	AScene::create<GameScene>(_sceneMgr);
+
 }
 
 void App::run()
