@@ -51,4 +51,4 @@ uint16_t get_resource_on_cell(cell_t const *cell, resource_t resource);
 
 cell_t *get_client_cell(map_t const *map_infos, client_t const *client);
 cell_t *get_cell_at(map_t const *map_infos, uint32_t x, uint32_t y);
-list_t *get_player_list_at(map_t const *map_infos, uint32_t x, uint32_t y);
+list_t **get_player_list_at(map_t *map_infos, uint32_t x, uint32_t y);
