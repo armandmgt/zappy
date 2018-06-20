@@ -102,7 +102,6 @@ public:
 		    	 it++;
 	    }
     };
-
     template<typename Receiver>
     void unsubscribeAll(Receiver &receiver) noexcept {
 	    for (auto it = _receiversList.begin(); it != _receiversList.end();) {

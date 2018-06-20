@@ -5,10 +5,55 @@
 ** Network
 */
 
-#include "imgui.hpp"
-#include "Network.hpp"
+#include <poll.h>
+#include <cstdio>
+#include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "imgui.hpp"
+#include "Network.hpp"
+
+int NetworkGui::connect()
+{
+	uint32_t ip{0};
+	struct sockaddr_in addr;
+	socklen_t size = sizeof(struct sockaddr_in);
+
+	if ((_serverSoket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		return -1;
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(_serverPort);
+	for (auto it : _ipAddr) {
+		ip <<= 8;
+		ip += it;
+	}
+	addr.sin_addr.s_addr = htonl(ip);
+	if ((::connect(_serverSoket, (struct sockaddr *) &addr, size)) == -1) {
+		_serverSoket = -1;
+		return -1;
+	}
+	return 0;
+}
+
+std::string NetworkGui::receive()
+{
+	ssize_t nread;
+	size_t len = 0;
+	char *line = nullptr;
+	static FILE *stream = fdopen(_serverSoket, "r");;
+
+	nread = getline(&line, &len, stream);
+	if (nread == -1)
+		return "DISCONECTED";
+	std::string s(line);
+	free(line);
+	return (s);
+}
+
+void NetworkGui::send(std::string &&msg)
+{
+
+}
 
 void NetworkGui::updateGui()
 {
@@ -34,38 +79,16 @@ void NetworkGui::updateGui()
 	if (ImGui::Button("Launch Server")) { /*launchServer();*/ }; ImGui::Separator();
 	ImGui::Text("Server ip :"); ImGui::SameLine(); ImGui::InputInt4("", _ipAddr); ImGui::SameLine();
 	if (_serverSoket == -1 && ImGui::Button("Connect")) { connect(); };
-}
 
-#include <cstdio>
-#include <iostream>
-
-int NetworkGui::connect()
-{
-	uint32_t ip {0};
-	struct sockaddr_in addr;
-	socklen_t size = sizeof(struct sockaddr_in);
-
-	if ((_serverSoket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-		return -1;
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(_serverPort);
-	for (auto it : _ipAddr) {
-		ip <<= 8;
-		ip += it;
+	/*
+	 * Todo: Console
+	 */
+	if (_serverSoket != -1) {
+		pollfd fds[] = {_serverSoket, POLLIN, 0};
+		if (poll(fds, 1, 0) == 0)
+			return;
+		if (fds[0].revents & POLLIN) {
+			std::string msg = receive();
+		}
 	}
-	addr.sin_addr.s_addr = htonl(ip);
-	if ((::connect(_serverSoket, (struct sockaddr *)&addr, size)) == -1)
-		return -1;
-//	FILE *stream;
-//	char *line = NULL;
-//	size_t len = 0;
-//	ssize_t nread;
-//	stream = fdopen(_serverSoket, "r");
-//	while ((nread = getline(&line, &len, stream)) != -1) {
-//		printf("Retrieved line of length %zu:\n", nread);
-//		fwrite(line, nread, 1, stdout);
-//	}
-//	//free(line);
-//	fclose(stream);
-	return 0;
 }
