@@ -29,7 +29,7 @@ static void randomly_add_resource(cell_t *cell, uint32_t random, uint8_t pct,
 	if (pct < random)
 		return;
 	for (int i = 0; i < res; i++)
-		add_random_resource_to_cell(cell);
+		add_random_resource_to_cell(cell, 1);
 }
 
 static bool fill_map(map_t *map, uint8_t pct, uint8_t nb_resource)
