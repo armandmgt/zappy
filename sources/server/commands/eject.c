@@ -6,7 +6,6 @@
 */
 
 #include <stdio.h>
-#include "map.h"
 #include "server.h"
 #include "tools.h"
 
@@ -34,6 +33,7 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 		tmp = tmp->next;
 	}
 	dprintf(client->sock, "ok\n");
+	//print_in_gui(server->clients, "pex %d\n", server->clients);;
 	return (true);
 }
 

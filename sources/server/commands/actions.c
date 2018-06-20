@@ -10,8 +10,7 @@
 #include <stdlib.h>
 #include "server/commands.h"
 #include "common/tools.h"
-#include "server/map.h"
-#include "server/server.h"
+//#include "gui_commands.h"
 
 bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 {
@@ -29,12 +28,13 @@ bool connect_nbr(server_t *server, client_t *client, char *UNUSED(args))
 	return (true);
 }
 
-bool birth(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool birth(server_t *server, client_t *client, char *UNUSED(args))
 {
 	client->team->max_members += 1;
 	client->infos->direction = (direction_t)rand() % 4;
 	client->infos->level = 1;
 	dprintf(client->sock, "ok\n");
+	// print_in_gui(server->clients, "pfk %d\n", server->clients);
 	return (true);
 }
 
@@ -47,6 +47,7 @@ bool take(server_t *server, client_t *client, char *args)
 		client->infos->inventory[nb] += 1;
 		remove_resource_on_cell(cell, (resource_t)nb, 1);
 		dprintf(client->sock, "ok\n");
+		//print_in_gui(server->clients, "pgt %d %i\n", server->clients, args);
 		return (true);
 	}
 	dprintf(client->sock, "ko\n");
@@ -61,6 +62,7 @@ bool set(server_t *server, client_t *client, char *args)
 	if (cell && client->infos->inventory[nb]) {
 		client->infos->inventory[nb] -= 1;
 		add_resource_to_cell(cell, (resource_t)nb, 1);
+		//print_in_gui(server->clients, "pdr %d %d\n", server->clients, args);
 		dprintf(client->sock, "ok\n");
 		return (true);
 	}
@@ -68,8 +70,9 @@ bool set(server_t *server, client_t *client, char *args)
 	return (false);
 }
 
-bool broadcast(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool broadcast(server_t *server, client_t *client, char *args)
 {
+	//print_in_gui(server->clients, "pbc %d %s", server->clients, args);
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
