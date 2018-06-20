@@ -22,6 +22,7 @@ int eat_food(const server_t *server)
 		if (total < 1.f / server->freq)
 			take_action(server, client);
 	}
+	while (remove_elem(&server->clients, NULL));
 	return (0);
 }
 
@@ -32,5 +33,7 @@ static void take_action(server_t const *server, client_t *client)
 		client->infos->lifetime += 1260 / server->freq;
 	} else if (client->infos->lifetime) {
 		client->infos->lifetime -= 1;
+	} else {
+		//TODO: call dead command
 	}
 }
