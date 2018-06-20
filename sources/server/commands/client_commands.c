@@ -9,27 +9,21 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "gui_commands.h"
-#include "gui_magic.h"
 #include "server.h"
 #include "command_value.h"
+#include "gui_commands.h"
 
 static void add_command(server_t *server, client_t *client, char **av);
 
-bool do_action(server_t *s, client_t *c, char *av)
-{
-	printf("coucou\n");
-}
-
 static  command_values_t const command_assg[] = {
-	{"Forward", &do_action, 7, false}, {"Right", &do_action, 7, false},
-	{"Left", &do_action, 7, false},	{"Look", &do_action, 7, false},
-	{"Inventory", &do_action, 1, false},
-	{"Broadcast", &do_action, 7, false},
-	{"Connect_nbr", &do_action, 0, false},
-	{"Fork", &do_action, 42, false}, {"Eject", &do_action, 7, false},
-	{"Take", &do_action, 7, false}, {"Set", &do_action, 7, false},
-	{"Incantation", &do_action, 300, false},
+	{"Forward", &forward, 7, false}, {"Right", &right, 7, false},
+	{"Left", &left, 7, false}, {"Look", &look, 7, false},
+	{"Inventory", &inventory, 1, false},
+	{"Broadcast text", &broadcast, 7, false},
+	{"Connect_nbr", &connect_nbr, 0, false},
+	{"Fork", &birth, 42, false}, {"Eject", &eject, 7, false},
+	{"Take object", &take, 7, false}, {"Set object", &set, 7, false},
+	{"Incantation", &incantation, 300, false},
 	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
 	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
 	{"plv", &plv, 0, true}, {"pin", &pin, 0, true},

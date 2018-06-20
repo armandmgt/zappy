@@ -12,12 +12,8 @@
 #include <stdbool.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "resources.h"
-#include "map.h"
-#include "cir_buffer.h"
 #include "linked_list.h"
-
-#define TEAM_NAME_LEN 64
+#include "map.h"
 
 typedef struct options_s {
 	uint16_t port;
@@ -27,28 +23,6 @@ typedef struct options_s {
 	uint32_t max_clients;
 	uint32_t freq;
 } options_t;
-
-typedef struct team_s {
-	char name[TEAM_NAME_LEN];
-	uint32_t max_members;
-	list_t *members;
-} team_t;
-
-typedef struct player_s {
-	uint16_t level;
-	uint32_t inventory[NB_RESOURCE];
-	uint32_t lifetime;
-	vec2i_t pos;
-} player_t;
-
-typedef struct client_s {
-	int sock;
-	cir_buffer_t buffer;
-	clock_t last_tick;
-	player_t *infos;
-	team_t *team;
-	list_t *cmds;
-} client_t;
 
 typedef struct server_s server_t;
 
@@ -80,4 +54,4 @@ int handle_new_connections(server_t *server, fd_set *readfds);
 
 int poll_client_commands(server_t *server, fd_set *readfds);
 int do_pending_actions(server_t *server);
-int eat_food(const server_t *server);
+int eat_food(server_t *server);
