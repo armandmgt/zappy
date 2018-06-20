@@ -27,9 +27,10 @@ int eat_food(const server_t *server)
 
 static void take_action(server_t const *server, client_t *client)
 {
-	if (client->infos->inventory[FOOD]) {
+	if (!client->infos->lifetime && client->infos->inventory[FOOD]) {
 		client->infos->inventory[FOOD] -= 1;
-	} else {
-		client->infos->lifetime -= 1260 / server->freq;
+		client->infos->lifetime += 1260 / server->freq;
+	} else if (client->infos->lifetime) {
+		client->infos->lifetime -= 1;
 	}
 }
