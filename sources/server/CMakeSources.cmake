@@ -7,6 +7,7 @@ set(CORE
     connexion/connexion.c
     connexion/communication.c
     connexion/new_connection.c
+    connexion/food.c
 
     commands/client_commands.c
     commands/actions.c
@@ -15,8 +16,14 @@ set(CORE
     commands/eject.c
 	commands/look.c
 	commands/print_content.c
+    commands/client_parsing.c
+    commands/content.c
+    commands/player_stat.c
+    commands/misc.c
+    commands/print_in_gui.c
 
     ../common/linked_list.c
+    ../common/tools.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
 

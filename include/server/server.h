@@ -28,8 +28,7 @@ typedef struct server_s server_t;
 
 typedef struct command_s {
 	bool (*do_action)(server_t *, client_t *, char *);
-	client_t *client;
-	clock_t start_time;
+	clock_t s_time;
 	double timeout;
 	char *args;
 } command_t;
@@ -55,3 +54,4 @@ int handle_new_connections(server_t *server, fd_set *readfds);
 
 int poll_client_commands(server_t *server, fd_set *readfds);
 int do_pending_actions(server_t *server);
+int eat_food(const server_t *server);
