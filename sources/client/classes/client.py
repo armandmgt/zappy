@@ -9,7 +9,7 @@ class Client:
 	teamName = ""
 	host = ""
 
-	def __init__(self, port, name, host):
+	def __init__(self, port: int, name: str, host: str):
 		self.host = host
 		self.port = port
 		self.teamName = name
