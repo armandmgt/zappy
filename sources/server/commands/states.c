@@ -14,7 +14,7 @@
 
 static void elevation(server_t *server, client_t *client, uint16_t const *nb,
 	cell_t *cell);
-static int count_same_team_player(cell_t *cell, client_t *client);
+static void print_incantation_infos(server_t *server, client_t *client);
 
 bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 {
@@ -28,8 +28,8 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
 		print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
-			"%s %s\n", client->infos->id, server->map_infos.x,
-			server->map_infos.y, client->infos->inventory[0],
+			"%s %s\n", client->infos->id, client->infos->pos.x,
+			client->infos->pos.y, client->infos->inventory[0],
 			client->infos->inventory[1],
 			client->infos->inventory[2],
 			client->infos->inventory[3],
@@ -49,7 +49,7 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 		{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
 	cell_t *cell = get_client_cell(&server->map_infos, client);
 
-	if (count_same_team_player(cell, client) != tab[idx][0]) {
+	if (list_len(cell->players) != tab[idx][0]) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
@@ -59,9 +59,7 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 			return (false);
 		}
 	}
-	// print_in_gui(server->clients, "pic %d %d %d %0*d\n", server->map_infos.x,
-	// 	server->map_infos.y, client->infos->level, client->infos->id);
-	//revoir pour mettre n %d en fonction du nombre de personnes pour incantation
+	print_incantation_infos(server, client);
 	elevation(server, client, tab[idx], cell);
 	return (true);
 }
@@ -93,19 +91,21 @@ static void elevation(server_t *server, client_t *client, uint16_t const *nb,
 	}
 	dprintf(client->sock, "Elevation underway\nCurrent level "
 			      "%d\n", client->infos->level);
-	print_in_gui(server->clients, "pie %d %d ok\n", server->map_infos.x,
-		server->map_infos.y);
+	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
+		client->infos->pos.y);
 }
 
-static int count_same_team_player(cell_t *cell, client_t *client)
+static void print_incantation_infos(server_t *server, client_t *client)
 {
-	int cmpt = 0;
+	list_t **list = get_player_list_at(&server->map_infos,
+		client->infos->pos.x, client->infos->pos.y);
 	client_t *tmp_client;
 
-	for (list_t *tmp = cell->players; tmp != NULL; tmp = tmp->next) {
+	print_in_gui(server->clients, "pic %d %d %d", client->infos->pos.x,
+		client->infos->pos.y, client->infos->level);
+	for (list_t *tmp = *list; tmp; tmp = tmp->next) {
 		tmp_client = tmp->data;
-		if (strcmp(tmp_client->team->name, client->team->name) == 0)
-			cmpt = cmpt + 1;
+		print_in_gui(server->clients, " %d", tmp_client->infos->id);
 	}
-	return (cmpt);
+	print_in_gui(server->clients, "\n");
 }
