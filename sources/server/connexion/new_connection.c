@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <memory.h>
 #include "server.h"
 
 static int accept_client(server_t *server, client_t *client);
@@ -45,7 +46,8 @@ static client_t *create_client(server_t *server)
 	client_t *client;
 
 	if (!(client = calloc(1, sizeof(*client))) ||
-		!(client->infos = calloc(1, sizeof(*client->infos))))
+		!(client->infos = calloc(1, sizeof(*client->infos))) ||
+		!(client->team = calloc(1, sizeof(*client->team))))
 		return (NULL);
 	init_cbuf(&client->buffer);
 	client->infos->id = id++;
