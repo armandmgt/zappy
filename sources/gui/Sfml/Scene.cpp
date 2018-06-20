@@ -6,6 +6,7 @@
 */
 
 #include "Scene.hpp"
+#include "SfmlEvents.hpp"
 
 void SceneManager::pushScene(std::unique_ptr<AScene> scenePtr)
 {
@@ -55,9 +56,10 @@ void SceneManager::popAllAndPushScene(std::unique_ptr<AScene> scenePtr)
 
 void SceneManager::event(sf::Event &event) noexcept
 {
-	if (!_scenes.empty()) {
-		_scenes.top()->event(event);
-	}
+	/*
+	 * Emit Keyboard events, Mouse events, Joystick events
+	 */
+	_evtMgr.emit<SfmlEvent>(event);
 }
 
 void SceneManager::update(float timeSinceLastFrame) noexcept

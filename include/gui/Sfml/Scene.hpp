@@ -8,13 +8,11 @@
 #pragma once
 
 #include <stack>
-#include <vector>
 #include <memory>
-#include <unordered_map>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "EventManager.hpp"
 #include "ResourceManager.hpp"
-
 
 class AScene;
 
@@ -38,17 +36,18 @@ public:
      * Getters
      */
     sf::RenderWindow &getWindow() const noexcept { return _window; }
-
+    EventManager &getEventMgr() noexcept { return _evtMgr; }
 private:
     sf::RenderWindow &_window;
+
+    EventManager _evtMgr;
     ResourceManager _resourceMgr;
     std::stack<std::unique_ptr<AScene>> _scenes;
 };
 
 class AScene {
 protected:
-    explicit AScene(SceneManager &parent) : _parent(parent)
-    {}
+    explicit AScene(SceneManager &parent) : _parent(parent) {}
 
 public:
     /*
@@ -57,9 +56,8 @@ public:
     template<typename T>
     static void create(SceneManager &parent)
     {
-	    static_assert(std::is_base_of<T, AScene>(), "Templated parameter is not based of Ascene");
-	    auto scene = std::make_unique<T>(parent);
-	    parent.pushScene(scene);
+	    static_assert(std::is_base_of<AScene, T>(), "Templated parameter is not based of Ascene");
+	    parent.pushScene(std::make_unique<T>(parent));
     }
 
     /*
@@ -70,8 +68,7 @@ public:
     virtual void pause() {}
     virtual void resume() {}
 
-    virtual void event(sf::Event &event);
-    virtual void update(float timeSinceLastFrame);
+    virtual void update(float timeSinceLastFrame) = 0;
 protected:
     SceneManager &_parent;
 };
