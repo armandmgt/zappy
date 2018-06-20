@@ -55,13 +55,14 @@ static client_t *create_client(server_t *server)
 
 static void spawn_client_on_map(map_t *m, client_t *client)
 {
-	list_t *players;
+	list_t **players;
 
 	client->infos->pos.x = (uint32_t)rand() % m->x;
 	client->infos->pos.y = (uint32_t)rand() % m->y;
 	//TODO: add random direction when PR #35 is merged in
-	players = m->map[client->infos->pos.y][client->infos->pos.x].players;
-	add_elem_at_front(&players, client);
+	players = get_player_list_at(m, client->infos->pos.x,
+		client->infos->pos.y);
+	add_elem_at_front(players, client);
 }
 
 static int accept_client(server_t *server, client_t *client)
