@@ -9,7 +9,13 @@ set(CORE
     connexion/new_connection.c
     connexion/food.c
 
-    commands/client_parsing.c
+    commands/client_commands.c
+    commands/actions.c
+    commands/directions.c
+    commands/states.c
+    commands/eject.c
+	commands/look.c
+	commands/print_content.c
     commands/content.c
     commands/player_stat.c
     commands/misc.c
