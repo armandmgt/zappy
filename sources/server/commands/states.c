@@ -25,11 +25,12 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
-		print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
+		/* print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
 			"%s %s\n", server->clients, server->options->width,
 			server->options->height, tmp->inventory[0],
 			tmp->inventory[1], tmp->inventory[2], tmp->inventory[3],
-			tmp->inventory[4], tmp->inventory[5], tmp->inventory[6]);
+			tmp->inventory[4], tmp->inventory[5],
+		 tmp->inventory[6]);*/
 	}
 	return (true);
 }

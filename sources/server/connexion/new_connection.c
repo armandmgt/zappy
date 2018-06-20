@@ -41,12 +41,14 @@ static client_t *new_client(server_t *server)
 
 static client_t *create_client(server_t *server)
 {
+	static uint32_t id;
 	client_t *client;
 
 	if (!(client = calloc(1, sizeof(*client))) ||
 		!(client->infos = calloc(1, sizeof(*client->infos))))
 		return (NULL);
 	init_cbuf(&client->buffer);
+	client->infos->id = id++;
 	client->infos->level = 1;
 	client->infos->lifetime = 1260 / server->freq;
 	client->infos->inventory[FOOD] = 10;
