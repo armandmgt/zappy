@@ -47,7 +47,7 @@ bool take(server_t *server, client_t *client, char *args)
 		client->infos->inventory[nb] += 1;
 		remove_resource_on_cell(cell, (resource_t)nb, 1);
 		dprintf(client->sock, "ok\n");
-		print_in_gui(server->clients, "pgt %d %d\n", client->infos->id,
+		print_in_gui(server->clients, "pgt %d %s\n", client->infos->id,
 			args);
 		return (true);
 	}
@@ -64,7 +64,7 @@ bool set(server_t *server, client_t *client, char *args)
 		client->infos->inventory[nb] -= 1;
 		add_resource_to_cell(cell, (resource_t)nb, 1);
 		dprintf(client->sock, "ok\n");
-		print_in_gui(server->clients, "pdr %d %d\n", client->infos->id,
+		print_in_gui(server->clients, "pdr %d %s\n", client->infos->id,
 			args);
 		return (true);
 	}
