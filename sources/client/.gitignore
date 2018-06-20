@@ -1,3 +1,8 @@
 client
 zappy_*
 zappy.sh
+.Python
+bin
+include
+lib
+pip-selfcheck.json
