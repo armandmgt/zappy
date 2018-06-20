@@ -47,14 +47,14 @@ typedef struct client_s {
 	clock_t last_tick;
 	player_t *infos;
 	team_t *team;
+	list_t *cmds;
 } client_t;
 
 typedef struct server_s server_t;
 
 typedef struct command_s {
 	bool (*do_action)(server_t *, client_t *, char *);
-	client_t *client;
-	clock_t start_time;
+	clock_t s_time;
 	double timeout;
 	char *args;
 } command_t;
