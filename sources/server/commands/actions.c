@@ -41,8 +41,7 @@ bool birth(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 bool take(server_t *server, client_t *client, char *args)
 {
 	int nb = atoi(args);
-	cell_t *cell = get_cell_at(&server->map_infos,
-		client->infos->pos.x, client->infos->pos.y);
+	cell_t *cell = get_client_cell(&server->map_infos, client);
 
 	if (cell && cell->resource[nb]) {
 		client->infos->inventory[nb] += 1;
@@ -57,8 +56,7 @@ bool take(server_t *server, client_t *client, char *args)
 bool set(server_t *server, client_t *client, char *args)
 {
 	int nb = atoi(args);
-	cell_t *cell = get_cell_at(&server->map_infos,
-		client->infos->pos.x, client->infos->pos.y);
+	cell_t *cell = get_client_cell(&server->map_infos, client);
 
 	if (cell && client->infos->inventory[nb]) {
 		client->infos->inventory[nb] -= 1;

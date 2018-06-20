@@ -7,13 +7,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <malloc.h>
 #include "server/commands.h"
 #include "common/tools.h"
 #include "common/linked_list.h"
 #include "server/server.h"
 
 static void elevation(client_t *client, uint16_t const *nb, cell_t *cell);
-static int count_player(cell_t *cell, client_t *client);
+static int count_same_team_player(cell_t *cell, client_t *client);
 
 bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 {
@@ -37,10 +38,9 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 		{2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
 		{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0},
 		{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
-	cell_t *cell = get_cell_at(&server->map_infos, client->infos->pos.x,
-		client->infos->pos.y);
+	cell_t *cell = get_client_cell(&server->map_infos, client);
 
-	if (count_player(cell, client) != tab[idx][0]) {
+	if (count_same_team_player(cell, client) != tab[idx][0]) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
@@ -54,11 +54,17 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 	return (true);
 }
 
-bool death(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool death(server_t *server, client_t *client, char *UNUSED(args))
 {
-	if (client->infos->lifetime == 0) {
-		dprintf(client->sock, "dead\n");
-		return (true);
+	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
+		if (tmp->data == client && client->infos->lifetime == 0) {
+			dprintf(client->sock, "dead\n");
+			close(client->sock);
+			free(client->infos);
+			free(tmp->data);
+			tmp->data = NULL;
+			return (true);
+		}
 	}
 	return (false);
 }
@@ -74,7 +80,7 @@ static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
 			      "%d\n", client->infos->level);
 }
 
-static int count_player(cell_t *cell, client_t *client)
+static int count_same_team_player(cell_t *cell, client_t *client)
 {
 	int cmpt = 0;
 	client_t *tmp_client;
