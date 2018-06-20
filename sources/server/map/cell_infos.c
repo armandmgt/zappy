@@ -5,17 +5,19 @@
 ** cell_infos.c
 */
 
-#include "map.h"
-#include "server/server.h"
+#include "server.h"
 
-cell_t *get_player_cell(map_t const *map_infos, list_t const *client)
+cell_t *get_client_cell(map_t const *map_infos, client_t const *client)
 {
-	client_t *tmp = client->data;
-
-	return (&map_infos->map[tmp->infos->pos.y][tmp->infos->pos.x]);
+	return (&map_infos->map[client->infos->pos.y][client->infos->pos.x]);
 }
 
 cell_t *get_cell_at(map_t const *map_infos, uint32_t x, uint32_t y)
 {
 	return (&map_infos->map[y][x]);
+}
+
+list_t *get_player_list_at(map_t const *map_infos, uint32_t x, uint32_t y)
+{
+	return (map_infos->map[y][x].players);
 }

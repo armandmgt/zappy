@@ -16,8 +16,7 @@ static void look_east_west(server_t *server,
 
 bool look(server_t *server, client_t *client, char *UNUSED(args))
 {
-	switch (client->infos->direction)
-	{
+	switch (client->infos->direction) {
 	case (NORTH):
 		look_north_south(server, client, client->infos->direction);
 		break;

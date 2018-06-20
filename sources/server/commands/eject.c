@@ -10,13 +10,14 @@
 #include "server.h"
 #include "tools.h"
 
-static void case_positions(client_t *cpy, vec2i_t *pos);
+static void case_positions(server_t *server, client_t *cpy, vec2i_t *pos);
 
 bool eject(server_t *server, client_t *client, char *UNUSED(args))
 {
-	vec2i_t pos;
-	list_t *tmp = server->map_infos.map[client->infos->
-		pos.y][client->infos->pos.x].players;
+	vec2i_t new_pos;
+	vec2i_t cur_pos;
+	list_t *tmp = get_player_list_at(&server->map_infos,
+		client->infos->pos.x,client->infos->pos.y);
 	client_t *cpy;
 
 	if (list_len(tmp) <= 1) {
@@ -25,17 +26,18 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 	}
 	while (tmp) {
 		cpy = tmp->data;
-		case_positions(cpy, &pos);
-		add_elem_at_front(&server->map_infos.map[pos.y][pos.x].players,
+		case_positions(server, cpy, &new_pos);
+		cur_pos = cpy->infos->pos;
+		add_elem_at_front(&server->map_infos.map[new_pos.y][new_pos.x].players,
 			tmp);
-		remove_elem(&server->map_infos.map[pos.y][pos.x].players, tmp);
+		remove_elem(&server->map_infos.map[cur_pos.y][cur_pos.x].players, cpy);
 		tmp = tmp->next;
 	}
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
 
-static void case_positions(client_t *cpy, vec2i_t *pos)
+static void case_positions(server_t *server, client_t *cpy, vec2i_t *pos)
 {
 	switch (cpy->infos->direction) {
 	case (NORTH):
@@ -55,4 +57,6 @@ static void case_positions(client_t *cpy, vec2i_t *pos)
 		dprintf(cpy->sock, "eject: E\n");
 		break;
 	}
+	pos->y = (pos->y + server->map_infos.y) % server->map_infos.y;
+	pos->x = (pos->x + server->map_infos.x) % server->map_infos.x;
 }
