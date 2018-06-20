@@ -16,15 +16,15 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 {
 	vec2i_t new_pos;
 	vec2i_t cur_pos;
-	list_t *tmp = get_player_list_at(&server->map_infos,
+	list_t **list = get_player_list_at(&server->map_infos,
 		client->infos->pos.x,client->infos->pos.y);
 	client_t *cpy;
 
-	if (list_len(tmp) <= 1) {
+	if (list_len(*list) <= 1) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
-	while (tmp) {
+	for (list_t *tmp = *list; tmp; tmp = tmp->next) {
 		cpy = tmp->data;
 		case_positions(server, cpy, &new_pos);
 		cur_pos = cpy->infos->pos;
