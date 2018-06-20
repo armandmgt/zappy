@@ -95,18 +95,23 @@ public:
     void unsubscribe(Receiver &receiver) noexcept {
 	    static_assert(std::is_base_of<BaseEvent, EventType>(), "Templated parameter is not based of BaseEvent");
 	    auto &&receivers = _receiversList.equal_range(ClassTypeId::getTypeId<EventType>());
-	    for (auto &it = receivers.first; it != receivers.second; it++) {
+	    for (auto &it = receivers.first; it != receivers.second;) {
 		    if (it->second.receiver == &receiver)
-			    _receiversList.erase(it);
+			    it = _receiversList.erase(it);
+		    else
+		    	 it++;
 	    }
     };
-//    template<typename Receiver>
-//    void unsubscribeAll(Receiver &receiver) noexcept {
-//	    for (auto &it = _receiversList.begin(); it != _receiversList.end(); it++) {
-//		    if (it->second.receiver == &receiver)
-//			    _receiversList.erase(it);
-//	    }
-//    };
+
+    template<typename Receiver>
+    void unsubscribeAll(Receiver &receiver) noexcept {
+	    for (auto it = _receiversList.begin(); it != _receiversList.end();) {
+		    if (it->second.receiver == &receiver)
+			    it = _receiversList.erase(it);
+		    else
+			    it++;
+	    }
+    };
     /*
      * This function is used to emit a certain type of event
      */
