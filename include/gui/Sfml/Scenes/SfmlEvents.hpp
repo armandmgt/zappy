@@ -16,6 +16,3 @@ public:
 private:
     sf::Event _event;
 };
-
-class DebugEvent : public BaseEvent {
-};

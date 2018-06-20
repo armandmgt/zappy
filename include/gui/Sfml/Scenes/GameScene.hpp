@@ -26,8 +26,7 @@ public:
     /*
      * Events Callback
      */
-    void receive(const SfmlEvent &event[[maybe_unused]]) noexcept { std::cout << "SFMLEVENT" << std::endl; _parent.getEventMgr().emit<DebugEvent>(); }
-    void receive(const DebugEvent &event[[maybe_unused]]) noexcept { std::cout << "DEBUG" << std::endl; }
+    void receive(const SfmlEvent &event[[maybe_unused]]) noexcept;
 private:
     NetworkGui _networkMgr;
 };
