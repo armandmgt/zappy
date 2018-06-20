@@ -21,8 +21,8 @@ bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 	player_t *tmp = client->infos;
 
 	if (client->infos) {
-		dprintf(client->sock, "food %d, linemate %d, deraumere %d, "
-			"sibur %d, mendiane %d, phiras %d, thystame %d\n",
+		dprintf(client->sock, "[food %d, linemate %d, deraumere %d, "
+			"sibur %d, mendiane %d, phiras %d, thystame %d]\n",
 			tmp->inventory[0], tmp->inventory[1],
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
