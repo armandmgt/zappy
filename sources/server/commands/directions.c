@@ -23,8 +23,10 @@ bool forward(server_t *server, client_t *client, char *UNUSED(args))
 	new_pos = look_at[client->infos->direction].pos;
 	new_pos.x = (new_pos.x + server->map_infos.x) % server->map_infos.x;
 	new_pos.y = (new_pos.y + server->map_infos.y) % server->map_infos.y;
-	add_elem_at_front(&server->map_infos.map[new_pos.y][new_pos.x].players, client);
-	remove_elem(&server->map_infos.map[cur_pos.y][cur_pos.x].players, client);
+	add_elem_at_front(&server->map_infos.map[new_pos.y][new_pos.x].players,
+		client);
+	remove_elem(&server->map_infos.map[cur_pos.y][cur_pos.x].players,
+		client);
 	dprintf(client->sock, "ok\n");
 	return (true);
 }

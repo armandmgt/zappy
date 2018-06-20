@@ -10,8 +10,10 @@
 #include <malloc.h>
 #include "common/tools.h"
 #include "server/server.h"
+#include "gui_commands.h"
 
-static void elevation(client_t *client, uint16_t const *nb, cell_t *cell);
+static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+	cell_t *cell);
 static int count_same_team_player(cell_t *cell, client_t *client);
 
 bool inventory(server_t *server, client_t *client, char *UNUSED(args))
@@ -25,12 +27,15 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
-		/* print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
-			"%s %s\n", server->clients, server->options->width,
-			server->options->height, tmp->inventory[0],
-			tmp->inventory[1], tmp->inventory[2], tmp->inventory[3],
-			tmp->inventory[4], tmp->inventory[5],
-		 tmp->inventory[6]);*/
+		print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
+			"%s %s\n", client->infos->id, server->map_infos.x,
+			server->map_infos.y, client->infos->inventory[0],
+			client->infos->inventory[1],
+			client->infos->inventory[2],
+			client->infos->inventory[3],
+			client->infos->inventory[4],
+			client->infos->inventory[5],
+			client->infos->inventory[6]);
 	}
 	return (true);
 }
@@ -54,9 +59,10 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 			return (false);
 		}
 	}
-	// print_in_gui(server->clients, "pic %d %d %d %d\n", server->options->width,
-	// 	server->options->height, client->infos->level, server->clients);
-	elevation(client, tab[idx], cell);
+	// print_in_gui(server->clients, "pic %d %d %d %0*d\n", server->map_infos.x,
+	// 	server->map_infos.y, client->infos->level, client->infos->id);
+	//revoir pour mettre n %d en fonction du nombre de personnes pour incantation
+	elevation(server, client, tab[idx], cell);
 	return (true);
 }
 
@@ -65,7 +71,8 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
 		if (tmp->data == client && client->infos->lifetime == 0) {
 			dprintf(client->sock, "dead\n");
-			// print_in_gui(server->clients, "pdi %s\n", server->clients);
+			print_in_gui(server->clients, "pdi %d\n",
+				client->infos->id);
 			close(client->sock);
 			free(client->infos);
 			free(tmp->data);
@@ -76,7 +83,8 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	return (false);
 }
 
-static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
+static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+	cell_t *cell)
 {
 	client->infos->level += 1;
 	for (int i = 0; i < NB_RESOURCE; i++) {
@@ -85,8 +93,8 @@ static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
 	}
 	dprintf(client->sock, "Elevation underway\nCurrent level "
 			      "%d\n", client->infos->level);
-	// print_in_gui(server->clients, "pie %d %d %d %d\n", server->options->width,
-	// 	server->options->height, client->infos->level, server->clients);
+	print_in_gui(server->clients, "pie %d %d ok\n", server->map_infos.x,
+		server->map_infos.y);
 }
 
 static int count_same_team_player(cell_t *cell, client_t *client)
