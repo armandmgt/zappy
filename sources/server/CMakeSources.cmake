@@ -10,9 +10,12 @@ set(CORE
 
     commands/client_parsing.c
     commands/content.c
+    commands/player_stat.c
+    commands/misc.c
     commands/print_in_gui.c
 
     ../common/linked_list.c
+    ../common/tools.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
 
