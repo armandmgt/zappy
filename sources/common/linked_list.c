@@ -42,15 +42,17 @@ bool add_elem_at_back(list_t **list, void *data)
 list_t *remove_elem(list_t **list, void *elem)
 {
 	list_t *prev = NULL;
+	list_t *next;
 
 	for (list_t *cur = *list; cur; cur = cur->next) {
 		if (cur->data == elem) {
+			next = cur->next;
 			if (prev)
 				prev->next = cur->next;
 			else
 				*list = cur->next;
 			free(cur);
-			return (prev);
+			return (next);
 		}
 		prev = cur;
 	}
