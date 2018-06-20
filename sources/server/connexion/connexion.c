@@ -24,7 +24,8 @@ int run_server(server_t *server)
 		if ((rc = check_fds(server, &readfds)) ||
 			(rc = handle_new_connections(server, &readfds)) ||
 			(rc = poll_client_commands(server, &readfds)) ||
-			(rc = do_pending_actions(server)))
+			(rc = do_pending_actions(server)) ||
+			(rc = eat_food(server)))
 			return (rc);
 	}
 }

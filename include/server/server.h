@@ -44,6 +44,7 @@ typedef struct player_s {
 typedef struct client_s {
 	int sock;
 	cir_buffer_t buffer;
+	clock_t last_tick;
 	player_t *infos;
 	team_t *team;
 	list_t *cmds;
@@ -79,3 +80,4 @@ int handle_new_connections(server_t *server, fd_set *readfds);
 
 int poll_client_commands(server_t *server, fd_set *readfds);
 int do_pending_actions(server_t *server);
+int eat_food(const server_t *server);
