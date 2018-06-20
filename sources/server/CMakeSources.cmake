@@ -7,6 +7,7 @@ set(CORE
     connexion/connexion.c
     connexion/communication.c
     connexion/new_connection.c
+    connexion/food.c
 
     commands/client_parsing.c
     commands/content.c
