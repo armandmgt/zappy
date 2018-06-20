@@ -10,8 +10,9 @@
 #include "server.h"
 #include "commands.h"
 
-typedef struct	command_values_s {
+typedef struct command_values_s {
 	char *command;
 	bool (*do_action)(server_t *, client_t *, char *);
 	double timeout;
+	bool is_gui;
 } command_values_t;
