@@ -56,20 +56,26 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 
 int do_pending_actions(server_t *server)
 {
-	command_t *command;
+	client_t *client;
+	command_t *cmd;
+	list_t *prev;
 	clock_t end = clock();
 	double total;
 
-	for (list_t *cur = server->commands; cur; cur = cur->next) {
-		command = cur->data;
-		total = (double)
-			(end - command->start_time) / CLOCKS_PER_SEC * 10;
-		if (command->timeout < total) {
-			command->do_action(server, command->client,
-					   command->args);
-			cur = remove_elem(&server->commands, cur->data);
-			if (!cur)
+	for (list_t *cur = server->clients; cur; cur = cur->next) {
+		client = cur->data;
+		if (!client->cmds)
+			continue;
+		cmd = client->cmds->data;
+		total = (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10;
+		if (cmd->timeout < total) {
+			cmd->do_action(server, client, cmd->args);
+			prev = remove_elem(&((client_t *)cur->data)
+				->cmds, cmd);
+			if (!prev || !prev->next)
 				break;
+			else
+				((command_t *)prev->next->data)->s_time = end;
 		}
 	}
 	return (0);
@@ -83,16 +89,15 @@ static void add_command(server_t *server, client_t *client, char **av)
 		return;
 	for (size_t i = 0; i < sizeof(command_assg) /
 		sizeof(*command_assg); i++) {
-		if (strcmp(av[0], command_assg[i].command) == 0 &&
+		if (strcmp(av[0], command_assg[i].command) == 0/* &&
 				  strcmp(client->team->name, GUI_NAME) !=
-				  command_assg[i].is_gui) {
+				  command_assg[i].is_gui*/) {
 			command->args = av[1];
-			command->client = client;
 			command->timeout = command_assg[i].timeout /
 				server->freq;
 			command->do_action = command_assg[i].do_action;
-			command->start_time = clock();
-			add_elem_at_back(&server->commands, command);
+			command->s_time = clock();
+			add_elem_at_back(&client->cmds, command);
 			return;
 		}
 	}
