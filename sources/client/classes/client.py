@@ -1,4 +1,7 @@
 import socket
+from multiprocessing import Queue
+from threading import Thread
+
 from common.vec import Vec2d
 from classes.player import Player
 
@@ -19,8 +22,10 @@ class Client:
 	mapSize = Vec2d(0, 0)
 	host: str
 	slotsLeft: int
+	responses = Queue()
 
 	def __init__(self, port: int, name: str, host: str):
+		self.r_th = Thread(target=self.read, args=(self.sock, self.responses))
 		self.host = host
 		self.port = port
 		self.team = name
@@ -29,9 +34,20 @@ class Client:
 
 	def connect(self):
 		self.sock.connect((self.host, self.port))
+		self.r_th.daemon = True
+		self.r_th.start()
 
-	def read(self) -> str:
-		return self.sock.recv(_max_buffer_size).decode()
+	@staticmethod
+	def read(sock: socket, responses: Queue):
+		buf = ''
+		while True:
+			buf += sock.recv(_max_buffer_size).decode()
+			if len(buf) == 0:
+				return
+			while buf.find('\n') is not -1:
+				res, *buf = buf.split('\n')
+				buf = '\n'.join(buf)
+				responses.put(res)
 
 	def write(self, data):
 		if not data.endswith('\n'):
@@ -41,11 +57,10 @@ class Client:
 	def terminate(self):
 		self.sock.close()
 
-	def get_initial_data(self, data: str):
-		datalist = data.split('\n')
-		self.slotsLeft = int(datalist[0])
-		s = datalist[1].split(' ')
-		self.mapSize = Vec2d(int(s[0]), int(s[1]))
+	def get_initial_data(self):
+		self.slotsLeft = int(self.responses.get())
+		x, y = self.responses.get().split(' ')
+		self.mapSize = Vec2d(int(x), int(y))
 
 	def move_forward(self):
 		self.write('Forward')
@@ -68,7 +83,7 @@ class Client:
 
 	def look(self):
 		self.write('Look')
-		data = parse_response_array(self.read())
+		data = parse_response_array(self.responses.get())
 		for s, vision in zip(data, self.player.vision):
 			segment = s.strip().split(' ')
 			for key in segment:
@@ -76,7 +91,7 @@ class Client:
 
 	def get_inventory(self):
 		self.write('Inventory')
-		data = parse_response_array(self.read())
+		data = parse_response_array(self.responses.get())
 
 		for s in data:
 			item, val = s.strip().split(' ')
@@ -87,7 +102,7 @@ class Client:
 
 	def get_remaining_slots(self):
 		self.write('Connect_nbr')
-		self.slotsLeft = int(self.read())
+		self.slotsLeft = int(self.responses.get())
 
 	def fork(self):
 		if self.slotsLeft > 0:
@@ -98,27 +113,22 @@ class Client:
 
 	def take(self, item: str):
 		self.write('Take ' + item)
-		if self.read().strip() == 'ok':
+		if self.responses.get() == 'ok':
 			self.player.inventory[item] += 1
 
 	def set(self, item: str):
 		if self.player.inventory[item] <= 0:
 			return
 		self.write('Set ' + item)
-		if self.read().strip() == 'ok':
+		if self.responses.get().strip() == 'ok':
 			self.player.inventory[item] -= 1
 			self.player.vision[0][item] += 1
 
 	def incantation(self):
-		if self.player.busy:
+		if self.player.timeout is not 0:
 			return
 		self.write('Incantation')
-		self.player.busy = True
-		response = self.read().strip()
+		response = self.responses.get()
 		if response == 'ko':
-			self.player.busy = False
 			return
-		el, lvl = response.split('\n')
-		new_lvl = lvl.split(' ')
-		self.player.level = int(new_lvl[len(new_lvl) - 1])
-		self.player.busy = False
+		self.player.timeout = 300
