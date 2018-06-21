@@ -70,7 +70,7 @@ func (c *Client) turnLeft() {
 	c.Player.Orientation = (c.Player.Orientation - 1) % 4
 }
 
-func (c *Client) look(b []byte) (bool) {
+func (c *Client) look(b []byte) bool {
 	c.Write("Look\n")
 	content, e := c.Read(b)
 	fmt.Println(content)
@@ -81,11 +81,11 @@ func (c *Client) look(b []byte) (bool) {
 	for i := range contents {
 		cell := strings.Split(contents[i], " ")
 		for y := range cell {
-			c.Player.Vision[i][CellType[cell[y]]] += 1
+			c.Player.Vision[i][CellType[cell[y]]]++
 		}
 	}
 	for i := range c.Player.Vision {
-		fmt.Printf("{%d}", i)
+		fmt.Printf("{ %d }\t", i)
 		for y := range c.Player.Vision[i] {
 			fmt.Printf("[%d]", c.Player.Vision[i][y])
 		}
