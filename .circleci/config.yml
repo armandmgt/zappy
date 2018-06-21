@@ -36,8 +36,3 @@ workflows:
             branches:
               ignore:
                 - master
-      - build_client:
-          filters:
-            branches:
-              ignore:
-                - master
