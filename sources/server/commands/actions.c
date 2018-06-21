@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "server/commands.h"
 #include "common/tools.h"
 #include "gui_commands.h"
@@ -78,6 +79,22 @@ bool set(server_t *server, client_t *client, char *args)
 
 bool broadcast(server_t *server, client_t *client, char *args)
 {
+	list_t *list = server->clients;
+	client_t *tmp;
+	double delta_x;
+	double delta_y;
+	double tan;
+	double result;
+
+	while (list) {
+		tmp = list->data;
+		delta_x = client->infos->pos.x - tmp->infos->pos.x;
+		delta_y = client->infos->pos.y - tmp->infos->pos.y;
+		tan = delta_y / delta_x;
+		result = atan(tan);
+		dprintf(tmp->sock, "message %lf, %s\n", result, args);
+		list = list->next;
+	}
 	dprintf(client->sock, "ok\n");
 	print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
 	return (true);
