@@ -95,15 +95,17 @@ static void stock_command(client_t *client, server_t *server, char **av,
 static void add_command(server_t *server, client_t *client, char **av)
 {
 	for (size_t i = 0; i < sizeof(cmd_ass) / sizeof(*cmd_ass); i++) {
-		if (!strcmp(av[0], cmd_ass[i].command) && client->team->name[0]
+		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
 			stock_command(client, server, av, i);
 			return;
 		}
 	}
-	if (client->team->name[0])
+	if (client->team)
 		return;
-	for (uint8_t i = 0; av[0][i]; i++)
-		client->team->name[i] = av[0][i];
+	for (list_t *cur = server->teams; cur; cur = cur->next) {
+		if (strcmp(av[0], ((team_t *)cur->data)->name) == 0)
+			client->team = cur->data;
+	}
 }
