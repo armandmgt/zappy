@@ -34,7 +34,6 @@ static client_t *new_client(server_t *server)
 	if (!(client = create_client(server)) ||
 		!add_elem_at_front(&server->clients, client))
 		return (NULL);
-	dprintf(client->sock, "WELCOME\n");
 	spawn_client_on_map(&server->map_infos, client);
 	return (client);
 }
@@ -74,5 +73,6 @@ static int accept_client(server_t *server, client_t *client)
 	if ((client->sock = accept(server->sock,
 		(struct sockaddr *)&server->addr, &len)) == -1)
 		return (-1);
+	dprintf(client->sock, "WELCOME\n");
 	return (0);
 }
