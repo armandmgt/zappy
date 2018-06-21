@@ -11,7 +11,7 @@ def get_params():
 		parser.add_argument('-n', type=str, help='Team name')
 		args = parser.parse_args()
 		assert args.p > 0 and len(args.n) > 0
-	except argparse.ArgumentError and AssertionError:
+	except (argparse.ArgumentError, AssertionError, TypeError):
 		sys.exit(1)
 	return args
 
