@@ -43,7 +43,7 @@ bool mct(server_t *server, client_t *client, char *UNUSED(av))
 	for (size_t x = 0; x < server->map_infos.x; x++) {
 		for (size_t y = 0; y < server->map_infos.y; y++) {
 			print_cell_resources(server, client->sock,
-				&(vec2i_t){(uint32_t)x, (uint32_t)y});
+				&(vec2i_t){(uint32_t)y, (uint32_t)x});
 		}
 	}
 	return (true);
@@ -55,7 +55,9 @@ static void print_cell_resources(server_t *server, int sock, vec2i_t *pos)
 
 	cell = get_cell_at(&server->map_infos, pos->x, pos->y);
 	dprintf(sock, "bct %u %u", pos->x, pos->y);
+	printf("bct %u %u", pos->x, pos->y);
 	for (size_t i = 0; i < NB_RESOURCE; i++)
 		dprintf(sock, " %u", cell->resource[i]);
 	dprintf(sock, "\n");
+	printf("\n");
 }
