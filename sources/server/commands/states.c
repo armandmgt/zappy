@@ -76,7 +76,7 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	return (false);
 }
 
-static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+void elevation(server_t *server, client_t *client, uint16_t const *nb,
 	cell_t *cell)
 {
 	client->infos->level += 1;
