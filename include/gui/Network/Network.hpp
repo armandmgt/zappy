@@ -8,18 +8,27 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
+#include "MyEvents.hpp"
 
-class NetworkGui {
+class NetworkGui : public Receiver {
 public:
-    NetworkGui() = default;
+    explicit NetworkGui(EventManager &evtMgr) noexcept : _evtMgr(evtMgr) { evtMgr.subscribe<MsgEvent>(*this); }
+    ~NetworkGui() noexcept { _evtMgr.unsubscribe<MsgEvent>(*this); }
 
-    void updateGui();
+    void updateGui() noexcept;
+public:
+    /*
+     * Events Callbacks
+     */
+    void receive(const MsgEvent &msgEvent) noexcept;
 private:
-    int connect();
-    std::string receive();
-    void send(std::string &&msg);
+    void connect() noexcept;
+    void receiveMsg() noexcept;
+    void send(std::string &&msg) const noexcept ;
 
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
     int _ipAddr[4] { 127, 0, 0, 1 };
+    EventManager &_evtMgr;
 };

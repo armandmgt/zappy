@@ -56,7 +56,7 @@ public:
 template<typename EventType>
 class callbackWrapper : public BaseCallbackWrapper {
 public:
-    explicit callbackWrapper(const std::function<void(const EventType &)> &callBack) noexcept : _callback(callBack) {}
+    explicit callbackWrapper(const std::function<void(const EventType &)> &callBack) noexcept : _callback(std::move(callBack)) {}
     void operator()(const BaseEvent *event) const noexcept
     {
 	    _callback(*(static_cast<const EventType *>(event)));
@@ -117,7 +117,7 @@ public:
     template <typename EventType, typename ... Params>
     void emit(Params &&... params) noexcept {
 	    static_assert(std::is_base_of<BaseEvent, EventType>(), "Templated parameter is not based of BaseEvent");
-	    EventType event(std::forward<Params>(params)...);
+	    EventType event{ std::forward<Params>(params)... };
 	    const ClassTypeId::TypeId eventType = ClassTypeId::getTypeId<EventType>();
 	    /*
 	     * std::unordered_multimap::equal_range()

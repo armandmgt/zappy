@@ -13,14 +13,16 @@
 #include "imgui.hpp"
 #include "Network.hpp"
 
-int NetworkGui::connect()
+void NetworkGui::connect() noexcept
 {
 	uint32_t ip{0};
 	struct sockaddr_in addr;
 	socklen_t size = sizeof(struct sockaddr_in);
 
-	if ((_serverSoket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-		return -1;
+	if ((_serverSoket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+		//Todo : Throw
+		return;
+	}
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(_serverPort);
 	for (auto it : _ipAddr) {
@@ -30,32 +32,35 @@ int NetworkGui::connect()
 	addr.sin_addr.s_addr = htonl(ip);
 	if ((::connect(_serverSoket, (struct sockaddr *) &addr, size)) == -1) {
 		_serverSoket = -1;
-		return -1;
+		return;
 	}
-	return 0;
 }
 
-std::string NetworkGui::receive()
+void NetworkGui::receiveMsg() noexcept
 {
-	ssize_t nread;
-	size_t len = 0;
-	char *line = nullptr;
-	static FILE *stream = fdopen(_serverSoket, "r");;
+	if (_serverSoket != -1) {
+		pollfd fds[] = {_serverSoket, POLLIN, 0};
+		if (poll(fds, 1, 0) == 0)
+			return;
+		else if (fds[0].revents & POLLIN) {
+			ssize_t nread;
+			size_t len = 0;
+			char *line = nullptr;
+			static FILE *stream = fdopen(_serverSoket, "r");;
 
-	nread = getline(&line, &len, stream);
-	if (nread == -1)
-		return "DISCONECTED";
-	std::string s(line);
-	free(line);
-	return (s);
+			nread = getline(&line, &len, stream);
+			_evtMgr.emit<MsgEvent>((nread == -1) ? "DISCONNECTED" : line);
+			free(line);
+		}
+	}
 }
 
-void NetworkGui::send(std::string &&msg)
+void NetworkGui::send(std::string &&msg) const noexcept
 {
-
+	dprintf(_serverSoket, msg.c_str());
 }
 
-void NetworkGui::updateGui()
+void NetworkGui::updateGui() noexcept
 {
 	ImGuiWindowFlags window_flags = 0;
 	static bool no_titlebar = false;
@@ -74,21 +79,22 @@ void NetworkGui::updateGui()
 	if (no_nav) window_flags |= ImGuiWindowFlags_NoNav;
 	if (!ImGui::Begin("Zappy NetWorkGui", nullptr, window_flags)) {
 		ImGui::End();
-		return ;
+		return;
 	}
-	if (ImGui::Button("Launch Server")) { /*launchServer();*/ }; ImGui::Separator();
-	ImGui::Text("Server ip :"); ImGui::SameLine(); ImGui::InputInt4("", _ipAddr); ImGui::SameLine();
+	if (ImGui::Button("Launch Server")) { /*launchServer();*/ };
+	ImGui::Separator();
+	ImGui::Text("Server ip :");
+	ImGui::SameLine();
+	ImGui::InputInt4("", _ipAddr);
+	ImGui::SameLine();
 	if (_serverSoket == -1 && ImGui::Button("Connect")) { connect(); };
-
 	/*
 	 * Todo: Console
 	 */
-	if (_serverSoket != -1) {
-		pollfd fds[] = {_serverSoket, POLLIN, 0};
-		if (poll(fds, 1, 0) == 0)
-			return;
-		if (fds[0].revents & POLLIN) {
-			std::string msg = receive();
-		}
-	}
+	receiveMsg();
+}
+
+void NetworkGui::receive(const MsgEvent &msgEvent) noexcept
+{
+	std::cout << msgEvent._msg << std::endl;
 }

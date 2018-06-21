@@ -14,14 +14,14 @@
 
 class GameScene final : public AScene, public Receiver {
 public:
-    explicit GameScene(SceneManager &parent) noexcept : AScene(parent) {}
+    explicit GameScene(SceneManager &parent) noexcept : AScene(parent), _networkMgr(parent.getEventMgr()) {}
 
     /*
      * Scene Manipulation
      */
-    void enter() override;
-    void exit() override;
-    void update(float timeSinceLastFrame) override;
+    void enter() noexcept override;
+    void exit() noexcept override;
+    void update(float timeSinceLastFrame) noexcept override;
 public:
     /*
      * Events Callback
