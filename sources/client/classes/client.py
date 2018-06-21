@@ -91,3 +91,7 @@ class Client:
 	def get_remaining_slots(self):
 		self.write('Connect_nbr')
 		self.slotsLeft = int(self.read())
+
+	def fork(self):
+		if self.slotsLeft > 0:
+			self.write('Fork')
