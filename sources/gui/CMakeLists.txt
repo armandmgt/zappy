@@ -4,7 +4,7 @@ include(CMakeSources.cmake)
 
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SRCS} ../../include/gui/Sfml/MyEvents.hpp)
+add_executable(${PROJECT_NAME} ${SRCS} ../../include/gui/Infos/Inventory.hpp)
 
 #CXXFlags
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wfatal-errors")
@@ -23,6 +23,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/common)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Sfml)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Infos)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Network)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/gui/Sfml/Scenes)
 

@@ -43,17 +43,17 @@ void NetworkGui::send(std::string &&msg) const noexcept
 
 void NetworkGui::receiveMsg() noexcept
 {
-	static FILE *stream = fdopen(_serverSoket, "r");;
+	ssize_t nread;
 	pollfd fds{_serverSoket, POLLIN, 0};
 	poll(&fds, 1, 0);
-	if (fds.revents & POLLIN || !feof(stream)) {
-		ssize_t nread;
-		size_t len = 0;
+	if (fds.revents & POLLIN && (nread = write_cbuf(&_buffer, _serverSoket)) <= 0) {
+		_evtMgr.emit<MsgEvent>("DISCONNECTED");
+	}
+	if (!_buffer.empty) {
 		char *line = nullptr;
-
-		nread = getline(&line, &len, stream);
-		printf("[%s", line);
-		_evtMgr.emit<MsgEvent>((nread == -1) ? "DISCONNECTED" : line);
+		read_cbuf(&_buffer, &line);
+		if (line != nullptr)
+			_evtMgr.emit<MsgEvent>(line);
 		free(line);
 	}
 }

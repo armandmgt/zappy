@@ -1,5 +1,7 @@
 set(CORE
         main.cpp
+        ../common/cir_buffer.c
+        ../common/init_cir_buffer.c
         )
 
 set(CORE_SCENES
