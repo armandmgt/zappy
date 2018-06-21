@@ -76,9 +76,8 @@ bool set(server_t *server, client_t *client, char *args)
 	return (false);
 }
 
-bool broadcast(server_t *server, client_t *client, char *args)
+bool broadcast(server_t *UNUSED(server), client_t *UNUSED(client),
+	char *UNUSED(args))
 {
-	dprintf(client->sock, "ok\n");
-	print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
-	return (true);
+	return (false);
 }
