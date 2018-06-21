@@ -27,4 +27,5 @@ bool eject(server_t *server, client_t *client, char *args);
 bool take(server_t *server, client_t *client, char *args);
 bool set(server_t *server, client_t *client, char *args);
 bool incantation(server_t *server, client_t *client, char *args);
+bool elevation(server_t *server, client_t *client, char *args);
 bool death(server_t *server, client_t *client, char *args);

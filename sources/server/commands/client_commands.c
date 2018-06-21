@@ -24,7 +24,7 @@ static  command_values_t const cmd_ass[] = {
 	{"Connect_nbr", NULL, &connect_nbr, 0, false},
 	{"Fork", NULL, &birth, 42, false}, {"Eject", NULL, &eject, 7, false},
 	{"Take", NULL, &take, 7, false}, {"Set", NULL, &set, 7, false},
-	{"Incantation", NULL, &incantation, 300, false},
+	{"Incantation", incantation, &elevation, 300, false},
 	{"msz", NULL, &msz, 0, true}, {"bct", NULL, &bct, 0, true},
 	{"mct", NULL, &mct, 0, true}, {"ppo", NULL, &ppo, 0, true},
 	{"plv", NULL, &plv, 0, true}, {"pin", NULL, &pin, 0, true},
@@ -104,8 +104,11 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
-			if (cmd_ass[i].before_action(server, client, av[i])
+			if (cmd_ass[i].before_action != NULL &&
+			    cmd_ass[i].before_action(server, client, av[i])
 			    == true)
+				stock_command(client, server, av, i);
+			else if (cmd_ass[i].before_action == NULL)
 				stock_command(client, server, av, i);
 			return;
 		}
