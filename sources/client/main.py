@@ -1,5 +1,7 @@
 import argparse
 import sys
+
+from classes.AI import AI
 from classes.client import Client
 
 
@@ -18,13 +20,14 @@ def get_params():
 
 def run_game(c: Client):
 	c.connect()
-	welcome = c.read()
-	if welcome != 'WELCOME\n':
+	welcome = c.responses.get()
+	if welcome != 'WELCOME':
 		raise RuntimeError('invalid first message; got:\t', welcome)
 	c.write(c.team)
-	c.get_initial_data(c.read())
-	c.take('food')
-	c.take('linemate')
+	c.get_initial_data()
+	ai = AI(c)
+	while True:
+		ai.make_decision()
 
 
 if __name__ == '__main__':
