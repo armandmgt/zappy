@@ -55,9 +55,7 @@ static void print_cell_resources(server_t *server, int sock, vec2i_t *pos)
 
 	cell = get_cell_at(&server->map_infos, pos->x, pos->y);
 	dprintf(sock, "bct %u %u", pos->x, pos->y);
-	printf("bct %u %u", pos->x, pos->y);
 	for (size_t i = 0; i < NB_RESOURCE; i++)
 		dprintf(sock, " %u", cell->resource[i]);
 	dprintf(sock, "\n");
-	printf("\n");
 }

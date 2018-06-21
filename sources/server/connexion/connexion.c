@@ -35,7 +35,6 @@ int init_server(options_t *opts, server_t *server)
 	server->teams = opts->teams;
 	init_teams(server->teams, opts->max_clients);
 	server->map_infos = (map_t){.x = opts->width, .y = opts->height, 0};
-	printf("%u %u\n", server->map_infos.x, server->map_infos.y);
 	generate_map(80, 10, &server->map_infos);
 	server->addr.sin_family = AF_INET;
 	server->addr.sin_port = htons(opts->port);
