@@ -88,7 +88,8 @@ static void stock_command(client_t *client, server_t *server, char **av,
 
 	if (!command || !av)
 		return;
-	command->args = av[1];
+	if (av[1])
+		command->args = strdup(av[1]);
 	command->timeout = cmd_ass[i].timeout / server->freq;
 	command->do_action = cmd_ass[i].do_action;
 	command->s_time = clock();

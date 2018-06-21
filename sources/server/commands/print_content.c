@@ -55,12 +55,6 @@ void print_row_content(map_t *map_infos, client_t *client,
 
 static void print_cell_content(cell_t *cell, client_t *client)
 {
-	static resource_name_t const res_name[NB_RESOURCE] = {
-		{FOOD, "food"}, {LINEMATE, "linemate"},
-		{DERAUMERE, "deraumere"}, {SIBUR, "sibur"},
-		{MENDIANE, "mendiane"}, {PHIRAS, "phiras"},
-		{THYSTAME, "thystame"}
-	};
 	size_t len = list_len(cell->players);
 
 	for (size_t i = 0; i < len; i++)
