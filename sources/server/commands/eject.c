@@ -15,17 +15,15 @@ static void change_data(server_t *server, list_t *tmp);
 
 bool eject(server_t *server, client_t *client, char *UNUSED(args))
 {
-	list_t *tmp = get_player_list_at(&server->map_infos,
+	list_t **list = get_player_list_at(&server->map_infos,
 		client->infos->pos.x,client->infos->pos.y);
 
 	if (list_len(*list) <= 1) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
-	while (tmp) {
+	for (list_t *tmp = *list; tmp; tmp = tmp->next)
 		change_data(server, tmp);
-		tmp = tmp->next;
-	}
 	dprintf(client->sock, "ok\n");
 	print_in_gui(server->clients, "pex %d\n", client->infos->id);
 	return (true);
