@@ -95,7 +95,7 @@ static void stock_command(client_t *client, server_t *server, char **av,
 static void add_command(server_t *server, client_t *client, char **av)
 {
 	for (size_t i = 0; i < sizeof(cmd_ass) / sizeof(*cmd_ass); i++) {
-		if (!strcmp(av[0], cmd_ass[i].command) &&client->team->name[0]
+		if (!strcmp(av[0], cmd_ass[i].command) && client->team->name[0]
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
 			stock_command(client, server, av, i);
