@@ -87,3 +87,7 @@ class Client:
 
 	def broadcast(self, text: str):
 		self.write('Broadcast ' + text)
+
+	def get_remaining_slots(self):
+		self.write('Connect_nbr')
+		self.slotsLeft = int(self.read())
