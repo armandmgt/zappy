@@ -1,4 +1,5 @@
 import socket
+import pprint
 from common.vec import Vec2d
 from classes.player import Player
 
@@ -95,3 +96,21 @@ class Client:
 	def fork(self):
 		if self.slotsLeft > 0:
 			self.write('Fork')
+
+	def eject(self):
+		self.write('Eject')
+
+	def take(self, item: str):
+		self.write('Take ' + item)
+		if self.read().strip() == 'ok':
+			self.player.inventory[item] += 1
+
+	def set(self, item: str):
+		if self.player.inventory[item] <= 0:
+			return
+		self.write('Set ' + item)
+		if self.read().strip() == 'ok':
+			self.player.inventory[item] -= 1
+			self.player.vision[0][item] += 1
+
+	# def incantation(self):
