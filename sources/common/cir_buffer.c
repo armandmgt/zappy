@@ -25,9 +25,9 @@ ssize_t write_cbuf(cir_buffer_t *buffer, int fd)
 	return (read_size);
 }
 
-uint8_t *find_line_end(cir_buffer_t *buffer)
+char * find_line_end(cir_buffer_t *buffer)
 {
-	uint8_t *delim;
+	char *delim;
 	size_t search_size = buffer->write_ptr <= buffer->read_ptr ?
 		buffer->end - buffer->read_ptr :
 		buffer->write_ptr - buffer->read_ptr;
@@ -42,7 +42,7 @@ uint8_t *find_line_end(cir_buffer_t *buffer)
 	return (delim);
 }
 
-uint8_t *alloc_line(cir_buffer_t *buffer, const uint8_t *endptr)
+char * alloc_line(cir_buffer_t *buffer, char *endptr)
 {
 	size_t size = 0;
 
@@ -51,7 +51,7 @@ uint8_t *alloc_line(cir_buffer_t *buffer, const uint8_t *endptr)
 	return (calloc(sizeof(uint8_t), size + 1));
 }
 
-void copy_line(cir_buffer_t *buffer, uint8_t *line, const uint8_t *endptr)
+void copy_line(cir_buffer_t *buffer, char *line, const char *endptr)
 {
 	size_t offset;
 	size_t len;
@@ -67,9 +67,9 @@ void copy_line(cir_buffer_t *buffer, uint8_t *line, const uint8_t *endptr)
 	}
 }
 
-int read_cbuf(cir_buffer_t *buffer, uint8_t **line)
+int read_cbuf(cir_buffer_t *buffer, char **line)
 {
-	uint8_t *endptr = find_line_end(buffer);
+	char *endptr = find_line_end(buffer);
 
 	if (buffer->empty || !endptr || !(*line = alloc_line(buffer, endptr)))
 		return (0);
