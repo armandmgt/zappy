@@ -7,7 +7,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "server.h"
 #include "gui_commands.h"
 #include "tools.h"
 
