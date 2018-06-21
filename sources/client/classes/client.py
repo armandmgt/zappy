@@ -69,13 +69,10 @@ class Client:
 	def look(self):
 		self.write('Look')
 		data = parse_response_array(self.read())
-		i = 0
-
-		for s in data:
+		for s, vision in zip(data, self.player.vision):
 			segment = s.strip().split(' ')
 			for key in segment:
-				self.player.vision[i][key] += 1
-			i += 1
+				vision[key] += 1
 
 	def get_inventory(self):
 		self.write('Inventory')
