@@ -18,7 +18,7 @@ bool eject(server_t *server, client_t *client, char *UNUSED(args))
 	list_t **list = get_player_list_at(&server->map_infos,
 		client->infos->pos.x,client->infos->pos.y);
 
-	if (list_len(*list) <= 1) {
+	if (list_len(tmp) <= 1) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
