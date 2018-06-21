@@ -44,7 +44,7 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 		if (!cur)
 			break;
 		if (!client->buffer.empty &&
-			read_cbuf(&client->buffer, (uint8_t **)&line)) {
+			read_cbuf(&client->buffer, &line)) {
 			command[0] = strtok(line, " ");
 			command[1] = strtok(NULL, "");
 			add_command(server, client, command);
