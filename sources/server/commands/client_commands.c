@@ -68,15 +68,15 @@ int do_pending_actions(server_t *server)
 			continue;
 		cmd = client->cmds->data;
 		total = (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10;
-		if (cmd->timeout < total) {
-			cmd->do_action(server, client, cmd->args);
-			prev = remove_elem(&((client_t *)cur->data)
-				->cmds, cmd);
-			if (!prev)
-				break;
-			else
-				((command_t *)prev->data)->s_time = end;
-		}
+		if (cmd->timeout > total)
+			continue;
+		cmd->do_action(server, client, cmd->args);
+		if (cmd->args)
+			free(cmd->args);
+		if (!(prev = remove_elem(&((client_t *)cur->data)->cmds, cmd)))
+			break;
+		else
+			((command_t *)prev->data)->s_time = end;
 	}
 	return (0);
 }
