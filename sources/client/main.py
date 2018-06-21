@@ -1,9 +1,6 @@
 import argparse
 import sys
-
 from classes.client import Client
-from classes.player import Player
-from common.vec import Vec2d
 
 
 def get_params():
@@ -19,9 +16,17 @@ def get_params():
 	return args
 
 
+def run_game(c: Client):
+	c.connect()
+	welcome = c.read()
+	if welcome != "WELCOME\n":
+		raise RuntimeError("invalid first message; got:\t", welcome)
+	c.write(c.team)
+	c.get_initial_data(c.read())
+
+
 if __name__ == "__main__":
 	params = get_params()
 
-	c = Client(port=params.p, name=params.n, host=params.h if params.h is not None else "127.0.0.1")
-	v = Vec2d(0, 0)
-	p = Player(team=c.teamName, no=0, pos=None)
+	client = Client(port=params.p, name=params.n, host=params.h if params.h is not None else "127.0.0.1")
+	run_game(client)
