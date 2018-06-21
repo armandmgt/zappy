@@ -68,7 +68,7 @@ static void print_cell_content(cell_t *cell, client_t *client)
 	for (size_t i = 0; i < NB_RESOURCE; i++) {
 		for (int j = 0; j < get_resource_on_cell(cell,
 			(resource_t)i); j++)
-			dprintf(client->sock, " %s", tab[i].name);
+			dprintf(client->sock, " %s", res_name[i].name);
 	}
 }
 
