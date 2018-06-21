@@ -21,6 +21,7 @@ typedef struct team_s {
 } team_t;
 
 typedef struct player_s {
+	uint32_t id;
 	uint16_t level;
 	uint32_t inventory[NB_RESOURCE];
 	uint32_t lifetime;

@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "server/map.h"
+#include "map.h"
 
 bool add_resource_to_cell(cell_t *cell, resource_t res, uint16_t nb)
 {
@@ -16,6 +16,19 @@ bool add_resource_to_cell(cell_t *cell, resource_t res, uint16_t nb)
 		return (false);
 	}
 	cell->resource[res] += nb;
+	return (true);
+}
+
+bool add_random_resource_at(map_t *map, uint32_t x, uint32_t y)
+{
+	size_t rd = (size_t)(rand() % NB_RESOURCE);
+
+	if (!map) {
+		fprintf(stderr, "invalid pointer\n");
+		return (false);
+	}
+	map->map[y][x].resource[rd] += 1;
+	printf("spawned %ld at %d %d\n", rd, x, y);
 	return (true);
 }
 

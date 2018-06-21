@@ -8,15 +8,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include "server/commands.h"
 #include "common/tools.h"
-#include "common/linked_list.h"
 #include "server/server.h"
+#include "gui_commands.h"
+#include "resources.h"
 
-static void elevation(client_t *client, uint16_t const *nb, cell_t *cell);
-static int count_same_team_player(cell_t *cell, client_t *client);
+static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+	cell_t *cell);
+static void print_incantation_infos(server_t *server, client_t *client);
 
-bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 {
 	player_t *tmp = client->infos;
 
@@ -27,6 +28,12 @@ bool inventory(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
+		print_in_gui(server->clients, "pin %d %d %d", client->infos->id,
+		client->infos->pos.x, client->infos->pos.y);
+		for (int i = 0; i < NB_RESOURCE; i++)
+			print_in_gui(server->clients, " %d",
+				client->infos->inventory[i]);
+		print_in_gui(server->clients, "\n");
 	}
 	return (true);
 }
@@ -40,7 +47,7 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 		{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
 	cell_t *cell = get_client_cell(&server->map_infos, client);
 
-	if (count_same_team_player(cell, client) != tab[idx][0]) {
+	if (list_len(cell->players) != tab[idx][0]) {
 		dprintf(client->sock, "ko\n");
 		return (false);
 	}
@@ -50,7 +57,8 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 			return (false);
 		}
 	}
-	elevation(client, tab[idx], cell);
+	print_incantation_infos(server, client);
+	elevation(server, client, tab[idx], cell);
 	return (true);
 }
 
@@ -59,6 +67,8 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
 		if (tmp->data == client && client->infos->lifetime == 0) {
 			dprintf(client->sock, "dead\n");
+			print_in_gui(server->clients, "pdi %d\n",
+				client->infos->id);
 			close(client->sock);
 			free(client->infos);
 			free(tmp->data);
@@ -69,7 +79,8 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	return (false);
 }
 
-static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
+static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+	cell_t *cell)
 {
 	client->infos->level += 1;
 	for (int i = 0; i < NB_RESOURCE; i++) {
@@ -78,17 +89,21 @@ static void elevation(client_t *client, uint16_t const *nb, cell_t *cell)
 	}
 	dprintf(client->sock, "Elevation underway\nCurrent level "
 			      "%d\n", client->infos->level);
+	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
+		client->infos->pos.y);
 }
 
-static int count_same_team_player(cell_t *cell, client_t *client)
+static void print_incantation_infos(server_t *server, client_t *client)
 {
-	int cmpt = 0;
+	list_t **list = get_player_list_at(&server->map_infos,
+		client->infos->pos.x, client->infos->pos.y);
 	client_t *tmp_client;
 
-	for (list_t *tmp = cell->players; tmp != NULL; tmp = tmp->next) {
+	print_in_gui(server->clients, "pic %d %d %d", client->infos->pos.x,
+		client->infos->pos.y, client->infos->level);
+	for (list_t *tmp = *list; tmp; tmp = tmp->next) {
 		tmp_client = tmp->data;
-		if (strcmp(tmp_client->team->name, client->team->name) == 0)
-			cmpt = cmpt + 1;
+		print_in_gui(server->clients, " %d", tmp_client->infos->id);
 	}
-	return (cmpt);
+	print_in_gui(server->clients, "\n");
 }
