@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "server.h"
 #include "gui_commands.h"
 #include "tools.h"
 
