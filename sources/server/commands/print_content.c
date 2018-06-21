@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include "server.h"
-#include "resources.h"
 
 static void print_cell_content(cell_t *cell, client_t *client);
 static uint32_t wrapped_coord(int32_t coord, uint32_t range);
@@ -58,17 +57,12 @@ static void print_cell_content(cell_t *cell, client_t *client)
 	};
 	size_t len = list_len(cell->players);
 
-	for (size_t i = 0; i < len; i++) {
-		if (i > 0)
-			dprintf(client->sock, " ");
-		dprintf(client->sock, "player");
-	}
+	for (size_t i = 0; i < len; i++)
+		dprintf(client->sock, " player");
 	for (size_t i = 0; i < NB_RESOURCE; i++) {
-		if (i != 0 || len)
-			dprintf(client->sock, " ");
 		for (int j = 0; j < get_resource_on_cell(cell,
 			(resource_t)i); j++)
-			dprintf(client->sock, "%s", res_name[i].name);
+			dprintf(client->sock, " %s", res_name[i].name);
 	}
 }
 

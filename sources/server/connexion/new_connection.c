@@ -36,6 +36,7 @@ static client_t *new_client(server_t *server)
 		return (NULL);
 	dprintf(client->sock, "WELCOME\n");
 	spawn_client_on_map(&server->map_infos, client);
+	spawn_resources(&server->map_infos);
 	return (client);
 }
 
