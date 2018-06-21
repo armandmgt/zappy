@@ -24,7 +24,7 @@ GOCLEAN	=	$(GOCMD) clean
 NAME	=	zappy_ai
 
 
-all: help
+all: build
 .PHONY: all
 
 help:
