@@ -15,7 +15,8 @@ void print_line_content(map_t *map_infos, client_t *client,
 	int32_t tmp_y, uint32_t tiles)
 {
 	cell_t *tmp_cell;
-	int32_t tmp_x = client->infos->pos.x  - (tiles / 2);
+	int32_t tmp_x = client->infos->direction == NORTH ? client->infos->pos
+		.x  - (tiles /	2) : client->infos->pos.x  + (tiles /	2);
 	uint32_t x = wrapped_coord(tmp_x, map_infos->x);
 	uint32_t y = wrapped_coord(tmp_y, map_infos->y);
 
@@ -25,15 +26,18 @@ void print_line_content(map_t *map_infos, client_t *client,
 		x = wrapped_coord(x, map_infos->x);
 		tmp_cell = get_cell_at(map_infos, x, y);
 		print_cell_content(tmp_cell, client);
-		x++;
+		x = client->infos->direction == NORTH ? x + 1 : x - 1;
 	}
+	if (tiles == 1)
+		dprintf(client->sock, ",");
 }
 
 void print_row_content(map_t *map_infos, client_t *client,
 	int32_t tmp_x, uint32_t tiles)
 {
 	cell_t *tmp_cell;
-	int32_t tmp_y = client->infos->pos.y  - (tiles / 2);
+	int32_t tmp_y = client->infos->direction == EAST ? client->infos->pos
+		.y  - (tiles /	2) : client->infos->pos.y  + (tiles /	2);
 	uint32_t y = wrapped_coord(tmp_y, map_infos->y);
 	uint32_t x = wrapped_coord(tmp_x, map_infos->x);
 
@@ -43,8 +47,10 @@ void print_row_content(map_t *map_infos, client_t *client,
 		y = wrapped_coord(y, map_infos->y);
 		tmp_cell = get_cell_at(map_infos, x, y);
 		print_cell_content(tmp_cell, client);
-		y++;
+		y = client->infos->direction == EAST ? y + 1 : y - 1;
 	}
+	if (tiles == 1)
+		dprintf(client->sock, ",");
 }
 
 static void print_cell_content(cell_t *cell, client_t *client)
