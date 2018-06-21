@@ -5,6 +5,12 @@ from classes.player import Player
 _max_buffer_size = 4096
 
 
+def parse_response_array(s: str) -> []:
+	translator = str.maketrans('', '', '[]\n')
+	data = s.translate(translator).strip().split(',')
+	return data
+
+
 class Client:
 	player: Player = None
 	sock = socket.socket()
@@ -62,9 +68,7 @@ class Client:
 
 	def look(self):
 		self.write('Look')
-		response = self.read()
-		translator = str.maketrans('', '', '[]\n')
-		data = response.translate(translator).strip().split(',')
+		data = parse_response_array(self.read())
 		i = 0
 
 		for s in data:
@@ -72,3 +76,11 @@ class Client:
 			for key in segment:
 				self.player.vision[i][key] += 1
 			i += 1
+
+	def get_inventory(self):
+		self.write('Inventory')
+		data = parse_response_array(self.read())
+
+		for s in data:
+			item, val = s.strip().split(' ')
+			self.player.inventory[item] = val
