@@ -40,8 +40,10 @@ class Client:
 	@staticmethod
 	def read(sock: socket, responses: Queue):
 		buf = ''
-		while sock:
+		while True:
 			buf += sock.recv(_max_buffer_size).decode()
+			if len(buf) == 0:
+				return
 			while buf.find('\n') is not -1:
 				res, *buf = buf.split('\n')
 				buf = '\n'.join(buf)

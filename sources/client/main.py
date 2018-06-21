@@ -26,7 +26,7 @@ def run_game(c: Client):
 	c.write(c.team)
 	c.get_initial_data()
 	ai = AI(c)
-	while True:
+	while c.r_th.isAlive():
 		ai.make_decision()
 
 
