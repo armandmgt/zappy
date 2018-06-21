@@ -75,3 +75,9 @@ bool set(server_t *server, client_t *client, char *args)
 	dprintf(client->sock, "ko\n");
 	return (false);
 }
+
+bool broadcast(server_t *UNUSED(server), client_t *UNUSED(client),
+	char *UNUSED(args))
+{
+	return (false);
+}

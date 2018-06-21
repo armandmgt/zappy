@@ -15,7 +15,6 @@ set(CORE
     commands/directions.c
     commands/states.c
     commands/eject.c
-    commands/broadcast.c
 	commands/look.c
 	commands/print_content.c
     commands/content.c

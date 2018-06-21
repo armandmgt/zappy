@@ -11,8 +11,11 @@
 #include "server/server.h"
 #include "gui_commands.h"
 
-void elevation(server_t *server, client_t *client, uint16_t const *nb,
-	cell_t *cell);
+static uint16_t const tab[7][7] = {
+	{1, 1, 0, 0, 0, 0, 0}, {2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
+	{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0}, {6, 1, 2, 3, 0, 1, 0},
+	{6, 2, 2, 2, 2, 2, 1}
+};
 static void print_incantation_infos(server_t *server, client_t *client);
 
 bool inventory(server_t *server, client_t *client, char *UNUSED(args))
@@ -39,10 +42,6 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 {
 	int idx = client->infos->level - 1;
-	static uint16_t const tab[7][7] = {{1, 1, 0, 0, 0, 0, 0},
-		{2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
-		{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0},
-		{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
 	cell_t *cell = get_client_cell(&server->map_infos, client);
 
 	if (list_len(cell->players) != tab[idx][0]) {
@@ -57,6 +56,17 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 	}
 	print_incantation_infos(server, client);
 	return (true);
+}
+
+void elevation(server_t *server, client_t *client, char *UNUSED(args))
+{
+	int idx = client->infos->level - 1;
+	client->infos->level += 1;
+	for (int i = 0; i < NB_RESOURCE; i++)
+		client->infos->inventory[i] -= tab[idx][i + 1];
+	dprintf(client->sock, "Current level %d\n", client->infos->level);
+	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
+		client->infos->pos.y);
 }
 
 bool death(server_t *server, client_t *client, char *UNUSED(args))
@@ -74,19 +84,6 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 		}
 	}
 	return (false);
-}
-
-void elevation(server_t *server, client_t *client, uint16_t const *nb,
-	cell_t *cell)
-{
-	client->infos->level += 1;
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		client->infos->inventory[i] -= nb[i + 1];
-		remove_resource_on_cell(cell, (resource_t)i, nb[i + 1]);
-	}
-	dprintf(client->sock, "Current level %d\n", client->infos->level);
-	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
-		client->infos->pos.y);
 }
 
 static void print_incantation_infos(server_t *server, client_t *client)
