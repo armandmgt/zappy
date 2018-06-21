@@ -87,8 +87,7 @@ static void elevation(server_t *server, client_t *client, uint16_t const *nb,
 		client->infos->inventory[i] -= nb[i + 1];
 		remove_resource_on_cell(cell, (resource_t)i, nb[i + 1]);
 	}
-	dprintf(client->sock, "Elevation underway\nCurrent level "
-			      "%d\n", client->infos->level);
+	dprintf(client->sock, "Current level %d\n", client->infos->level);
 	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
 		client->infos->pos.y);
 }
@@ -99,6 +98,7 @@ static void print_incantation_infos(server_t *server, client_t *client)
 		client->infos->pos.x, client->infos->pos.y);
 	client_t *tmp_client;
 
+	dprintf(client->sock, "Elevation underway\n");
 	print_in_gui(server->clients, "pic %d %d %d", client->infos->pos.x,
 		client->infos->pos.y, client->infos->level);
 	for (list_t *tmp = *list; tmp; tmp = tmp->next) {
