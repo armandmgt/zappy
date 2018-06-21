@@ -5,5 +5,5 @@ zappy.sh
 bin
 include
 lib
-ip-selfcheck.json
+pip-selfcheck.json
 __pycache__/
