@@ -38,8 +38,11 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		client = cur->data;
-		if (FD_ISSET(client->sock, readfds))
-			write_cbuf(&client->buffer, client->sock);
+		if (FD_ISSET(client->sock, readfds) &&
+			write_cbuf(&client->buffer, client->sock) <= 0)
+			cur = remove_elem(&server->clients, client);
+		if (!cur)
+			break;
 		if (!client->buffer.empty &&
 			read_cbuf(&client->buffer, (uint8_t **)&line)) {
 			command[0] = strtok(line, " ");
