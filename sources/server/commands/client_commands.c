@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 #include "server/gui_magic.h"
 #include "command_value.h"
 #include "gui_commands.h"
@@ -111,4 +112,7 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (strcmp(av[0], ((team_t *)cur->data)->name) == 0)
 			client->team = cur->data;
 	}
+	if (client->team && strcmp(client->team->name, GUI_NAME) != 0)
+		dprintf(client->sock, "%d\n%d %d\n", client->infos->id,
+		server->map_infos.x, server->map_infos.y);
 }
