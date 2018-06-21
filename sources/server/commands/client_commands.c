@@ -16,19 +16,20 @@
 static void add_command(server_t *server, client_t *client, char **av);
 
 static  command_values_t const cmd_ass[] = {
-	{"Forward", &forward, 7, false}, {"Right", &right, 7, false},
-	{"Left", &left, 7, false}, {"Look", &look, 7, false},
-	{"Inventory", &inventory, 1, false},
-	{"Broadcast text", &broadcast, 7, false},
-	{"Connect_nbr", &connect_nbr, 0, false},
-	{"Fork", &birth, 42, false}, {"Eject", &eject, 7, false},
-	{"Take", &take, 7, false}, {"Set", &set, 7, false},
-	{"Incantation", &incantation, 300, false},
-	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
-	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
-	{"plv", &plv, 0, true}, {"pin", &pin, 0, true},
-	{"tna", &tna, 0, true}, {"sgt", &sgt, 0, true},
-	{"sst", &sst, 0, true}
+	{"Forward", NULL, &forward, 7, false},
+	{"Right", NULL, &right, 7, false}, {"Left", NULL, &left, 7, false},
+	{"Look", NULL, &look, 7, false},
+	{"Inventory", NULL, &inventory, 1, false},
+	{"Broadcast text", NULL, &broadcast, 7, false},
+	{"Connect_nbr", NULL, &connect_nbr, 0, false},
+	{"Fork", NULL, &birth, 42, false}, {"Eject", NULL, &eject, 7, false},
+	{"Take", NULL, &take, 7, false}, {"Set", NULL, &set, 7, false},
+	{"Incantation", NULL, &incantation, 300, false},
+	{"msz", NULL, &msz, 0, true}, {"bct", NULL, &bct, 0, true},
+	{"mct", NULL, &mct, 0, true}, {"ppo", NULL, &ppo, 0, true},
+	{"plv", NULL, &plv, 0, true}, {"pin", NULL, &pin, 0, true},
+	{"tna", NULL, &tna, 0, true}, {"sgt", NULL, &sgt, 0, true},
+	{"sst", NULL, &sst, 0, true}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
@@ -103,6 +104,7 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
+			cmd_ass[i].before_action(server, client, av[i]);
 			stock_command(client, server, av, i);
 			return;
 		}
