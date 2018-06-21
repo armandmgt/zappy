@@ -2,16 +2,22 @@ import socket
 from multiprocessing import Queue
 from threading import Thread
 
-from common.vec import Vec2d
 from classes.player import Player
+from common.vec import Vec2d
 
 _max_buffer_size = 4096
 
 
+# TODO: Needs documentation
 def parse_response_array(s: str) -> []:
-	translator = str.maketrans('', '', '[]\n')
-	data = s.translate(translator).strip().split(',')
+	translator = str.maketrans('', '', '[]')
+	data = s.translate(translator).split(',')
 	return data
+
+
+def clamp(value, max_val):
+	assert type(value) == type(max_val)
+	return value + max_val % max_val
 
 
 class Client:
@@ -65,13 +71,13 @@ class Client:
 	def move_forward(self):
 		self.write('Forward')
 		if self.player.orientation == 0:  # NORTH
-			self.player.position.set_y((self.player.position.second() + 1) % self.mapSize.second())
+			self.player.position.set_y(clamp(self.player.position.y() + 1, self.mapSize.y()))
 		elif self.player.orientation == 1:  # SOUTH
-			self.player.position.set_y((self.player.position.second() - self.mapSize.second() + 1) % self.mapSize.second())
+			self.player.position.set_y(clamp(self.player.position.y() - 1, self.mapSize.y()))
 		elif self.player.orientation == 2:  # EAST
-			self.player.position.set_x((self.player.position.first() + 1) % self.mapSize.first())
+			self.player.position.set_x(clamp(self.player.position.x() + 1, self.mapSize.x()))
 		elif self.player.orientation == 3:  # WEST
-			self.player.position.set_x((self.player.position.first() - self.mapSize.second() + 1) % self.mapSize.first())
+			self.player.position.set_x(clamp(self.player.position.x() - 1, self.mapSize.x()))
 
 	def turn_right(self):
 		self.write('Right')
@@ -96,6 +102,10 @@ class Client:
 		for s in data:
 			item, val = s.strip().split(' ')
 			self.player.inventory[item] = val
+
+	def send_information(self):
+		text = f'{self.team};{self.player.to_str()}'
+		self.broadcast(text)
 
 	def broadcast(self, text: str):
 		self.write('Broadcast ' + text)

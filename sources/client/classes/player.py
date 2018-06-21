@@ -1,3 +1,5 @@
+import json
+
 from common.vec import Vec2d
 
 
@@ -15,3 +17,10 @@ class Player:
 		self.position = pos if not None else Vec2d(0, 0)
 		for x in range(4):
 			self.vision.append(dict(food=0, sibur=0, phiras=0, mendiane=0, thystame=0, linemate=0, deraumere=0, player=0))
+
+	def to_str(self) -> str:
+		return json.dumps({
+			'position': {self.position.x(), self.position.y()},
+			'level': self.level,
+			'inventory': self.inventory
+		})

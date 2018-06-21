@@ -8,10 +8,10 @@ class Vec2d:
 		self.__x = x
 		self.__y = y
 
-	def first(self):
+	def x(self):
 		return self.__x
 
-	def second(self):
+	def y(self):
 		return self.__y
 
 	def set_x(self, val):
