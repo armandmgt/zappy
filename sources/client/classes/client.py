@@ -124,3 +124,4 @@ class Client:
 		el, lvl = response.split('\n')
 		new_lvl = lvl.split(' ')
 		self.player.level = int(new_lvl[len(new_lvl) - 1])
+		self.player.busy = False
