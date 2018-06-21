@@ -10,7 +10,9 @@
 static int const FAILURE = 84;
 static int const SUCCESS = 0;
 
-char **str_to_word_array(char *str);
+#include <stdint.h>
+
+uint32_t wrapped_coord(int32_t coord, uint32_t range);
 
 #ifdef UNUSED
 #elif defined(__GNUC__)
@@ -20,5 +22,3 @@ char **str_to_word_array(char *str);
 #else
 # define UNUSED(x) x
 #endif
-
-char **str_to_word_array(char *str);
