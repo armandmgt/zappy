@@ -23,7 +23,8 @@ def run_game(c: Client):
 		raise RuntimeError('invalid first message; got:\t', welcome)
 	c.write(c.team)
 	c.get_initial_data(c.read())
-	c.get_remaining_slots()
+	c.take('food')
+	c.take('linemate')
 
 
 if __name__ == '__main__':
