@@ -118,7 +118,7 @@ class Client:
 		if self.player.inventory[item] <= 0:
 			return
 		self.write('Set ' + item)
-		if self.read().strip() == 'ok':
+		if self.responses.get().strip() == 'ok':
 			self.player.inventory[item] -= 1
 			self.player.vision[0][item] += 1
 

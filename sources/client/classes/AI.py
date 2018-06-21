@@ -6,7 +6,7 @@ class AI:
 	priority_list = []
 
 	def __init__(self, c: Client):
-		client = c
+		self.client = c
 
 	def make_decision(self):
 		pass
