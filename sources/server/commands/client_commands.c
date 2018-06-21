@@ -69,34 +69,39 @@ int do_pending_actions(server_t *server)
 			cmd->do_action(server, client, cmd->args);
 			prev = remove_elem(&((client_t *)cur->data)
 				->cmds, cmd);
-			if (!prev || !prev->next)
+			if (!prev)
 				break;
 			else
-				((command_t *)prev->next->data)->s_time = end;
+				((command_t *)prev->data)->s_time = end;
 		}
 	}
 	return (0);
 }
 
-static void add_command(server_t *server, client_t *client, char **av)
+static void stock_command(client_t *client, server_t *server, char **av,
+			size_t i)
 {
 	command_t *command = calloc(1, sizeof(*command));
 
 	if (!command || !av)
 		return;
+	command->args = av[1];
+	command->timeout = cmd_ass[i].timeout / server->freq;
+	command->do_action = cmd_ass[i].do_action;
+	command->s_time = clock();
+	add_elem_at_back(&client->cmds, command);
+}
+
+static void add_command(server_t *server, client_t *client, char **av)
+{
 	for (size_t i = 0; i < sizeof(cmd_ass) / sizeof(*cmd_ass); i++) {
 		if (!strcmp(av[0], cmd_ass[i].command) &&client->team->name[0]
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
-			command->args = av[1];
-			command->timeout = cmd_ass[i].timeout / server->freq;
-			command->do_action = cmd_ass[i].do_action;
-			command->s_time = clock();
-			add_elem_at_back(&client->cmds, command);
+			stock_command(client, server, av, i);
 			return;
 		}
 	}
-	free(command);
 	if (client->team->name[0])
 		return;
 	for (uint8_t i = 0; av[0][i]; i++)
