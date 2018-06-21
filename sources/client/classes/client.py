@@ -1,5 +1,4 @@
 import socket
-import pprint
 from common.vec import Vec2d
 from classes.player import Player
 
@@ -51,13 +50,13 @@ class Client:
 	def move_forward(self):
 		self.write('Forward')
 		if self.player.orientation == 0:  # NORTH
-			self.player.position.set_x((self.player.position.first() + 1) % self.mapSize.first())
-		elif self.player.orientation == 1:  # SOUTH
-			self.player.position.set_x((self.player.position.first() - self.mapSize.first()) % self.mapSize.first())
-		elif self.player.orientation == 2:  # EAST
 			self.player.position.set_y((self.player.position.second() + 1) % self.mapSize.second())
+		elif self.player.orientation == 1:  # SOUTH
+			self.player.position.set_y((self.player.position.second() - self.mapSize.second() + 1) % self.mapSize.second())
+		elif self.player.orientation == 2:  # EAST
+			self.player.position.set_x((self.player.position.first() + 1) % self.mapSize.first())
 		elif self.player.orientation == 3:  # WEST
-			self.player.position.set_y((self.player.position.second() - self.mapSize.second()) % self.mapSize.second())
+			self.player.position.set_x((self.player.position.first() - self.mapSize.second() + 1) % self.mapSize.first())
 
 	def turn_right(self):
 		self.write('Right')
@@ -113,4 +112,15 @@ class Client:
 			self.player.inventory[item] -= 1
 			self.player.vision[0][item] += 1
 
-	# def incantation(self):
+	def incantation(self):
+		if self.player.busy:
+			return
+		self.write('Incantation')
+		self.player.busy = True
+		response = self.read().strip()
+		if response == 'ko':
+			self.player.busy = False
+			return
+		el, lvl = response.split('\n')
+		new_lvl = lvl.split(' ')
+		self.player.level = int(new_lvl[len(new_lvl) - 1])
