@@ -104,8 +104,9 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
-			cmd_ass[i].before_action(server, client, av[i]);
-			stock_command(client, server, av, i);
+			if (cmd_ass[i].before_action(server, client, av[i])
+			    == true)
+				stock_command(client, server, av, i);
 			return;
 		}
 	}
