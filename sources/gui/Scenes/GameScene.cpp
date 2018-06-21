@@ -28,3 +28,7 @@ void GameScene::exit() noexcept
 void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 {
 }
+
+//receiv de map
+
+//receiv fill cell

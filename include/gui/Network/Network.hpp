@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include "MyEvents.hpp"
+#include "server/gui_magic.h"
 
 class NetworkGui : public Receiver {
 public:
@@ -29,6 +30,12 @@ private:
 
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
-    int _ipAddr[4] { 127, 0, 0, 1 };
+    int _ipAddr[4] { 192, 168, 43, 35 };
     EventManager &_evtMgr;
+
+    std::unordered_map<std::string, std::function<void(std::vector<std::string>)>> _networkProtocol{
+	    { "WELCOME", [this](std::vector<std::string> &&params[[maybe_unused]]) { send(GUI_NAME); send("msz"); } },
+	    { "msz", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<MapGeneration>(std::move(params)); send("mct"); } },
+	    { "bct", [this](std::vector<std::string> &&params[[maybe_unused]]) { for (auto &it : params) { std::cout << it << " "; }; std::cout << std::endl; } }
+    };
 };

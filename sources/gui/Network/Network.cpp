@@ -36,28 +36,26 @@ void NetworkGui::connect() noexcept
 	}
 }
 
-void NetworkGui::receiveMsg() noexcept
-{
-	if (_serverSoket != -1) {
-		pollfd fds[] = {_serverSoket, POLLIN, 0};
-		if (poll(fds, 1, 0) == 0)
-			return;
-		else if (fds[0].revents & POLLIN) {
-			ssize_t nread;
-			size_t len = 0;
-			char *line = nullptr;
-			static FILE *stream = fdopen(_serverSoket, "r");;
-
-			nread = getline(&line, &len, stream);
-			_evtMgr.emit<MsgEvent>((nread == -1) ? "DISCONNECTED" : line);
-			free(line);
-		}
-	}
-}
-
 void NetworkGui::send(std::string &&msg) const noexcept
 {
-	dprintf(_serverSoket, msg.c_str());
+	dprintf(_serverSoket, "%s\n", msg.c_str());
+}
+
+void NetworkGui::receiveMsg() noexcept
+{
+	static FILE *stream = fdopen(_serverSoket, "r");;
+	pollfd fds{_serverSoket, POLLIN, 0};
+	poll(&fds, 1, 0);
+	if (fds.revents & POLLIN || !feof(stream)) {
+		ssize_t nread;
+		size_t len = 0;
+		char *line = nullptr;
+
+		nread = getline(&line, &len, stream);
+		printf("[%s", line);
+		_evtMgr.emit<MsgEvent>((nread == -1) ? "DISCONNECTED" : line);
+		free(line);
+	}
 }
 
 void NetworkGui::updateGui() noexcept
@@ -91,10 +89,11 @@ void NetworkGui::updateGui() noexcept
 	/*
 	 * Todo: Console
 	 */
-	receiveMsg();
+	if (_serverSoket != -1)
+		receiveMsg();
 }
 
 void NetworkGui::receive(const MsgEvent &msgEvent) noexcept
 {
-	std::cout << msgEvent._msg << std::endl;
+	_networkProtocol.at(msgEvent._command)(msgEvent._params);
 }
