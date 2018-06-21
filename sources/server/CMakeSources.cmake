@@ -8,6 +8,7 @@ set(CORE
     connexion/communication.c
     connexion/new_connection.c
     connexion/food.c
+	connexion/spawn_resources.c
 
     commands/client_commands.c
     commands/actions.c
