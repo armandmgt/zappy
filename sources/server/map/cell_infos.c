@@ -17,7 +17,7 @@ cell_t *get_cell_at(map_t const *map_infos, uint32_t x, uint32_t y)
 	return (&map_infos->map[y][x]);
 }
 
-list_t *get_player_list_at(map_t const *map_infos, uint32_t x, uint32_t y)
+list_t **get_player_list_at(map_t *map_infos, uint32_t x, uint32_t y)
 {
-	return (map_infos->map[y][x].players);
+	return (&map_infos->map[y][x].players);
 }
