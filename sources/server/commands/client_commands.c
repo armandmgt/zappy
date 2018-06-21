@@ -115,4 +115,7 @@ static void add_command(server_t *server, client_t *client, char **av)
 	if (client->team && strcmp(client->team->name, GUI_NAME) != 0)
 		dprintf(client->sock, "%d\n%d %d\n", client->infos->id,
 		server->map_infos.x, server->map_infos.y);
+	else
+		dprintf(client->sock, "%d %d\n", server->map_infos.x,
+			server->map_infos.y);
 }
