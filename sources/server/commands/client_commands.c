@@ -21,7 +21,7 @@ static  command_values_t const cmd_ass[] = {
 	{"Broadcast text", &broadcast, 7, false},
 	{"Connect_nbr", &connect_nbr, 0, false},
 	{"Fork", &birth, 42, false}, {"Eject", &eject, 7, false},
-	{"Take object", &take, 7, false}, {"Set object", &set, 7, false},
+	{"Take", &take, 7, false}, {"Set", &set, 7, false},
 	{"Incantation", &incantation, 300, false},
 	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
 	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
