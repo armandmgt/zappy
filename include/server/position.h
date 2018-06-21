@@ -14,7 +14,8 @@ typedef enum direction_t
 	NORTH,
 	EAST,
 	SOUTH,
-	WEST
+	WEST,
+	NB_DIRECTION
 } direction_t;
 
 typedef struct vec2i_s
