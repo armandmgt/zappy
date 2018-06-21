@@ -11,6 +11,7 @@
 #include "common/tools.h"
 #include "server/server.h"
 #include "gui_commands.h"
+#include "resources.h"
 
 static void elevation(server_t *server, client_t *client, uint16_t const *nb,
 	cell_t *cell);
@@ -27,15 +28,12 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 			tmp->inventory[2], tmp->inventory[3],
 			tmp->inventory[4], tmp->inventory[5],
 			tmp->inventory[6]);
-		print_in_gui(server->clients, "pin %d %d %d %s %s %s %s %s "
-			"%s %s\n", client->infos->id, client->infos->pos.x,
-			client->infos->pos.y, client->infos->inventory[0],
-			client->infos->inventory[1],
-			client->infos->inventory[2],
-			client->infos->inventory[3],
-			client->infos->inventory[4],
-			client->infos->inventory[5],
-			client->infos->inventory[6]);
+		print_in_gui(server->clients, "pin %d %d %d", client->infos->id,
+		client->infos->pos.x, client->infos->pos.y);
+		for (int i = 0; i < NB_RESOURCE; i++)
+			print_in_gui(server->clients, " %d",
+				client->infos->inventory[i]);
+		print_in_gui(server->clients, "\n");
 	}
 	return (true);
 }
