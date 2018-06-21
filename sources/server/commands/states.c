@@ -6,14 +6,12 @@
 */
 
 #include <stdio.h>
-#include <string.h>
 #include <malloc.h>
 #include "common/tools.h"
 #include "server/server.h"
 #include "gui_commands.h"
-#include "resources.h"
 
-static void elevation(server_t *server, client_t *client, uint16_t const *nb,
+void elevation(server_t *server, client_t *client, uint16_t const *nb,
 	cell_t *cell);
 static void print_incantation_infos(server_t *server, client_t *client);
 
@@ -58,7 +56,6 @@ bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 		}
 	}
 	print_incantation_infos(server, client);
-	elevation(server, client, tab[idx], cell);
 	return (true);
 }
 
