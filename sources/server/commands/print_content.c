@@ -7,9 +7,9 @@
 
 #include <stdio.h>
 #include "server.h"
+#include "tools.h"
 
 static void print_cell_content(cell_t *cell, client_t *client);
-static uint32_t wrapped_coord(int32_t coord, uint32_t range);
 
 void print_line_content(map_t *map_infos, client_t *client,
 	int32_t tmp_y, uint32_t tiles)
@@ -64,9 +64,4 @@ static void print_cell_content(cell_t *cell, client_t *client)
 			(resource_t)i); j++)
 			dprintf(client->sock, " %s", res_name[i].name);
 	}
-}
-
-static uint32_t wrapped_coord(int32_t coord, uint32_t range)
-{
-	return ((coord + range) % range);
 }
