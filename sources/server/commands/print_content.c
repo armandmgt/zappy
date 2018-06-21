@@ -6,7 +6,8 @@
 */
 
 #include <stdio.h>
-#include "print_content.h"
+#include "server.h"
+#include "resources.h"
 
 static void print_cell_content(cell_t *cell, client_t *client);
 static uint32_t wrapped_coord(int32_t coord, uint32_t range);
@@ -49,7 +50,7 @@ void print_row_content(map_t *map_infos, client_t *client,
 
 static void print_cell_content(cell_t *cell, client_t *client)
 {
-	static resource_name_t const tab[NB_RESOURCE] = {
+	static resource_name_t const res_name[NB_RESOURCE] = {
 		{FOOD, "food"}, {LINEMATE, "linemate"},
 		{DERAUMERE, "deraumere"}, {SIBUR, "sibur"},
 		{MENDIANE, "mendiane"}, {PHIRAS, "phiras"},
@@ -67,7 +68,7 @@ static void print_cell_content(cell_t *cell, client_t *client)
 			dprintf(client->sock, " ");
 		for (int j = 0; j < get_resource_on_cell(cell,
 			(resource_t)i); j++)
-			dprintf(client->sock, "%s", tab[i].name);
+			dprintf(client->sock, "%s", res_name[i].name);
 	}
 }
 
