@@ -23,10 +23,8 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 	player_t *tmp = client->infos;
 
 	if (client->infos) {
-		dprintf(client->sock, "[%s %d",
-			res_name[0].name, tmp->inventory[0]);
-		for (size_t i = 1; i < NB_RESOURCE; i++)
-			dprintf(client->sock, " %s %d",
+		for (size_t i = 0; i < NB_RESOURCE; i++)
+			dprintf(client->sock, i ? ", %s %d" : "[%s %d",
 				res_name[i].name, tmp->inventory[i]);
 		dprintf(client->sock, "]\n");
 		print_in_gui(server->clients, "pin %d %d %d", client->infos->id,
