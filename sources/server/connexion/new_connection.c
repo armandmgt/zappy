@@ -36,6 +36,7 @@ static client_t *new_client(server_t *server)
 		return (NULL);
 	dprintf(client->sock, "WELCOME\n");
 	spawn_client_on_map(&server->map_infos, client);
+	spawn_resources(&server->map_infos);
 	return (client);
 }
 
@@ -61,9 +62,8 @@ static void spawn_client_on_map(map_t *m, client_t *client)
 
 	client->infos->pos.x = (uint32_t)rand() % m->x;
 	client->infos->pos.y = (uint32_t)rand() % m->y;
-	//TODO: add random direction when PR #35 is merged in
-	players = get_player_list_at(m, client->infos->pos.x,
-		client->infos->pos.y);
+	client->infos->direction = (direction_t)rand() % NB_DIRECTION;
+	players = get_player_list_at(m, client->infos->pos.x, client->infos->pos.y);
 	add_elem_at_front(players, client);
 }
 
