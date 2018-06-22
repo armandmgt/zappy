@@ -6,15 +6,16 @@
 */
 
 #include <stdio.h>
-#include <string.h>
 #include <malloc.h>
 #include "common/tools.h"
 #include "server/server.h"
 #include "gui_commands.h"
-#include "resources.h"
 
-static void elevation(server_t *server, client_t *client, uint16_t const *nb,
-	cell_t *cell);
+static uint16_t const tab[7][7] = {
+	{1, 1, 0, 0, 0, 0, 0}, {2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
+	{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0}, {6, 1, 2, 3, 0, 1, 0},
+	{6, 2, 2, 2, 2, 2, 1}
+};
 static void print_incantation_infos(server_t *server, client_t *client);
 
 bool inventory(server_t *server, client_t *client, char *UNUSED(args))
@@ -22,12 +23,10 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 	player_t *tmp = client->infos;
 
 	if (client->infos) {
-		dprintf(client->sock, "[food %d, linemate %d, deraumere %d, "
-			"sibur %d, mendiane %d, phiras %d, thystame %d]\n",
-			tmp->inventory[0], tmp->inventory[1],
-			tmp->inventory[2], tmp->inventory[3],
-			tmp->inventory[4], tmp->inventory[5],
-			tmp->inventory[6]);
+		for (size_t i = 0; i < NB_RESOURCE; i++)
+			dprintf(client->sock, i ? ", %s %d" : "[%s %d",
+				res_name[i].name, tmp->inventory[i]);
+		dprintf(client->sock, "]\n");
 		print_in_gui(server->clients, "pin %d %d %d", client->infos->id,
 		client->infos->pos.x, client->infos->pos.y);
 		for (int i = 0; i < NB_RESOURCE; i++)
@@ -35,30 +34,6 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 				client->infos->inventory[i]);
 		print_in_gui(server->clients, "\n");
 	}
-	return (true);
-}
-
-bool incantation(server_t *server, client_t *client, char *UNUSED(args))
-{
-	int idx = client->infos->level - 1;
-	static uint16_t const tab[7][7] = {{1, 1, 0, 0, 0, 0, 0},
-		{2, 1, 1, 1, 0, 0, 0}, {2, 2, 0, 1, 0, 2, 0},
-		{4, 1, 1, 2, 0, 1, 0}, {4, 1, 2, 1, 3, 0, 0},
-		{6, 1, 2, 3, 0, 1, 0}, {6, 2, 2, 2, 2, 2, 1}};
-	cell_t *cell = get_client_cell(&server->map_infos, client);
-
-	if (list_len(cell->players) != tab[idx][0]) {
-		dprintf(client->sock, "ko\n");
-		return (false);
-	}
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		if (client->infos->inventory[i] < tab[idx][i + 1]) {
-			dprintf(client->sock, "ko\n");
-			return (false);
-		}
-	}
-	print_incantation_infos(server, client);
-	elevation(server, client, tab[idx], cell);
 	return (true);
 }
 
@@ -79,18 +54,37 @@ bool death(server_t *server, client_t *client, char *UNUSED(args))
 	return (false);
 }
 
-static void elevation(server_t *server, client_t *client, uint16_t const *nb,
-	cell_t *cell)
+bool incantation(server_t *server, client_t *client, char *UNUSED(args))
 {
-	client->infos->level += 1;
-	for (int i = 0; i < NB_RESOURCE; i++) {
-		client->infos->inventory[i] -= nb[i + 1];
-		remove_resource_on_cell(cell, (resource_t)i, nb[i + 1]);
+	int idx = client->infos->level - 1;
+	cell_t *cell = get_client_cell(&server->map_infos, client);
+
+	if (list_len(cell->players) >= tab[idx][0]) {
+		dprintf(client->sock, "ko\n");
+		return (false);
 	}
-	dprintf(client->sock, "Elevation underway\nCurrent level "
-			      "%d\n", client->infos->level);
+	for (int i = 1; i < NB_RESOURCE; i++) {
+		if (cell->resource[i] < tab[idx][i]) {
+			dprintf(client->sock, "ko\n");
+			return (false);
+		}
+	}
+	print_incantation_infos(server, client);
+	return (true);
+}
+
+bool elevation(server_t *server, client_t *client, char *UNUSED(args))
+{
+	cell_t *cell = get_client_cell(&server->map_infos, client);
+	int idx = client->infos->level - 1;
+	client->infos->level += 1;
+
+	for (int i = 1; i < NB_RESOURCE; i++)
+		cell->resource[i] -= tab[idx][i];
+	dprintf(client->sock, "Current level %d\n", client->infos->level);
 	print_in_gui(server->clients, "pie %d %d ok\n", client->infos->pos.x,
 		client->infos->pos.y);
+	return (true);
 }
 
 static void print_incantation_infos(server_t *server, client_t *client)
@@ -99,6 +93,7 @@ static void print_incantation_infos(server_t *server, client_t *client)
 		client->infos->pos.x, client->infos->pos.y);
 	client_t *tmp_client;
 
+	dprintf(client->sock, "Elevation underway\n");
 	print_in_gui(server->clients, "pic %d %d %d", client->infos->pos.x,
 		client->infos->pos.y, client->infos->level);
 	for (list_t *tmp = *list; tmp; tmp = tmp->next) {
