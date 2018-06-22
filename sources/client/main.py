@@ -22,7 +22,7 @@ def run_game(c: Client):
 	c.connect()
 	welcome = c.responses.get()
 	if welcome != 'WELCOME':
-		raise RuntimeError('invalid x message; got:\t', welcome)
+		raise RuntimeError('invalid first message; got:\t', welcome)
 	c.write(c.team)
 	c.get_initial_data()
 	ai = AI(c)

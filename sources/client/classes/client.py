@@ -16,7 +16,7 @@ def parse_response_array(s: str) -> []:
 
 
 def clamp(value, max_val):
-	assert type(value) == type(max_val)
+	assert isinstance(value, type(max_val))
 	return value + max_val % max_val
 
 
