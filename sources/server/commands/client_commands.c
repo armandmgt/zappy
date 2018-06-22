@@ -104,11 +104,9 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
-			if (cmd_ass[i].before_action != NULL &&
-			    cmd_ass[i].before_action(server, client, av[i])
-			    == true)
-				stock_command(client, server, av, i);
-			else if (cmd_ass[i].before_action == NULL)
+			if (cmd_ass[i].b_action == NULL ||
+			    (cmd_ass[i].b_action != NULL &&
+			    cmd_ass[i].b_action(server, client, av[i]) == 1))
 				stock_command(client, server, av, i);
 			return;
 		}
@@ -120,6 +118,7 @@ static void add_command(server_t *server, client_t *client, char **av)
 			client->team = cur->data;
 	}
 	if (client->team && strcmp(client->team->name, GUI_NAME) != 0)
-		dprintf(client->sock, "%d\n%d %d\n", client->infos->id,
-		server->map_infos.x, server->map_infos.y);
+		dprintf(client->sock, "%d\n%d %d\n",
+			count_in_team(server, client), server->map_infos.x,
+			server->map_infos.y);
 }

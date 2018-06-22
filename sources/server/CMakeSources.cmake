@@ -26,6 +26,7 @@ set(CORE
     ../common/tools.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
+	../common/count_in_team.c
 
 	map/map_generation.c
 	map/map_allocation.c
