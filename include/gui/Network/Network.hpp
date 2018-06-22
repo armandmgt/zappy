@@ -18,7 +18,6 @@ extern "C" {
 class NetworkGui : public Receiver {
 public:
     explicit NetworkGui(EventManager &evtMgr) noexcept : _evtMgr(evtMgr) { evtMgr.subscribe<MsgEvent>(*this); init_cbuf(&_buffer); }
-    ~NetworkGui() noexcept { _evtMgr.unsubscribe<MsgEvent>(*this); }
 
     void updateGui() noexcept;
 public:
@@ -35,13 +34,12 @@ private:
      */
     cir_buffer_t _buffer;
 
-
-
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
-    int _ipAddr[4] { 192, 168, 43, 5 };
-    EventManager &_evtMgr;
+    int _ipAddr[4] { 10, 41, 171, 230 };
 
+
+    EventManager &_evtMgr;
     std::unordered_map<std::string, std::function<void(std::vector<std::string>)>> _networkProtocol{
 	    { "WELCOME", [this](std::vector<std::string> &&params[[maybe_unused]]) { send(GUI_NAME); send("msz"); } },
 	    { "msz", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<MapDims>(std::move(params)); send("mct"); } },

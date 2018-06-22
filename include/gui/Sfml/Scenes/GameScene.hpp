@@ -14,7 +14,7 @@
 
 class GameScene final : public AScene, public Receiver {
 public:
-    explicit GameScene(SceneManager &parent) noexcept : AScene(parent), _networkMgr(parent.getEventMgr()) {}
+    explicit GameScene(SceneManager &parent) noexcept : AScene(parent), _networkMgr(_evtMgr) {}
 
     /*
      * Scene Manipulation

@@ -8,16 +8,16 @@
 #pragma once
 
 #include <string>
+#include <tuple>
 #include <memory>
 #include <iostream>
 #include <functional>
 #include <unordered_map>
 
-class Receiver {
+class BaseEvent {
 };
 
-class BaseEvent {
-public:
+class Receiver {
 };
 
 class ClassTypeId {
@@ -130,6 +130,35 @@ public:
 	     */
 	    std::for_each(receivers.first, receivers.second, [&event](const auto &receiverInfo) noexcept { (*receiverInfo.second.callbackPtr)(&event); });
     };
+
+
+//    template<std::size_t N, typename T, typename... types>
+//    struct get_Nth_type
+//    {
+//	using type = typename get_Nth_type<N - 1, types...>::type;
+//    };
+//    template<typename T, typename... types>
+//    struct get_Nth_type<0, T, types...>
+//    {
+//	using type = T;
+//    };
+//
+//    template<std::size_t N, typename... Args>
+//    using get = typename get_Nth_type<N, Args...>::type;
+//
+//
+//    template <typename ... EventsTypes, typename Receiver>
+//    void test(Receiver &receiver) noexcept {
+//    	size_t nbEvents = sizeof...(EventsTypes);
+//
+//    	int i = 0;
+//    	static_assert(std::is_base_of<BaseEvent, get<i, EventsTypes...>>(), "Templated parameter is not based of BaseEvent");
+//    	const ClassTypeId::TypeId eventType = ClassTypeId::getTypeId<get<0, EventsTypes...>>();
+//    	const Receiver &baseReceiver = receiver;
+//    	auto receiverCallback = [&receiver](const auto &ev) noexcept { receiver.receive(ev); };
+//    	auto callbackPtr = std::make_unique<callbackWrapper<get<0, EventsTypes...>>>(receiverCallback);
+//    	_receiversList.emplace(eventType, ReceiverInfo{ &baseReceiver, std::move(callbackPtr) });
+//    }
 private:
     /*
      * It sucks using std::pair

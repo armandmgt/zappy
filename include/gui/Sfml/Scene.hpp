@@ -36,12 +36,8 @@ public:
      * Getters
      */
     sf::RenderWindow &getWindow() const noexcept { return _window; }
-    EventManager &getEventMgr() noexcept { return _evtMgr; }
 private:
     sf::RenderWindow &_window;
-
-    EventManager _evtMgr;
-    ResourceManager _resourceMgr;
     std::stack<std::unique_ptr<AScene>> _scenes;
 };
 
@@ -70,6 +66,9 @@ public:
     virtual void resume() {}
 
     virtual void update(float timeSinceLastFrame) = 0;
+public:
+    EventManager _evtMgr;
 protected:
+    ResourceManager _resourceMgr;
     SceneManager &_parent;
 };

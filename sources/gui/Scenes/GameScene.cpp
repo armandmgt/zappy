@@ -13,22 +13,26 @@ void GameScene::update(float timeSinceLastFrame[[maybe_unused]]) noexcept
 	_networkMgr.updateGui();
 	ImGui::ShowDemoWindow();
 	ImGui::End();
+
+	sf::Sprite sprite;
+	sprite.setTexture(_resourceMgr.getTexture("0"));
+	sprite.setPosition(0, 0);
+	_parent.getWindow().draw(sprite);
 }
 
 void GameScene::enter() noexcept
 {
-	_parent.getEventMgr().subscribe<SfmlEvent>(*this);
+	_evtMgr.subscribe<SfmlEvent>(*this);
+//	_evtMgr.subscribe<MapDims>(*this);
+//	_evtMgr.subscribe<FillCellInventory>(*this);
+	_resourceMgr.loadTexture("0.png");
 }
 
 void GameScene::exit() noexcept
 {
-	_parent.getEventMgr().unsubscribeAll(*this);
 };
 
 void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 {
 }
 
-//receiv de map
-
-//receiv fill cell
