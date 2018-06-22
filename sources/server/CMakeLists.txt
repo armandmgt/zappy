@@ -13,6 +13,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/include/common)
 
 #CFlags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -lm")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+#library
+target_link_libraries(${PROJECT_NAME} m)
