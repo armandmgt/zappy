@@ -29,7 +29,7 @@ typedef struct server_s server_t;
 typedef struct command_s {
 	bool (*do_action)(server_t *, client_t *, char *);
 	clock_t s_time;
-	double timeout;
+	double t_out;
 	char *args;
 } command_t;
 
