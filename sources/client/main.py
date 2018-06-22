@@ -2,7 +2,6 @@ import argparse
 import sys
 from classes.AI import AI
 from classes.client import Client
-from classes.inventory import Inventory
 
 
 def get_params():
