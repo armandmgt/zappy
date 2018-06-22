@@ -8,12 +8,12 @@ class AI:
 	def __init__(self, c: Client):
 		self.client = c
 
-	def make_decision(self, response: str):
-		if not response:
+	def make_decision(self, message: str):
+		if not message:
 			self.client.send_information()
 			return
-		print(f'make decision with {response}')
-		command, *arg = response.split(maxsplit=1)
+		print(f'make decision with {message}')
+		command, *arg = message.split(maxsplit=1)
 		arg = arg[0] if arg else ''
 		print(f'command [{command}] arg [{arg}]')
 		self.parse_information()
