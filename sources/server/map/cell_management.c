@@ -28,7 +28,6 @@ bool add_random_resource_at(map_t *map, uint32_t x, uint32_t y)
 		return (false);
 	}
 	map->map[y][x].resource[rd] += 1;
-	printf("spawned %ld at %d %d\n", rd, x, y);
 	return (true);
 }
 
