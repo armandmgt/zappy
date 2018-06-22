@@ -8,6 +8,7 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
+#include <server/gui_magic.h>
 #include "server.h"
 #include "common/tools.h"
 #include "parse_functions.h"
@@ -55,19 +56,30 @@ unsigned long parse_number(int *error)
 	}
 }
 
+static void create_team(list_t **teams , int *error, char const * const str)
+{
+	team_t *elem;
+
+	if (!(elem = calloc(1, sizeof(*elem)))) {
+		*error = 1;
+		return;
+	}
+	strncpy(elem->name, str, TEAM_NAME_LEN);
+	add_elem_at_front(teams, elem);
+}
+
 list_t *parse_teams(int *error, char *const *argv)
 {
 	list_t *teams = NULL;
-	team_t *elem;
 	int i = optind;
 
 	while (argv[i]) {
-		if (!(elem = calloc(1, sizeof(*elem)))) {
-			*error = 1;
+		create_team(&teams, error, argv[i++]);
+		if (*error == 1)
 			return (NULL);
-		}
-		strncpy(elem->name, argv[i++], TEAM_NAME_LEN);
-		add_elem_at_front(&teams, elem);
 	}
+	create_team(&teams, error, GUI_NAME);
+	if (*error == 1)
+		return (NULL);
 	return (teams);
 }
