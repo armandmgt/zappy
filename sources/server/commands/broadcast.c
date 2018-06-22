@@ -18,6 +18,7 @@ static int determine_angle(int angle);
 
 bool broadcast(server_t *server, client_t *client, char *args)
 {
+	int direction;
 	client_t *tmp_client;
 
 	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
@@ -28,8 +29,9 @@ bool broadcast(server_t *server, client_t *client, char *args)
 			dprintf(tmp_client->sock, "message 0, %s", args);
 		}
 		else {
-			direction = get_direction(server, client, tmp);
-			dprintf(tmp->sock, "message %d, %s\n", direction, args);
+			direction = get_direction(server, client, tmp_client);
+			dprintf(tmp_client->sock, "message %d, %s\n", direction,
+				args);
 		}
 	}
 	dprintf(client->sock, "ok\n");
