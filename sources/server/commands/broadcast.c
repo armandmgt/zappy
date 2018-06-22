@@ -12,7 +12,6 @@
 #include "common/tools.h"
 #include "gui_commands.h"
 
-static void loop_on_clients(server_t *server, client_t *client, char *args);
 static int convertion_to_degree(client_t *client, double angle);
 static int get_direction(server_t *server, client_t *client, client_t *tmp);
 static int determine_angle(int angle);
@@ -27,29 +26,15 @@ bool broadcast(server_t *server, client_t *client, char *args)
 			tmp_client->infos->pos.x && client->infos->pos.y ==
 			tmp_client->infos->pos.y)) {
 			dprintf(tmp_client->sock, "message 0, %s", args);
-			dprintf(tmp_client->sock, "ok\n");
 		}
-	}
-	loop_on_clients(server, client, args);
-	dprintf(client->sock, "ok\n");
-	print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
-	return (true);
-}
-
-static void loop_on_clients(server_t *server, client_t *client, char *args)
-{
-	client_t *tmp;
-	int direction;
-
-	for (list_t *list = server->clients; list; list = list->next) {
-		tmp = list->data;
-		if (tmp != client && (client->infos->pos.x !=
-			tmp->infos->pos.x && client->infos->pos.y !=
-			tmp->infos->pos.y)) {
+		else {
 			direction = get_direction(server, client, tmp);
 			dprintf(tmp->sock, "message %d, %s\n", direction, args);
 		}
 	}
+	dprintf(client->sock, "ok\n");
+	print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
+	return (true);
 }
 
 static int get_direction(server_t *server, client_t *client, client_t *tmp)
@@ -74,7 +59,6 @@ static int get_direction(server_t *server, client_t *client, client_t *tmp)
 
 static int convertion_to_degree(client_t *client, double angle)
 {
-
 	double degrees = (angle * 180.0 / M_PI);
 	int orientation = determine_angle(degrees);
 	int direction = (8 - client->infos->direction + orientation) % 8;
