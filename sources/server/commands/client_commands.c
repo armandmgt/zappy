@@ -70,15 +70,15 @@ int do_pending_actions(server_t *server)
 			continue;
 		cmd = client->cmds->data;
 		total = (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10;
-		if (cmd->timeout < total) {
-			cmd->do_action(server, client, cmd->args);
-			prev = remove_elem(&((client_t *)cur->data)
-				->cmds, cmd);
-			if (!prev)
-				break;
-			else
-				((command_t *)prev->data)->s_time = end;
-		}
+		if (cmd->timeout > total)
+			continue;
+		cmd->do_action(server, client, cmd->args);
+		if (cmd->args)
+			free(cmd->args);
+		if (!(prev = remove_elem(&((client_t *)cur->data)->cmds, cmd)))
+			break;
+		else
+			((command_t *)prev->data)->s_time = end;
 	}
 	return (0);
 }
@@ -90,7 +90,8 @@ static void stock_command(client_t *client, server_t *server, char **av,
 
 	if (!command || !av)
 		return;
-	command->args = av[1];
+	if (av[1])
+		command->args = strdup(av[1]);
 	command->timeout = cmd_ass[i].timeout / server->freq;
 	command->do_action = cmd_ass[i].do_action;
 	command->s_time = clock();
