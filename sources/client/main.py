@@ -1,6 +1,5 @@
 import argparse
 import sys
-
 from classes.AI import AI
 from classes.client import Client
 
