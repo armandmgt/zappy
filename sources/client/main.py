@@ -27,7 +27,8 @@ def run_game(c: Client):
 	c.get_initial_data()
 	ai = AI(c)
 	while c.r_th.isAlive():
-		ai.make_decision()
+		c.send_information()
+		ai.make_decision(c.messages.get() if not c.messages.empty() else False)
 
 
 if __name__ == '__main__':

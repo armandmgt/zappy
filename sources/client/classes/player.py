@@ -19,8 +19,6 @@ class Player:
 			self.vision.append(dict(food=0, sibur=0, phiras=0, mendiane=0, thystame=0, linemate=0, deraumere=0, player=0))
 
 	def to_str(self) -> str:
-		return json.dumps({
-			'position': {self.position.x(), self.position.y()},
-			'level': self.level,
-			'inventory': self.inventory
-		})
+		return f'{self.position.x()},{self.position.y()},'\
+			f'{self.level},'\
+			f'{self.inventory}'

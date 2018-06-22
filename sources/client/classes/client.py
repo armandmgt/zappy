@@ -29,9 +29,10 @@ class Client:
 	host: str
 	slotsLeft: int
 	responses = Queue()
+	messages = Queue()
 
 	def __init__(self, port: int, name: str, host: str):
-		self.r_th = Thread(target=self.read, args=(self.sock, self.responses))
+		self.r_th = Thread(target=self.read, args=(self.sock, self.responses, self.messages))
 		self.host = host
 		self.port = port
 		self.team = name
@@ -44,16 +45,18 @@ class Client:
 		self.r_th.start()
 
 	@staticmethod
-	def read(sock: socket, responses: Queue):
+	def read(sock: socket, responses: Queue, messages: Queue):
 		buf = ''
 		while True:
 			buf += sock.recv(_max_buffer_size).decode()
 			if len(buf) == 0:
 				return
 			while buf.find('\n') is not -1:
-				res, *buf = buf.split('\n')
-				buf = '\n'.join(buf)
-				responses.put(res)
+				res, buf = buf.split('\n', maxsplit=1)
+				if res.split(maxsplit=1)[0] == 'message':
+					messages.put(res)
+				else:
+					responses.put(res)
 
 	def write(self, data):
 		if not data.endswith('\n'):
@@ -109,6 +112,7 @@ class Client:
 
 	def broadcast(self, text: str):
 		self.write('Broadcast ' + text)
+		self.responses.get()
 
 	def get_remaining_slots(self):
 		self.write('Connect_nbr')
@@ -117,9 +121,11 @@ class Client:
 	def fork(self):
 		if self.slotsLeft > 0:
 			self.write('Fork')
+			self.responses.get()
 
 	def eject(self):
 		self.write('Eject')
+		self.responses.get()
 
 	def take(self, item: str):
 		self.write('Take ' + item)
@@ -130,15 +136,10 @@ class Client:
 		if self.player.inventory[item] <= 0:
 			return
 		self.write('Set ' + item)
-		if self.responses.get().strip() == 'ok':
+		if self.responses.get() == 'ok':
 			self.player.inventory[item] -= 1
-			self.player.vision[0][item] += 1
 
 	def incantation(self):
-		if self.player.timeout is not 0:
-			return
 		self.write('Incantation')
-		response = self.responses.get()
-		if response == 'ko':
-			return
-		self.player.timeout = 300
+		if self.responses.get() == 'ok':
+			self.player.level += 1
