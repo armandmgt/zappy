@@ -4,7 +4,7 @@ include(CMakeSources.cmake)
 
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SRCS} ../../include/gui/Infos/Inventory.hpp)
+add_executable(${PROJECT_NAME} ${SRCS} ../../include/gui/Infos/Inventory.hpp ../../include/gui/Infos/Tile.hpp)
 
 #CXXFlags
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wfatal-errors")

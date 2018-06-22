@@ -8,25 +8,35 @@
 #pragma once
 
 #include <functional>
+#include <unordered_map>
 #include "Scene.hpp"
 #include "Network.hpp"
+#include "MyEvents.hpp"
 #include "SfmlEvents.hpp"
+#include "Tile.hpp"
 
 class GameScene final : public AScene, public Receiver {
 public:
-    explicit GameScene(SceneManager &parent) noexcept : AScene(parent), _networkMgr(_evtMgr) {}
+	explicit GameScene(SceneManager &parent) noexcept : AScene(parent), _networkMgr(_evtMgr) {}
 
-    /*
-     * Scene Manipulation
-     */
-    void enter() noexcept override;
-    void exit() noexcept override;
-    void update(float timeSinceLastFrame) noexcept override;
+	/*
+	 * Scene Manipulation
+	 */
+	void enter() noexcept override;
+	void exit() noexcept override;
+	void update(float timeSinceLastFrame) noexcept override;
+
 public:
-    /*
-     * Events Callback
-     */
-    void receive(const SfmlEvent &event[[maybe_unused]]) noexcept;
+	/*
+	 * Events Callback
+	 */
+	void receive(const SfmlEvent &event) noexcept;
+	void receive(const MapDims &event) noexcept;
+	void receive(const FillCellInventory &event) noexcept;
 private:
-    NetworkGui _networkMgr;
+	void displayMap() noexcept;
+
+	bool _started {false};
+	NetworkGui _networkMgr;
+	std::vector<std::vector<Tile>> _map;
 };

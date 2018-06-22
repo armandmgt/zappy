@@ -49,7 +49,6 @@ public:
 class FillCellInventory : public BaseEvent {
 public:
     explicit FillCellInventory(std::vector<std::string> &&params) noexcept : _x(std::stoi(params.at(0))), _y(std::stoi(params.at(1))) {
-    	std::cout << _x << ", " << _y << std::endl;
     	_inventory[Inventory::ResourceType::Food] = std::stoi(params.at(2));
     	_inventory[Inventory::ResourceType::Linemate] = std::stoi(params.at(3));
     	_inventory[Inventory::ResourceType::Deraumere] = std::stoi(params.at(4));
