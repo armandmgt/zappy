@@ -18,12 +18,10 @@ int port(options_t *opts, int *error, char * const * UNUSED(argv))
 
 int size(options_t *opts, int *error, char * const * UNUSED(argv))
 {
-	static int calls = 0;
-
-	if (calls++ == 0)
-		opts->width = (unsigned int)parse_number(error);
+	if (opts->width == 0)
+		opts->width = (uint32_t)parse_number(error);
 	else
-		opts->height = (unsigned int)parse_number(error);
+		opts->height = (uint32_t)parse_number(error);
 	return (0);
 }
 

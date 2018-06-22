@@ -5,21 +5,9 @@
 ** tools
 */
 
-#include <malloc.h>
-#include <string.h>
 #include "tools.h"
 
-char **str_to_word_array(char *str)
+uint32_t wrapped_coord(int32_t coord, uint32_t range)
 {
-	char **arr = calloc(1, sizeof(char *));
-
-	if (!arr)
-		return (NULL);
-	arr[0] = strtok(str, " ");
-	for (size_t i = 1; arr[i] ;i++) {
-		arr = realloc(arr, i + 1);
-		arr[i] = strtok(NULL, " ");
-	}
-	return arr;
+	return ((coord + range) % range);
 }
-
