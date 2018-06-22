@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 #include "server/gui_magic.h"
 #include "command_value.h"
 #include "gui_commands.h"
@@ -15,19 +16,20 @@
 static void add_command(server_t *server, client_t *client, char **av);
 
 static  command_values_t const cmd_ass[] = {
-	{"Forward", &forward, 7, false}, {"Right", &right, 7, false},
-	{"Left", &left, 7, false}, {"Look", &look, 7, false},
-	{"Inventory", &inventory, 1, false},
-	{"Broadcast text", &broadcast, 7, false},
-	{"Connect_nbr", &connect_nbr, 0, false},
-	{"Fork", &birth, 42, false}, {"Eject", &eject, 7, false},
-	{"Take", &take, 7, false}, {"Set", &set, 7, false},
-	{"Incantation", &incantation, 300, false},
-	{"msz", &msz, 0, true}, {"bct", &bct, 0, true},
-	{"mct", &mct, 0, true}, {"ppo", &ppo, 0, true},
-	{"plv", &plv, 0, true}, {"pin", &pin, 0, true},
-	{"tna", &tna, 0, true}, {"sgt", &sgt, 0, true},
-	{"sst", &sst, 0, true}
+	{"Forward", NULL, &forward, 7, false},
+	{"Right", NULL, &right, 7, false}, {"Left", NULL, &left, 7, false},
+	{"Look", NULL, &look, 7, false},
+	{"Inventory", NULL, &inventory, 1, false},
+	{"Broadcast text", NULL, &broadcast, 7, false},
+	{"Connect_nbr", NULL, &connect_nbr, 0, false},
+	{"Fork", NULL, &birth, 42, false}, {"Eject", NULL, &eject, 7, false},
+	{"Take", NULL, &take, 7, false}, {"Set", NULL, &set, 7, false},
+	{"Incantation", incantation, &elevation, 300, false},
+	{"msz", NULL, &msz, 0, true}, {"bct", NULL, &bct, 0, true},
+	{"mct", NULL, &mct, 0, true}, {"ppo", NULL, &ppo, 0, true},
+	{"plv", NULL, &plv, 0, true}, {"pin", NULL, &pin, 0, true},
+	{"tna", NULL, &tna, 0, true}, {"sgt", NULL, &sgt, 0, true},
+	{"sst", NULL, &sst, 0, true}
 };
 
 int poll_client_commands(server_t *server, fd_set *readfds)
@@ -44,7 +46,7 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 		if (!cur)
 			break;
 		if (!client->buffer.empty &&
-			read_cbuf(&client->buffer, (uint8_t **)&line)) {
+			read_cbuf(&client->buffer, &line)) {
 			command[0] = strtok(line, " ");
 			command[1] = strtok(NULL, "");
 			add_command(server, client, command);
@@ -60,23 +62,21 @@ int do_pending_actions(server_t *server)
 	command_t *cmd;
 	list_t *prev;
 	clock_t end = clock();
-	double total;
 
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		client = cur->data;
 		if (!client->cmds)
 			continue;
 		cmd = client->cmds->data;
-		total = (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10;
-		if (cmd->timeout < total) {
-			cmd->do_action(server, client, cmd->args);
-			prev = remove_elem(&((client_t *)cur->data)
-				->cmds, cmd);
-			if (!prev)
-				break;
-			else
-				((command_t *)prev->data)->s_time = end;
-		}
+		if (cmd->t_out > (end - cmd->s_time) / CLOCKS_PER_SEC * 10)
+			continue;
+		cmd->do_action(server, client, cmd->args);
+		if (cmd->args)
+			free(cmd->args);
+		if (!(prev = remove_elem(&((client_t *)cur->data)->cmds, cmd)))
+			break;
+		else
+			((command_t *)prev->data)->s_time = end;
 	}
 	return (0);
 }
@@ -88,8 +88,9 @@ static void stock_command(client_t *client, server_t *server, char **av,
 
 	if (!command || !av)
 		return;
-	command->args = av[1];
-	command->timeout = cmd_ass[i].timeout / server->freq;
+	if (av[1])
+		command->args = strdup(av[1]);
+	command->t_out = cmd_ass[i].timeout / server->freq;
 	command->do_action = cmd_ass[i].do_action;
 	command->s_time = clock();
 	add_elem_at_back(&client->cmds, command);
@@ -101,7 +102,10 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (!strcmp(av[0], cmd_ass[i].command) && client->team
 		 	&& strcmp(client->team->name, GUI_NAME) !=
 						 cmd_ass[i].is_gui) {
-			stock_command(client, server, av, i);
+			if (cmd_ass[i].b_action == NULL ||
+			    (cmd_ass[i].b_action != NULL &&
+			    cmd_ass[i].b_action(server, client, av[i]) == 1))
+				stock_command(client, server, av, i);
 			return;
 		}
 	}
@@ -111,4 +115,8 @@ static void add_command(server_t *server, client_t *client, char **av)
 		if (strcmp(av[0], ((team_t *)cur->data)->name) == 0)
 			client->team = cur->data;
 	}
+	if (client->team && strcmp(client->team->name, GUI_NAME) != 0)
+		dprintf(client->sock, "%d\n%d %d\n",
+			count_in_team(server, client), server->map_infos.x,
+			server->map_infos.y);
 }

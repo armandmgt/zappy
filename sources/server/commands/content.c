@@ -40,10 +40,11 @@ bool bct(server_t *server, client_t *client, char *av)
 
 bool mct(server_t *server, client_t *client, char *UNUSED(av))
 {
-	for (size_t x = 0; x < server->map_infos.x; x++) {
-		for (size_t y = 0; y < server->map_infos.y; y++) {
-			print_cell_resources(server, client->sock,
-				&(vec2i_t){(uint32_t)x, (uint32_t)y});
+	vec2i_t pos;
+
+	for (pos.x = 0; pos.x < server->map_infos.x; pos.x++) {
+		for (pos.y = 0; pos.y < server->map_infos.y; pos.y++) {
+			print_cell_resources(server, client->sock, &pos);
 		}
 	}
 	return (true);

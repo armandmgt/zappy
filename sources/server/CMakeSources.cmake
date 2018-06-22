@@ -15,7 +15,6 @@ set(CORE
     commands/directions.c
     commands/states.c
     commands/eject.c
-    commands/broadcast.c
 	commands/look.c
 	commands/print_content.c
     commands/content.c
@@ -27,6 +26,7 @@ set(CORE
     ../common/tools.c
     ../common/cir_buffer.c
     ../common/init_cir_buffer.c
+	../common/count_in_team.c
 
 	map/map_generation.c
 	map/map_allocation.c
