@@ -25,3 +25,10 @@ typedef struct resource_name_s
 	resource_t res;
 	char name[RESOURCES_NAME_LEN];
 } resource_name_t;
+
+static resource_name_t const res_name[NB_RESOURCE] = {
+	{FOOD, "food"}, {LINEMATE, "linemate"},
+	{DERAUMERE, "deraumere"}, {SIBUR, "sibur"},
+	{MENDIANE, "mendiane"}, {PHIRAS, "phiras"},
+	{THYSTAME, "thystame"}
+};
