@@ -43,6 +43,7 @@ private:
     std::unordered_map<std::string, std::function<void(std::vector<std::string>)>> _networkProtocol{
 	    { "WELCOME", [this](std::vector<std::string> &&params[[maybe_unused]]) { send(GUI_NAME); send("msz"); } },
 	    { "msz", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<MapDims>(std::move(params)); send("mct"); } },
-	    { "bct", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<FillCellInventory>(std::move(params)); } }
+	    { "bct", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<FillCellInventory>(std::move(params)); } },
+	    { "pnw", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<NewPlayer>(std::move(params)); } }
     };
 };

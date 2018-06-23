@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include "Inventory.hpp"
+#include "Player.hpp"
 #include "EventManager.hpp"
 
 /*
@@ -61,4 +61,19 @@ public:
     int _x;
     int _y;
     Inventory _inventory;
+};
+
+/*
+ * Pnw (Player creation)
+ */
+
+class NewPlayer : public BaseEvent {
+public:
+	explicit NewPlayer(std::vector<std::string> &&params) noexcept : _team(std::stoi(params.at(0))), _x(std::stoi(params.at(1))), _y(std::stoi(params.at(2))) {
+
+	}
+public:
+	int _team;
+	int _x;
+	int _y;
 };
