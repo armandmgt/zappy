@@ -14,7 +14,7 @@
 #include "gui_commands.h"
 
 static void add_command(server_t *server, client_t *client, char **av);
-static void send_pnw_to_gui(server_t const *server, client_t const *client);
+static void send_pnw_to_gui(server_t *server, client_t *client);
 
 static  command_values_t const cmd_ass[] = {
 	{"Forward", NULL, &forward, 7, false},
@@ -114,17 +114,31 @@ static void add_command(server_t *server, client_t *client, char **av)
 	for (list_t *cur = server->teams; cur; cur = cur->next)
 		if (strcmp(av[0], ((team_t *)cur->data)->name) == 0)
 			client->team = cur->data;
-	if (client->team && strcmp(client->team->name, GUI_NAME) != 0) {
-		dprintf(client->sock, "%d\n%d %d\n", count_in_team(server,
-			client), server->map_infos.x, server->map_infos.y);
+	if (client->team)
 		send_pnw_to_gui(server, client);
-	}
 }
 
-static void send_pnw_to_gui(server_t const *server, client_t const *client)
+static void send_pnw_to_gui(server_t *server, client_t *client)
 {
-	print_in_gui(server->clients, "%d %d %d %d %d %s\n",
-		client->infos->id, client->infos->pos.x, client->infos->pos.y,
-		client->infos->direction + 1, client->infos->level,
-		client->team->name);
+	client_t *tmp_client;
+
+	if (strcmp(client->team->name, GUI_NAME) != 0) {
+		dprintf(client->sock, "%d\n%d %d\n", count_in_team(server,
+			client), server->map_infos.x, server->map_infos.y);
+		print_in_gui(server->clients, "%d %d %d %d %d %s\n",
+			client->infos->id, client->infos->pos.x, client->infos->pos.y,
+			client->infos->direction + 1, client->infos->level,
+			client->team->name);
+		return;
+	}
+	for (list_t *cur = server->clients; cur; cur = cur->next) {
+		tmp_client = cur->data;
+		if (strcmp(tmp_client->team->name, GUI_NAME) != 0)
+			print_in_gui(server->clients, "%d %d %d %d %d %s\n",
+				tmp_client->infos->id, tmp_client->infos->pos.x,
+				tmp_client->infos->pos.y,
+				tmp_client->infos->direction + 1,
+				tmp_client->infos->level,
+				tmp_client->team->name);
+	}
 }
