@@ -36,7 +36,7 @@ private:
 
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
-    int _ipAddr[4] { 10, 41, 174, 184 };
+    int _ipAddr[4] { 127, 0, 0, 1 };
 
 
     EventManager &_evtMgr;

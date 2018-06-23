@@ -28,7 +28,8 @@ public:
 	    }
 
 	    if (!_resources.emplace(id, std::move(res)).second) {
-		    throw std::runtime_error("Impossible to emplace in map. Object already exists?");
+		    std::cout << "Object already exists" << std::endl;
+		    return get(id);
 	    }
 	    return _resources[id];
     }
@@ -79,11 +80,25 @@ public:
     	std::experimental::filesystem::path id = filename;
     	for (auto &it : std::experimental::filesystem::recursive_directory_iterator(_resourceDirectoryPath)) {
 		if (it.status().type() != std::experimental::filesystem::file_type::directory) {
-			if (it.path().filename() == filename)
+			if (it.path().filename() == filename) {
+				std::cout << "Loaded " << it.path().filename() << std::endl;
 				return _texturesRegistry.load(std::move(id.replace_extension("").filename()), std::move(it.path()));
+			}
 		}
     	}
     	return _texturesRegistry.load(std::move(id.replace_extension("").filename()), filename);
+    }
+
+    void loadAllTexturesInDirectory(const std::experimental::filesystem::path &filename) {
+	    for (auto &it : std::experimental::filesystem::recursive_directory_iterator(_resourceDirectoryPath)) {
+		    if (it.status().type() == std::experimental::filesystem::file_type::directory && it.path().filename() == filename) {
+			    for (auto &sub : std::experimental::filesystem::recursive_directory_iterator(it.path())) {
+			    	if (sub.status().type() != std::experimental::filesystem::file_type::directory)
+			    		loadTexture(std::move(sub.path().filename()));
+			    }
+			    return;
+		    }
+	    }
     }
 
     sf::Texture &getTexture(const std::string &id) {

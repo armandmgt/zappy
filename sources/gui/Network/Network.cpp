@@ -40,18 +40,17 @@ void NetworkGui::send(std::string &&msg) const noexcept
 {
 	dprintf(_serverSoket, "%s\n", msg.c_str());
 }
-
+ 
 void NetworkGui::receiveMsg() noexcept
 {
-	pollfd fds{_serverSoket, POLLIN, 0};
-	if (poll(&fds, 1, 0) == 0)
-		return;
+	pollfd fds{_serverSoket, POLLIN, 100};
+	poll(&fds, 1, 0);
 	if (fds.revents & POLLIN && write_cbuf(&_buffer, _serverSoket) <= 0) {
 		_evtMgr.emit<MsgEvent>("DISCONNECTED");
 	}
 	if (!_buffer.empty) {
 		char *line = nullptr;
-		while (read_cbuf(&_buffer, &line) && line != nullptr) {
+		while (read_cbuf(&_buffer, &line) /*&& line != nullptr */) {
 				_evtMgr.emit<MsgEvent>(line);
 			free(line);
 		}

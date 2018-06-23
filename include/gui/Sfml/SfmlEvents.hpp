@@ -13,6 +13,6 @@
 class SfmlEvent : public BaseEvent {
 public:
 	explicit SfmlEvent(sf::Event &event) noexcept : _event(event) {}
-private:
+public:
     sf::Event _event;
 };
