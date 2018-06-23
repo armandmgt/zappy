@@ -110,7 +110,7 @@ static void add_command(server_t *server, client_t *client, char **av)
 		}
 	}
 	if (client->team)
-		return;
+		return (void)dprintf(client->sock, "ko\n");
 	for (list_t *cur = server->teams; cur; cur = cur->next) {
 		if (strcmp(av[0], ((team_t *)cur->data)->name) == 0)
 			client->team = cur->data;
