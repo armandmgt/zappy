@@ -2,16 +2,22 @@ import socket
 from multiprocessing import Queue
 from threading import Thread
 
-from common.vec import Vec2d
 from classes.player import Player
+from common.vec import Vec2d
 
 _max_buffer_size = 4096
 
 
+# TODO: Needs documentation
 def parse_response_array(s: str) -> []:
-	translator = str.maketrans('', '', '[]\n')
-	data = s.translate(translator).strip().split(',')
+	translator = str.maketrans('', '', '[]')
+	data = s.translate(translator).split(',')
 	return data
+
+
+def clamp(value, max_val):
+	assert isinstance(value, type(max_val))
+	return value + max_val % max_val
 
 
 class Client:
@@ -23,9 +29,10 @@ class Client:
 	host: str
 	slotsLeft: int
 	responses = Queue()
+	messages = Queue()
 
 	def __init__(self, port: int, name: str, host: str):
-		self.r_th = Thread(target=self.read, args=(self.sock, self.responses))
+		self.r_th = Thread(target=self.read, args=(self.sock, self.responses, self.messages))
 		self.host = host
 		self.port = port
 		self.team = name
@@ -38,16 +45,18 @@ class Client:
 		self.r_th.start()
 
 	@staticmethod
-	def read(sock: socket, responses: Queue):
+	def read(sock: socket, responses: Queue, messages: Queue):
 		buf = ''
 		while True:
 			buf += sock.recv(_max_buffer_size).decode()
 			if len(buf) == 0:
 				return
 			while buf.find('\n') is not -1:
-				res, *buf = buf.split('\n')
-				buf = '\n'.join(buf)
-				responses.put(res)
+				res, buf = buf.split('\n', maxsplit=1)
+				if res.split(maxsplit=1)[0] == 'message':
+					messages.put(res)
+				else:
+					responses.put(res)
 
 	def write(self, data):
 		if not data.endswith('\n'):
@@ -65,13 +74,13 @@ class Client:
 	def move_forward(self):
 		self.write('Forward')
 		if self.player.orientation == 0:  # NORTH
-			self.player.position.set_y((self.player.position.second() + 1) % self.mapSize.second())
+			self.player.position.set_y(clamp(self.player.position.y() + 1, self.mapSize.y()))
 		elif self.player.orientation == 1:  # SOUTH
-			self.player.position.set_y((self.player.position.second() - self.mapSize.second() + 1) % self.mapSize.second())
+			self.player.position.set_y(clamp(self.player.position.y() - 1, self.mapSize.y()))
 		elif self.player.orientation == 2:  # EAST
-			self.player.position.set_x((self.player.position.first() + 1) % self.mapSize.first())
+			self.player.position.set_x(clamp(self.player.position.x() + 1, self.mapSize.x()))
 		elif self.player.orientation == 3:  # WEST
-			self.player.position.set_x((self.player.position.first() - self.mapSize.second() + 1) % self.mapSize.first())
+			self.player.position.set_x(clamp(self.player.position.x() - 1, self.mapSize.x()))
 
 	def turn_right(self):
 		self.write('Right')
@@ -97,8 +106,13 @@ class Client:
 			item, val = s.strip().split(' ')
 			self.player.inventory[item] = val
 
+	def send_information(self):
+		text = f'{self.team};{self.player.to_str()}'
+		self.broadcast(text)
+
 	def broadcast(self, text: str):
 		self.write('Broadcast ' + text)
+		self.responses.get()
 
 	def get_remaining_slots(self):
 		self.write('Connect_nbr')
@@ -107,9 +121,11 @@ class Client:
 	def fork(self):
 		if self.slotsLeft > 0:
 			self.write('Fork')
+			self.responses.get()
 
 	def eject(self):
 		self.write('Eject')
+		self.responses.get()
 
 	def take(self, item: str):
 		self.write('Take ' + item)
@@ -120,15 +136,10 @@ class Client:
 		if self.player.inventory[item] <= 0:
 			return
 		self.write('Set ' + item)
-		if self.responses.get().strip() == 'ok':
+		if self.responses.get() == 'ok':
 			self.player.inventory[item] -= 1
-			self.player.vision[0][item] += 1
 
 	def incantation(self):
-		if self.player.timeout is not 0:
-			return
 		self.write('Incantation')
-		response = self.responses.get()
-		if response == 'ko':
-			return
-		self.player.timeout = 300
+		if self.responses.get() == 'ok':
+			self.player.level += 1

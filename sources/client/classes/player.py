@@ -1,3 +1,5 @@
+import json
+
 from common.vec import Vec2d
 from classes.inventory import Inventory
 
@@ -16,3 +18,8 @@ class Player:
 		self.position = pos if not None else Vec2d(0, 0)
 		for x in range(4):
 			self.vision.append(Inventory())
+
+	def to_str(self) -> str:
+		return f'{self.position.x()},{self.position.y()},'\
+			f'{self.level},'\
+			f'{self.inventory}'
