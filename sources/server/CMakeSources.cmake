@@ -13,6 +13,7 @@ set(CORE
     commands/client_commands.c
     commands/actions.c
     commands/directions.c
+    commands/broadcast.c
     commands/states.c
     commands/eject.c
 	commands/look.c

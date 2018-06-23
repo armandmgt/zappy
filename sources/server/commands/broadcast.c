@@ -28,7 +28,7 @@ bool broadcast(server_t *server, client_t *client, char *args)
 			tmp_client->infos->pos.y)) {
 			dprintf(tmp_client->sock, "message 0, %s", args);
 		}
-		else {
+		else if (tmp_client != client) {
 			direction = get_direction(server, client, tmp_client);
 			dprintf(tmp_client->sock, "message %d, %s\n", direction,
 				args);
