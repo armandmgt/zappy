@@ -12,16 +12,19 @@
 
 ssize_t write_cbuf(cir_buffer_t *buffer, int fd)
 {
-	ssize_t read_size = buffer->end - buffer->write_ptr;
+	ssize_t read_size;
 
+	 if (buffer->read_ptr <= buffer->write_ptr)
+	 	read_size = buffer->end - buffer->write_ptr;
+	 else
+	 	read_size = buffer->read_ptr - buffer->write_ptr;
 	read_size = read(fd, buffer->write_ptr, (size_t)read_size);
 	if (read_size <= 0)
 		return (read_size);
 	buffer->empty = false;
 	buffer->write_ptr += read_size;
-	if (buffer->write_ptr == buffer->end) {
+	if (buffer->write_ptr == buffer->end)
 		buffer->write_ptr = buffer->buffer;
-	}
 	return (read_size);
 }
 
@@ -33,16 +36,14 @@ char * find_line_end(cir_buffer_t *buffer)
 		buffer->write_ptr - buffer->read_ptr;
 
 	delim = memchr(buffer->read_ptr, '\n', search_size);
-	if (!delim && buffer->write_ptr < buffer->read_ptr) {
+	if (!delim && buffer->write_ptr <= buffer->read_ptr) {
 		search_size = buffer->write_ptr - buffer->buffer;
 		delim = memchr(buffer->buffer, '\n', search_size);
 	}
-	if (!delim)
-		return (NULL);
 	return (delim);
 }
 
-char * alloc_line(cir_buffer_t *buffer, char *endptr)
+char * alloc_line(cir_buffer_t *buffer, const char *endptr)
 {
 	size_t size = 0;
 
