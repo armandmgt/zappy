@@ -126,9 +126,9 @@ static void send_pnw_to_gui(server_t *server, client_t *client)
 		dprintf(client->sock, "%d\n%d %d\n", count_in_team(server,
 			client), server->map_infos.x, server->map_infos.y);
 		print_in_gui(server->clients, "%d %d %d %d %d %s\n",
-			client->infos->id, client->infos->pos.x, client->infos->pos.y,
-			client->infos->direction + 1, client->infos->level,
-			client->team->name);
+			client->infos->id, client->infos->pos.x,
+			client->infos->pos.y, client->infos->direction + 1,
+			client->infos->level, client->team->name);
 		return;
 	}
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
