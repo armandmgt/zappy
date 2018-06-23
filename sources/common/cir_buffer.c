@@ -76,8 +76,9 @@ int read_cbuf(cir_buffer_t *buffer, char **line)
 		return (0);
 	copy_line(buffer, *line, endptr);
 	buffer->read_ptr = endptr + 1;
-	if (buffer->write_ptr == buffer->read_ptr) {
+	if (buffer->read_ptr == buffer->end)
+		buffer->read_ptr = buffer->buffer;
+	if (buffer->write_ptr == buffer->read_ptr)
 		buffer->empty = true;
-	}
 	return (1);
 }
