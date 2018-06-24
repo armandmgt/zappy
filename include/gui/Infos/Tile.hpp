@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <SFML/Graphics/RenderWindow.h>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include "Inventory.hpp"
 
 class Tile {

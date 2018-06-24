@@ -9,13 +9,14 @@
 #include "imgui.hpp"
 #include "imgui-SFML.hpp"
 #include "GameScene.hpp"
+#include "GuiMapManager.hpp"
 
 void GameScene::update(float timeSinceLastFrame) noexcept
 {
 	_networkMgr.updateGui();
-	ImGui::Image(_resourceMgr.getTexture("GreenRupee"));
+	//ImGui::Image(_resourceMgr.getTexture("GreenRupee"));
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	ImGui::End();
 	displayGame(timeSinceLastFrame);
 }
@@ -45,7 +46,6 @@ void GameScene::enter() noexcept
 	/*
 	 * Resources Initialization
 	 */
-	_resourceMgr.loadAllTexturesInDirectory("T-0");
 	_resourceMgr.loadAllTexturesInDirectory("Rupees");
 	_resourceMgr.loadAnimation("Up");
 	_resourceMgr.loadAnimation("Down");
@@ -65,7 +65,25 @@ void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 
 void GameScene::receive(const MapDims &dims) noexcept
 {
-	_map = std::move(std::vector(dims._y, std::vector(dims._x, Tile{})));
+	GuiMapManager genMap(dims._x, dims._y, 35, 1);
+	_resourceMgr.loadAllTexturesInDirectory("T-0");
+	auto map = std::move(genMap.getMap());
+	for (auto &line : map) {
+		std::vector<Tile> tmp;
+		for (auto &tiles : line) {
+			tmp.emplace_back();
+			int idGrass = rand() % 7;
+			std::cout << "rand = [" << idGrass << "]" <<std::endl;
+			if (tiles == 0)
+				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-7"));
+			else
+				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-" + std::to_string
+													     (idGrass)));
+		}
+		_map.emplace_back(std::move(tmp));
+	}
+	std::cout << "Hi !" << std::endl;
+//	_map = std::move(std::vector(dims._y, std::vector(dims._x, Tile{})));
 }
 
 void GameScene::receive(const FillCellInventory &cell) noexcept
@@ -78,7 +96,7 @@ void GameScene::receive(const FillCellInventory &cell) noexcept
 
 	auto &tile = _map[cell._y][cell._x];
 	tile.setTileInventory(cell._inventory);
-	tile.getSprite().setTexture(_resourceMgr.getTexture("Grass-6"));
+	//tile.getSprite().setTexture(_resourceMgr.getTexture("Grass-6"));
 	tile.getSprite().setScale(size / 128.0f, size / 128.0f);
 	tile.getSprite().setPosition(cell._x * size + offset.x, cell._y * size + offset.y);
 
@@ -126,13 +144,13 @@ void GameScene::receive(const ResourceDropping &event) noexcept
 	(void)event;
 }
 
-void GameScene::receive(const ResourceCollecting &collect) noexcept
+void GameScene::receive(const ResourceCollecting &) noexcept
 {
-	auto &player = _players[collect._id];
-	std::cout << "CLEAR(" << collect._resourcesName << ")" << std::endl;
-	Inventory::ResourceType resourceType = player._inventory._resourcesName[collect._resourcesName];
+	//auto &player = _players[collect._id];
+	//std::cout << "CLEAR(" << collect._resourcesName << ")" << std::endl;
+	//Inventory::ResourceType resourceType = player._inventory._resourcesName[collect._resourcesName];
 
-	for (auto &it : _map[player._pos.y][player._pos.x].getInventory()._resources)
-		it.clear();
+	//for (auto &it : _map[player._pos.y][player._pos.x].getInventory()._resources)
+	//	it.clear();
 //	_map[player._pos.y][player._pos.x].getInventory()._resources[resourceType].clear();
 }

@@ -11,7 +11,7 @@
 
 class App : public sf::RenderWindow {
 public:
-    explicit App() : sf::RenderWindow(sf::VideoMode(1800, 1000), "Zappy Trop bow", sf::Style::Fullscreen), _sceneMgr(*this)
+    explicit App() : sf::RenderWindow(sf::VideoMode(1800, 1000), "Zappy Trop bow", sf::Style::Close), _sceneMgr(*this)
     {
     }
     void init();

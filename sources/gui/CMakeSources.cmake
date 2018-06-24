@@ -4,6 +4,10 @@ set(CORE
         ../common/init_cir_buffer.c
         )
 
+set(GENERATION
+        Generation/GuiMapManager.cpp
+        )
+
 set(CORE_SCENES
         Scenes/GameScene.cpp
         )
@@ -29,6 +33,7 @@ set(IMGUI_SFML_SRCS
 
 set(SRCS
         ${CORE}
+        ${GENERATION}
         ${CORE_SCENES}
         ${CORE_NETWORK}
         ${SFML_SRCS}

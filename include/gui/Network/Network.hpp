@@ -36,7 +36,7 @@ private:
 
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
-    int _ipAddr[4] { 127, 0, 0, 1 };
+    int _ipAddr[4] { 192, 168, 0, 119 };
 
     EventManager &_evtMgr;
     std::unordered_map<std::string, std::function<void(std::vector<std::string>)>> _networkProtocol{
