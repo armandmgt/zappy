@@ -115,5 +115,6 @@ void GameScene::receive(const PlayerDeath &player) noexcept
 void GameScene::receive(const PlayerMoved &player) noexcept
 {
 	_players[player._id]._pos = vector2d<int>(player._x, player._y);
+	_players[player._id]._move = vector2d<int>(player._x, player._y);
 	_players[player._id]._orientation = player._orientation;
 }

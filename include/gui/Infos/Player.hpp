@@ -46,6 +46,7 @@ public:
 	int _id;
 	int _level;
 	vector2d<int> _pos;
+	vector2d<int> _move {-1, -1};
 	Orientation _orientation;
 	std::string _teamName;
 	Inventory _inventory;
