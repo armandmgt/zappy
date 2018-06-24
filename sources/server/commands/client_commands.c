@@ -57,31 +57,6 @@ int poll_client_commands(server_t *server, fd_set *readfds)
 	return (0);
 }
 
-int do_pending_actions(server_t *server)
-{
-	client_t *client;
-	command_t *cmd;
-	list_t *prev;
-	clock_t end = clock();
-
-	for (list_t *cur = server->clients; cur; cur = cur->next) {
-		client = cur->data;
-		if (!client->cmds)
-			continue;
-		cmd = client->cmds->data;
-		if (cmd->t_out > (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10)
-			continue;
-		cmd->do_action(server, client, cmd->args);
-		if (cmd->args)
-			free(cmd->args);
-		if (!(prev = remove_elem(&((client_t *)cur->data)->cmds, cmd)))
-			break;
-		else
-			((command_t *)prev->data)->s_time = end;
-	}
-	return (0);
-}
-
 static void stock_command(client_t *client, server_t *server, char **av,
 			size_t i)
 {

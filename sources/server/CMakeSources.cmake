@@ -11,6 +11,7 @@ set(CORE
 	connexion/spawn_resources.c
 
     commands/client_commands.c
+	commands/do_pending_action.c
     commands/actions.c
     commands/directions.c
     commands/states.c
