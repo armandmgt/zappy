@@ -36,14 +36,14 @@ class AI:
 		if not message:
 			self.client.send_information()
 			return
-		# try:
-		_, arg = message.split(maxsplit=1)
-		information = self.parse_information(arg)
-		if information is None:
-			return
-		self.rank_information(information)
-		# except ValueError:
-		# 	print(f'Invalid message received: {message}')
+		try:
+			_, arg = message.split(maxsplit=1)
+			information = self.parse_information(arg)
+			if information is None:
+				return
+			self.rank_information(information)
+		except ValueError:
+			print(f'Invalid message received: {message}')
 
 	def parse_information(self, arg: str) -> PlayerDesc or None:
 		information = PlayerDesc()
