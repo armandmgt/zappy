@@ -2,10 +2,13 @@ import socket
 from multiprocessing import Queue
 from threading import Thread
 
+from classes.player import Player
+from common.listtools import find
 from common.vec import Vec2d
 from classes.player import Player
 
 _max_buffer_size = 4096
+_MSGCMDS = ['message', 'dead']
 
 
 def parse_response_array(s: str) -> []:
@@ -45,11 +48,16 @@ class Client:
 			if len(buf) == 0:
 				return
 			while buf.find('\n') is not -1:
-				res, *buf = buf.split('\n')
-				buf = '\n'.join(buf)
-				responses.put(res)
+				res, buf = buf.split('\n', maxsplit=1)
+				if find(_MSGCMDS, key=lambda x: x == res.split(maxsplit=1)[0]):
+					# print(f'received msg [{res}]')
+					messages.put(res)
+				else:
+					print(f'received response [{res}]')
+					responses.put(res)
 
 	def write(self, data):
+		print(f' sending [{data}]')
 		if not data.endswith('\n'):
 			data += '\n'
 		self.sock.send(data.encode())
@@ -64,6 +72,8 @@ class Client:
 
 	def move_forward(self):
 		self.write('Forward')
+		if self.responses.get() == 'ko':
+			return
 		if self.player.orientation == 0:  # NORTH
 			self.player.position.set_y((self.player.position.second() + 1) % self.mapSize.second())
 		elif self.player.orientation == 1:  # SOUTH
@@ -75,10 +85,14 @@ class Client:
 
 	def turn_right(self):
 		self.write('Right')
+		if self.responses.get() == 'ko':
+			return
 		self.player.orientation = (self.player.orientation + 1) % 4
 
 	def turn_left(self):
 		self.write('Left')
+		if self.responses.get() == 'ko':
+			return
 		self.player.orientation = (self.player.orientation - 1) % 4
 
 	def look(self):
@@ -87,7 +101,8 @@ class Client:
 		for s, vision in zip(data, self.player.vision):
 			segment = s.strip().split(' ')
 			for key in segment:
-				vision[key] += 1
+				if find(vision.keys(), key=lambda x: x == key) is not None:
+					vision[key] += 1
 
 	def get_inventory(self):
 		self.write('Inventory')

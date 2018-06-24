@@ -67,7 +67,7 @@ class AI:
 			return None
 		return information
 
-	def rank_information(self, information: PlayerDesc):
+	def rank_information(self, information: PlayerDesc) -> None:
 		information.score += self.player_level_score(information.level) * 1
 		information.score += self.resources_score(information.inventory) * 1
 		information.score /= 2
@@ -90,22 +90,22 @@ class AI:
 			if missing_resource < 0:
 				missing_resource = 0
 			resource_scores.append(missing_resource)
-		return 1 / sum(resource_scores)
+		return 1 / sum(resource_scores) if sum(resource_scores) else 1
 
-	def go_for_food(self):
+	def go_for_food(self) -> None:
+		self.client.look()
 		found = find(self.client.player.vision, key=lambda x: x == 'food')
-		pos: Vec2d
 		if found is not None:
 			index = self.client.player.vision.index(found)
-			pos = Vec2d(index / self.client.mapSize.x, index % self.client.mapSize.x)
+			pos = Vec2d(index / self.client.mapSize.x(), index % self.client.mapSize.x())
 		else:
-			pos = Vec2d(randint(0, self.client.mapSize.x), randint(0, self.client.mapSize.y))
-		print(self.best_direction(pos))
+			pos = Vec2d(randint(0, self.client.mapSize.x()), randint(0, self.client.mapSize.y()))
+		return self.best_direction(pos)
 
-	def go_for_target(self):
+	def go_for_target(self) -> None:
 		pass
 
-	def best_direction(self, pos: Vec2d):
+	def best_direction(self, pos: Vec2d) -> None:
 		deltax = pos.x() - self.client.player.position.x()
 		deltay = pos.y() - self.client.player.position.y()
 		if abs(deltax) > abs(deltay):
@@ -114,7 +114,13 @@ class AI:
 			direction = 2 + sign(deltay)
 		l_turns = (self.client.player.orientation - direction + 4) % 4
 		r_turns = (direction - self.client.player.orientation + 4) % 4
-		turns = min((l_turns, 'Left'), (r_turns, 'Right'), key=lambda x: x[0])
+		turns = min((l_turns, self.client.turn_left), (r_turns, self.client.turn_right), key=lambda x: x[0])
 		if turns[0] == 0:
-			return 'Forward'
-		return turns[1]
+			self.client.move_forward()
+			if self.client.player.vision[1]['player'] > 0:
+				return
+			for (key, value) in self.client.player.vision[1].items():
+				if value > 0:
+					self.client.take(key)
+		else:
+			turns[1]()

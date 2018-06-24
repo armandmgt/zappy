@@ -26,7 +26,15 @@ def run_game(c: Client):
 	c.get_initial_data()
 	ai = AI(c)
 	while c.r_th.isAlive():
+<<<<<<< HEAD
 		ai.make_decision()
+=======
+		msg = c.messages.get() if not c.messages.empty() else False
+		if msg and msg == 'dead':
+			return
+		ai.make_decision(msg)
+		c.send_information()
+>>>>>>> lot of bug fixes, type enforcing and AI taking everything it can on a tile
 
 
 if __name__ == '__main__':
