@@ -32,6 +32,10 @@ class AI:
 		self.client = c
 		self.alpha_target = None
 
+<<<<<<< HEAD
+	def make_decision(self):
+		pass
+=======
 	def make_decision(self, message: str):
 		if not message:
 			self.client.send_information()
@@ -77,3 +81,4 @@ class AI:
 				missing_resource = 0
 			resource_scores.append(missing_resource)
 		return 1 / sum(resource_scores)
+>>>>>>> dd6cd9d5a500eeb743b9d1916a6b70b2f51b8c85
