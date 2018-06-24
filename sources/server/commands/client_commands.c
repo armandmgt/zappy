@@ -21,7 +21,7 @@ static  command_values_t const cmd_ass[] = {
 	{"Right", NULL, &right, 7, false}, {"Left", NULL, &left, 7, false},
 	{"Look", NULL, &look, 7, false},
 	{"Inventory", NULL, &inventory, 1, false},
-	{"Broadcast text", NULL, &broadcast, 7, false},
+	{"Broadcast", NULL, &broadcast, 7, false},
 	{"Connect_nbr", NULL, &connect_nbr, 0, false},
 	{"Fork", NULL, &birth, 42, false}, {"Eject", NULL, &eject, 7, false},
 	{"Take", NULL, &take, 7, false}, {"Set", NULL, &set, 7, false},

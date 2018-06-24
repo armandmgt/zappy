@@ -77,9 +77,3 @@ bool set(server_t *server, client_t *client, char *args)
 	print_in_gui(server->clients, "pdr %d %s\n", client->infos->id, args);
 	return (true);
 }
-
-bool broadcast(server_t *UNUSED(server), client_t *UNUSED(client),
-	char *UNUSED(args))
-{
-	return (false);
-}
