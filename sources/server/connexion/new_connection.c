@@ -61,7 +61,8 @@ static void spawn_client_on_map(map_t *m, client_t *client)
 	client->infos->pos.x = (uint32_t)rand() % m->x;
 	client->infos->pos.y = (uint32_t)rand() % m->y;
 	client->infos->direction = (direction_t)rand() % NB_DIRECTION;
-	players = get_player_list_at(m, client->infos->pos.x, client->infos->pos.y);
+	players = get_player_list_at(m, client->infos->pos.x,
+		client->infos->pos.y);
 	add_elem_at_front(players, client);
 }
 
