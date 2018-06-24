@@ -14,6 +14,7 @@ set(CORE
 	commands/do_pending_action.c
     commands/actions.c
     commands/directions.c
+    commands/broadcast.c
     commands/states.c
     commands/eject.c
 	commands/look.c
