@@ -11,11 +11,10 @@ _ITEMS = [
 
 
 class Inventory(dict):
-	def __init__(self):
+	def __init__(self, items=[10]+[0]*len(_ITEMS)):
 		super().__init__()
-		for k in _ITEMS:
-			self.__setitem__(k, 0)
-		self['food'] = 10
+		for k, v in zip(_ITEMS, items):
+			self.__setitem__(k, v)
 
 	def __setitem__(self, k, v):
 		super(Inventory, self).__setitem__(k, v)
@@ -25,6 +24,9 @@ class Inventory(dict):
 
 	def __repr__(self):
 		return super(Inventory, self).__repr__()
+
+	def __str__(self):
+		return super(Inventory, self).__str__().replace("'", '"')
 
 	def __len__(self):
 		return super(Inventory, self).__len__()

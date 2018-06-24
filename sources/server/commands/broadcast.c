@@ -8,36 +8,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
+#include "server/gui_magic.h"
 #include "server/commands.h"
 #include "gui_commands.h"
 
 static int convertion_to_degree(client_t *client, double angle);
 static int get_direction(server_t *server, client_t *client, client_t *tmp);
 static int determine_angle(double angle);
+static void send_msg(server_t *server, client_t *client, client_t *tmp_client,
+	char *args);
 
 bool broadcast(server_t *server, client_t *client, char *args)
 {
-	int direction;
 	client_t *tmp_client;
 
 	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
 		tmp_client = tmp->data;
-		if (args && tmp_client != client && (client->infos->pos.x ==
-			tmp_client->infos->pos.x && client->infos->pos.y ==
-			tmp_client->infos->pos.y))
-			dprintf(tmp_client->sock, "message 0, %s", args);
-		else if (args && tmp_client != client) {
-			direction = get_direction(server, client, tmp_client);
-			dprintf(tmp_client->sock, "message %d, %s\n", direction,
-				args);
-		}
+		send_msg(server, client, tmp_client, args);
 	}
 	dprintf(client->sock, "%s\n", args ? "ok" : "ko");
-	if (args) {
-		print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
-		return (true);
-	}
+	if (args)
+		print_in_gui(server->clients, "pbc %d %s\n", client->infos->id,
+			args);
 	return (false);
+}
+
+static void send_msg(server_t *server, client_t *client, client_t *tmp_client,
+	char *args)
+{
+	int direction;
+
+	if (tmp_client->team && !strcmp(tmp_client->team->name, GUI_NAME))
+		return;
+	if (args && tmp_client != client && (client->infos->pos.x ==
+		tmp_client->infos->pos.x && client->infos->pos.y ==
+		tmp_client->infos->pos.y))
+		dprintf(tmp_client->sock, "message 0, %s", args);
+	else if (args && tmp_client != client) {
+		direction = get_direction(server, client, tmp_client);
+		dprintf(tmp_client->sock, "message %d, %s\n", direction,
+			args);
+	}
 }
 
 static int get_direction(server_t *server, client_t *client, client_t *tmp)

@@ -16,7 +16,8 @@ int count_in_team(server_t *server, client_t *client)
 
 	while (tmp_list) {
 		tmp = tmp_list->data;
-		if (strcmp(tmp->team->name, client->team->name) == 0)
+		if (tmp->team &&
+		    strcmp(tmp->team->name, client->team->name) == 0)
 			cmpt += 1;
 		tmp_list = tmp_list->next;
 	}
