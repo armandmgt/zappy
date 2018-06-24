@@ -35,10 +35,12 @@ class PlayerDesc:
 class AI:
 	client: Client
 	alpha_target: PlayerDesc
+	food: Vec2d
 
 	def __init__(self, c: Client):
 		self.client = c
 		self.alpha_target = None
+		self.food = None
 
 	def make_decision(self, message: str):
 		if message:
@@ -52,7 +54,7 @@ class AI:
 				print(f'Invalid message received: {message}')
 
 		self.client.get_inventory()
-		if self.client.player.inventory['food'] < 5:
+		if self.client.player.inventory['food'] < 5 or self.alpha_target is None:
 			self.go_for_food()
 		else:
 			self.go_for_target()
@@ -62,6 +64,7 @@ class AI:
 		information.origin, arg = arg.split(', ', maxsplit=1)
 		team_name, information.level, information.inventory = arg.split(';')
 		information.inventory = json.loads(information.inventory)
+		information.origin = int(information.origin)
 		information.level = int(information.level)
 		if team_name != self.client.team:
 			return None
@@ -93,21 +96,40 @@ class AI:
 		return 1 / sum(resource_scores) if sum(resource_scores) else 1
 
 	def go_for_food(self) -> None:
-		self.client.look()
-		found = find(self.client.player.vision, key=lambda x: x == 'food')
-		if found is not None:
-			index = self.client.player.vision.index(found)
-			pos = Vec2d(index / self.client.mapSize.x(), index % self.client.mapSize.x())
+		if self.food is not None and (self.food.x() != self.client.player.position.x() or self.food.y() != self.client.player.position.y()):
+			print('taking previous food')
+			pos = self.food
 		else:
-			pos = Vec2d(randint(0, self.client.mapSize.x()), randint(0, self.client.mapSize.y()))
-		return self.best_direction(pos)
+			self.client.look()
+			found = find(self.client.player.vision, key=self.has_food)
+			if found is not None:
+				print('found food !')
+				index = self.client.player.vision.index(found)
+				pos = Vec2d(int(index / self.client.mapSize.x()), index % self.client.mapSize.x())
+				self.food = pos
+			else:
+				print('taking random food')
+				pos = Vec2d(randint(0, self.client.mapSize.x()), randint(0, self.client.mapSize.y()))
+		print(f'going for food at {pos.x()};{pos.y()} from {self.client.player.position.x()};{self.client.player.position.y()}')
+		self.best_direction(pos)
 
 	def go_for_target(self) -> None:
-		pass
+		print(f'going for target at {self.alpha_target.origin}')
+		if find([1, 2, 8], key=lambda x: x == self.alpha_target.origin) is not None:
+			self.client.move_forward()
+			self.take_all()
+		elif self.alpha_target.origin - 4 < 0:
+			self.client.turn_right()
+		else:
+			self.client.turn_left()
 
 	def best_direction(self, pos: Vec2d) -> None:
 		deltax = pos.x() - self.client.player.position.x()
 		deltay = pos.y() - self.client.player.position.y()
+		if deltax > self.client.mapSize.x() / 2:
+			deltax = self.client.mapSize.x() - deltax
+		if deltay > self.client.mapSize.y() / 2:
+			deltay = self.client.mapSize.y() - deltay
 		if abs(deltax) > abs(deltay):
 			direction = 3 + sign(deltax)
 		else:
@@ -117,10 +139,16 @@ class AI:
 		turns = min((l_turns, self.client.turn_left), (r_turns, self.client.turn_right), key=lambda x: x[0])
 		if turns[0] == 0:
 			self.client.move_forward()
-			if self.client.player.vision[1]['player'] > 0:
-				return
-			for (key, value) in self.client.player.vision[1].items():
-				if value > 0:
-					self.client.take(key)
+			self.take_all()
 		else:
 			turns[1]()
+
+	def take_all(self):
+		for (key, value) in self.client.player.vision[0].items():
+			if key != 'player' and value > 0:
+				while value and self.client.take(key):
+					value -= 1
+
+	@staticmethod
+	def has_food(inv: Inventory) -> bool:
+		return inv['food'] > 0

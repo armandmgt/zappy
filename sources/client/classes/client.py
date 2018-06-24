@@ -8,13 +8,17 @@ from common.vec import Vec2d
 from classes.player import Player
 
 _max_buffer_size = 4096
-_MSGCMDS = ['message', 'dead']
 
 
 def parse_response_array(s: str) -> []:
 	translator = str.maketrans('', '', '[]\n')
 	data = s.translate(translator).strip().split(',')
 	return data
+
+
+def clamp(value, max_val):
+	assert isinstance(value, type(max_val))
+	return (value + max_val) % max_val
 
 
 class Client:
@@ -49,11 +53,11 @@ class Client:
 				return
 			while buf.find('\n') is not -1:
 				res, buf = buf.split('\n', maxsplit=1)
-				if find(_MSGCMDS, key=lambda x: x == res.split(maxsplit=1)[0]):
+				if res.split(maxsplit=1)[0] == 'message':
 					# print(f'received msg [{res}]')
 					messages.put(res)
 				else:
-					print(f'received response [{res}]')
+					# print(f'received response [{res}]')
 					responses.put(res)
 
 	def write(self, data):
@@ -68,6 +72,7 @@ class Client:
 	def get_initial_data(self):
 		self.slotsLeft = int(self.responses.get())
 		x, y = self.responses.get().split(' ')
+		self.player.position = Vec2d(int(x), int(y))
 		self.mapSize = Vec2d(int(x), int(y))
 
 	def move_forward(self):
@@ -126,10 +131,15 @@ class Client:
 	def eject(self):
 		self.write('Eject')
 
-	def take(self, item: str):
+	def take(self, item: str) -> bool:
 		self.write('Take ' + item)
-		if self.responses.get() == 'ok':
+		res = self.responses.get()
+		if res == 'dead':
+			exit(0)
+		if res == 'ok':
 			self.player.inventory[item] += 1
+			return True
+		return False
 
 	def set(self, item: str):
 		if self.player.inventory[item] <= 0:
