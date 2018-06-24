@@ -9,6 +9,7 @@
 
 #include "Vector2d.hpp"
 #include "Inventory.hpp"
+#include <SFML/Graphics/RenderWindow.h>
 
 class Player {
 public:
@@ -18,7 +19,11 @@ public:
 		DOWN,
 		LEFT
 	};
-private:
+
+	void displayPlayer(sf::RenderWindow &window) noexcept {
+		window.draw()
+	}
+public:
 	int _id;
 	vector2d<int> _pos;
 	Orientation _orienation;

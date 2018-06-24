@@ -67,23 +67,15 @@ public:
  */
 class NewPlayer : public BaseEvent {
 public:
-	explicit NewPlayer(std::vector<std::string> &&params) noexcept
-		: _id(std::stoi(params.at(0))),
-		  _x(std::stoi(params.at(1))),
-		  _y(std::stoi(params.at(2))),
-		  _orientation(static_cast<Player::Orientation>(std::stoi(params.at(3)))),
-		  _level(std::stoi(params.at(4))),
-		  _teamName(std::move(params[5]))
-	{
-
+	explicit NewPlayer(std::vector<std::string> &&params) noexcept {
+		_player._id = std::stoi(params.at(0));
+		_player._pos = vector2d<int>{ std::stoi(params.at(1)), std::stoi(params.at(2)) };
+		_player._orienation = static_cast<Player::Orientation>(std::stoi(params.at(3)));
+		_player._level = std::stoi(params.at(4));
+		_player._teamName = std::move(params[5]);
 	}
 public:
-	int _id;
-	int _x;
-	int _y;
-	Player::Orientation _orientation;
-	int _level;
-	std::string _teamName;
+	Player _player;
 };
 
 /*

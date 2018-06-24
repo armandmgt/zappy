@@ -10,26 +10,17 @@
 #include "imgui-SFML.hpp"
 #include "GameScene.hpp"
 
-void GameScene::update(float timeSinceLastFrame[[maybe_unused]]) noexcept
+void GameScene::update(float timeSinceLastFrame) noexcept
 {
 	_networkMgr.updateGui();
 	ImGui::Image(_resourceMgr.getTexture("GreenRupee"));
 
 	ImGui::ShowDemoWindow();
 	ImGui::End();
-	displayMap();
+	displayMap(timeSinceLastFrame);
 }
 
-void GameScene::enter() noexcept
-{
-	_evtMgr.subscribe<SfmlEvent>(*this);
-	_evtMgr.subscribe<MapDims>(*this);
-	_evtMgr.subscribe<FillCellInventory>(*this);
-	_resourceMgr.loadAllTexturesInDirectory("T-0");
-	_resourceMgr.loadAllTexturesInDirectory("Rupees");
-}
-
-void GameScene::displayMap() noexcept
+void GameScene::displayMap(float timeSinceLastFrame) noexcept
 {
 	/*
 	 * Display Tiles
@@ -40,10 +31,21 @@ void GameScene::displayMap() noexcept
 	}
 }
 
+void GameScene::enter() noexcept
+{
+	_evtMgr.subscribe<SfmlEvent>(*this);
+	_evtMgr.subscribe<MapDims>(*this);
+	_evtMgr.subscribe<NewPlayer>(*this);
+	_evtMgr.subscribe<FillCellInventory>(*this);
+	_resourceMgr.loadAllTexturesInDirectory("T-0");
+	_resourceMgr.loadAllTexturesInDirectory("Rupees");
+}
+
 void GameScene::exit() noexcept
 {
 	_evtMgr.unsubscribe<SfmlEvent>(*this);
 	_evtMgr.unsubscribe<MapDims>(*this);
+	_evtMgr.unsubscribe<NewPlayer>(*this);
 	_evtMgr.unsubscribe<FillCellInventory>(*this);
 }
 
@@ -67,7 +69,7 @@ void GameScene::receive(const FillCellInventory &cell) noexcept
 	sf::Vector2f offset((_parent.getWindow().getSize().x - (_map[0].size() * size)) / 2, (_parent.getWindow().getSize().y - (max * size)) / 2);
 
 	auto &tile = _map[cell._y][cell._x];
-	tile.setTileInventory(std::move(cell._inventory));
+	tile.setTileInventory(cell._inventory);
 	tile.getSprite().setTexture(_resourceMgr.getTexture("Grass-6"));
 	tile.getSprite().setScale(size / 128.0f, size / 128.0f);
 	tile.getSprite().setPosition(cell._x * size + offset.x + cell._x, cell._y * size + offset.y + cell._y);
@@ -89,4 +91,9 @@ void GameScene::receive(const FillCellInventory &cell) noexcept
 			sprite.setPosition(sprite.getPosition().x + posX, sprite.getPosition().y + posY);
 		}
 	}
+}
+
+void GameScene::receive(const NewPlayer &player) noexcept
+{
+	_players.push_back(player._player);
 }

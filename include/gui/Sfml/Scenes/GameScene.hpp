@@ -33,10 +33,12 @@ public:
 	void receive(const SfmlEvent &event) noexcept;
 	void receive(const MapDims &event) noexcept;
 	void receive(const FillCellInventory &event) noexcept;
+	void receive(const NewPlayer &event) noexcept;
 private:
-	void displayMap() noexcept;
+	void displayMap(float timeSinceLastFrame) noexcept;
 
 	bool _started {false};
 	NetworkGui _networkMgr;
 	std::vector<std::vector<Tile>> _map;
+	std::vector<Player> _players;
 };
