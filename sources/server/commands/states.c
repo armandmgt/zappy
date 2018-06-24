@@ -6,7 +6,6 @@
 */
 
 #include <stdio.h>
-#include <malloc.h>
 #include "common/tools.h"
 #include "server/server.h"
 #include "gui_commands.h"
@@ -35,23 +34,6 @@ bool inventory(server_t *server, client_t *client, char *UNUSED(args))
 		print_in_gui(server->clients, "\n");
 	}
 	return (true);
-}
-
-bool death(server_t *server, client_t *client, char *UNUSED(args))
-{
-	for (list_t *tmp = server->clients; tmp; tmp = tmp->next) {
-		if (tmp->data == client && client->infos->lifetime == 0) {
-			dprintf(client->sock, "dead\n");
-			print_in_gui(server->clients, "pdi %d\n",
-				client->infos->id);
-			close(client->sock);
-			free(client->infos);
-			free(tmp->data);
-			tmp->data = NULL;
-			return (true);
-		}
-	}
-	return (false);
 }
 
 bool incantation(server_t *server, client_t *client, char *UNUSED(args))

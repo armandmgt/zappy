@@ -12,6 +12,7 @@ set(CORE
 
     commands/client_commands.c
     commands/do_pending_action.c
+    commands/death.c
     commands/actions.c
     commands/directions.c
     commands/broadcast.c
