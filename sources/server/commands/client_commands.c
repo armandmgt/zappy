@@ -69,7 +69,7 @@ int do_pending_actions(server_t *server)
 		if (!client->cmds)
 			continue;
 		cmd = client->cmds->data;
-		if (cmd->t_out > (end - cmd->s_time) / CLOCKS_PER_SEC * 10)
+		if (cmd->t_out > (double)(end - cmd->s_time) / CLOCKS_PER_SEC * 10)
 			continue;
 		cmd->do_action(server, client, cmd->args);
 		if (cmd->args)

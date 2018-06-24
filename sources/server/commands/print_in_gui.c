@@ -19,7 +19,8 @@ int print_in_gui(list_t *clients, char const *format, ...)
 	va_start(ap, format);
 	for (list_t *cur = clients; cur; cur = cur->next) {
 		client = cur->data;
-		if (strcmp(client->team->name, GUI_NAME) == 0) {
+		if (client->team &&
+		    strcmp(client->team->name, GUI_NAME) == 0) {
 			vdprintf(client->sock, format, ap);
 			nb_client++;
 		}
