@@ -133,7 +133,7 @@ static void send_pnw_to_gui(server_t *server, client_t *client)
 	}
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		tmp = cur->data;
-		if (strcmp(tmp->team->name, GUI_NAME) != 0)
+		if (tmp->team && strcmp(tmp->team->name, GUI_NAME) != 0)
 			print_in_gui(server->clients,
 				"pnw %d %d %d %d %d %s\n",
 				tmp->infos->id, tmp->infos->pos.x,
