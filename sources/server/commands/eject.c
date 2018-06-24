@@ -47,7 +47,6 @@ static void case_positions(server_t *server, client_t *cpy, vec2i_t *pos)
 	case (WEST):
 		*pos = (vec2i_t){cpy->infos->pos.x - 1, cpy->infos->pos.y};
 		dprintf(cpy->sock, "eject: E\n");
-		break;
 	default: break;
 	}
 	pos->y = (pos->y + server->map_infos.y) % server->map_infos.y;
