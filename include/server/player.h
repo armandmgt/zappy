@@ -31,7 +31,7 @@ typedef struct player_s {
 
 typedef struct client_s {
 	int sock;
-	cir_buffer_t buffer;
+	cir_buffer_t buff;
 	player_t *infos;
 	team_t *team;
 	clock_t last_tick;

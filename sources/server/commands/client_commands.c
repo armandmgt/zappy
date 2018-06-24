@@ -33,26 +33,33 @@ static  command_values_t const cmd_ass[] = {
 	{"sst", NULL, &sst, 0, true}
 };
 
+static void handle_new_command(server_t *server, client_t *client, char *ln)
+{
+	char *command[2];
+
+	command[0] = strtok(ln, " ");
+	command[1] = strtok(NULL, "");
+	add_command(server, client, command);
+	free(ln);
+}
+
 int poll_client_commands(server_t *server, fd_set *readfds)
 {
 	client_t *client;
-	char *command[2];
-	char *line;
+	char *ln;
 
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
 		client = cur->data;
 		if (FD_ISSET(client->sock, readfds) &&
-			write_cbuf(&client->buffer, client->sock) <= 0)
+			write_cbuf(&client->buff, client->sock) <= 0) {
+			print_in_gui(server->clients, "pdi %d\n",
+				     client->infos->id);
 			cur = remove_elem(&server->clients, client);
+		}
 		if (!cur)
 			break;
-		if (!client->buffer.empty &&
-			read_cbuf(&client->buffer, &line)) {
-			command[0] = strtok(line, " ");
-			command[1] = strtok(NULL, "");
-			add_command(server, client, command);
-			free(line);
-		}
+		if (!client->buff.empty && read_cbuf(&client->buff, &ln))
+			handle_new_command(server, client, ln);
 	}
 	return (0);
 }

@@ -47,7 +47,7 @@ static client_t *create_client(server_t *server)
 	if (!(client = calloc(1, sizeof(*client))) ||
 		!(client->infos = calloc(1, sizeof(*client->infos))))
 		return (NULL);
-	init_cbuf(&client->buffer);
+	init_cbuf(&client->buff);
 	client->infos->id = id++;
 	client->infos->level = 1;
 	client->infos->lifetime = 1260 / server->freq;
