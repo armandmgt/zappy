@@ -1,12 +1,20 @@
 import json
+from random import randint
 
-from classes.client import Client
+from numpy.core.umath import sign
+
+from classes.client import Client, clamp
 from classes.inventory import Inventory
+from common.listtools import find, index
+from common.vec import Vec2d
 
 _RESOURCES_NEEDED = [
-	Inventory([0, 1, 0, 0, 0, 0, 0, 1]), Inventory([0, 1, 1, 1, 0, 0, 0, 2]),
-	Inventory([0, 2, 0, 1, 0, 2, 0, 2]), Inventory([0, 1, 1, 2, 0, 1, 0, 4]),
-	Inventory([0, 1, 2, 1, 3, 0, 0, 4]), Inventory([0, 1, 2, 3, 0, 1, 0, 6]),
+	Inventory([0, 1, 0, 0, 0, 0, 0, 1]),
+	Inventory([0, 1, 1, 1, 0, 0, 0, 2]),
+	Inventory([0, 2, 0, 1, 0, 2, 0, 2]),
+	Inventory([0, 1, 1, 2, 0, 1, 0, 4]),
+	Inventory([0, 1, 2, 1, 3, 0, 0, 4]),
+	Inventory([0, 1, 2, 3, 0, 1, 0, 6]),
 	Inventory([0, 2, 2, 2, 2, 2, 1, 6])
 ]
 
@@ -27,58 +35,132 @@ class PlayerDesc:
 class AI:
 	client: Client
 	alpha_target: PlayerDesc
+	food: Vec2d
 
 	def __init__(self, c: Client):
 		self.client = c
 		self.alpha_target = None
+		self.food = None
 
-<<<<<<< HEAD
-	def make_decision(self):
-		pass
-=======
 	def make_decision(self, message: str):
-		if not message:
-			self.client.send_information()
-			return
-		try:
-			_, arg = message.split(maxsplit=1)
-			information = self.parse_information(arg)
-			if information is None:
-				return
-			self.rank_information(information)
-		except ValueError:
-			print(f'Invalid message received: {message}')
+		if message:
+			try:
+				_, arg = message.split(maxsplit=1)
+				information = self.parse_information(arg)
+				if information is None:
+					return
+				self.rank_information(information)
+			except ValueError:
+				print(f'Invalid message received: {message}')
+
+		self.client.get_inventory()
+		if self.client.player.inventory['food'] < 5 or self.alpha_target is None:
+			self.go_for_food()
+		else:
+			self.go_for_target()
 
 	def parse_information(self, arg: str) -> PlayerDesc or None:
 		information = PlayerDesc()
 		information.origin, arg = arg.split(', ', maxsplit=1)
 		team_name, information.level, information.inventory = arg.split(';')
 		information.inventory = json.loads(information.inventory)
+		information.origin = int(information.origin)
 		information.level = int(information.level)
 		if team_name != self.client.team:
 			return None
 		return information
 
-	def rank_information(self, information: PlayerDesc):
+	def rank_information(self, information: PlayerDesc) -> None:
 		information.score += self.player_level_score(information.level) * 1
 		information.score += self.resources_score(information.inventory) * 1
 		information.score /= 2
 		if self.alpha_target is None or self.alpha_target.score < information.score:
 			self.alpha_target = information
-			print('changed allegiance')
+			# print('changed allegiance')
+		elif self.alpha_target is not None:
+			self.alpha_target.origin = information.origin
 
 	def player_level_score(self, level: int) -> int:
 		return 1 if self.client.player.level == level else 0
 
 	def resources_score(self, inventory: Inventory) -> int:
-		my_needed_resources = _RESOURCES_NEEDED[self.client.player.level - 1]
-		my_needed_resources = Inventory([value - self.client.player.inventory[key] for (key, value) in my_needed_resources.items()])
-		my_needed_resources = Inventory([0 if value < 0 else value for (_, value) in my_needed_resources.items()])
+		my_needed_resources = _RESOURCES_NEEDED[
+			self.client.player.level - 1]
+		for (key, value) in my_needed_resources.items():
+			new_value = value - self.client.player.inventory[key]
+			my_needed_resources[key] = 0 if new_value < 0 else new_value
 		resource_scores = []
 		for (key, available) in inventory.items():
 			missing_resource = my_needed_resources[key] - available
 			if missing_resource < 0:
 				missing_resource = 0
 			resource_scores.append(missing_resource)
-		return 1 / sum(resource_scores)
->>>>>>> dd6cd9d5a500eeb743b9d1916a6b70b2f51b8c85
+		return 1 / sum(resource_scores) if sum(resource_scores) else 1
+
+	def go_for_food(self) -> None:
+		if self.food is not None and (self.food.x() != self.client.player.position.x() or self.food.y() != self.client.player.position.y()):
+			# print('taking previous food')
+			pos = self.food
+		else:
+			self.client.look()
+			found = find(self.client.player.vision, key=self.has_food)
+			if found is not None:
+				# print('found food !')
+				idx = index(self.client.player.vision, key=self.has_food)
+				# print(f'found index {idx}')
+				pos = Vec2d(idx % self.client.mapSize.x(), int(idx / self.client.mapSize.x()))
+				self.food = pos
+				if self.food.x() == self.client.player.position.x() and self.food.y() == self.client.player.position.y():
+					# print(f'taking all food at {pos.x()};{pos.y()}')
+					self.take_all()
+					return
+			else:
+				# print('taking random food')
+				pos = Vec2d(randint(0, self.client.mapSize.x()), randint(0, self.client.mapSize.y()))
+		# print(f'going for food at {pos.x()};{pos.y()} from {self.client.player.position.x()};{self.client.player.position.y()}')
+		self.best_direction(pos)
+
+	def go_for_target(self) -> None:
+		# print(f'going for target at {self.alpha_target.origin}')
+		if find([1, 2, 8], key=lambda x: x == self.alpha_target.origin) is not None:
+			self.client.move_forward()
+			self.take_all()
+		elif self.alpha_target.origin - 4 < 0:
+			self.client.turn_right()
+			self.alpha_target.origin = clamp(self.alpha_target.origin - 1, 8)
+		else:
+			self.client.turn_left()
+			self.alpha_target.origin = clamp(self.alpha_target.origin + 1, 8)
+
+	def best_direction(self, pos: Vec2d) -> None:
+		deltax = pos.x() - self.client.player.position.x()
+		deltay = pos.y() - self.client.player.position.y()
+		if deltax > self.client.mapSize.x() / 2:
+			deltax = self.client.mapSize.x() - deltax
+		if deltay > self.client.mapSize.y() / 2:
+			deltay = self.client.mapSize.y() - deltay
+		# print(f'deltax {deltax}, deltay {deltay}')
+		if abs(deltax) > abs(deltay):
+			direction = 2 + -1 * sign(deltax)
+		else:
+			direction = 1 + -1 * sign(deltay)
+		# print(f'should go {direction}, is looking at {self.client.player.orientation}')
+		l_turns = (self.client.player.orientation - direction + 4) % 4
+		r_turns = (direction - self.client.player.orientation + 4) % 4
+		turns = min((l_turns, self.client.turn_left), (r_turns, self.client.turn_right), key=lambda x: x[0])
+		if turns[0] == 0:
+			self.client.move_forward()
+			self.take_all()
+		else:
+			turns[1]()
+
+	def take_all(self):
+		# print('taking all on tile')
+		for (key, value) in self.client.player.vision[0].items():
+			if key != 'player' and value > 0:
+				while value > 0 and self.client.take(key):
+					value -= 1
+
+	@staticmethod
+	def has_food(inv: Inventory) -> bool:
+		return inv['food'] > 0
