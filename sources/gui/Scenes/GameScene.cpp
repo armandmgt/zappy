@@ -15,10 +15,13 @@ void GameScene::update(float timeSinceLastFrame) noexcept
 {
 	_networkMgr.updateGui();
 	//ImGui::Image(_resourceMgr.getTexture("GreenRupee"));
-
 	//ImGui::ShowDemoWindow();
 	ImGui::End();
 	displayGame(timeSinceLastFrame);
+	if (_running == false) {
+		_parent.popScene();
+		_parent.getWindow().close();
+	}
 }
 
 void GameScene::displayGame(float timeSinceLastFrame) noexcept
@@ -35,6 +38,7 @@ void GameScene::displayGame(float timeSinceLastFrame) noexcept
 
 void GameScene::enter() noexcept
 {
+	_evtMgr.subscribe<GameEnd>(*this);
 	_evtMgr.subscribe<SfmlEvent>(*this);
 	_evtMgr.subscribe<MapDims>(*this);
 	_evtMgr.subscribe<NewPlayer>(*this);
@@ -57,6 +61,11 @@ void GameScene::exit() noexcept
 {
 }
 
+void GameScene::receive(const GameEnd &event[[maybe_unused]]) noexcept
+{
+	_running = false;
+}
+
 void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -66,6 +75,7 @@ void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 void GameScene::receive(const MapDims &dims) noexcept
 {
 	GuiMapManager genMap(dims._x, dims._y, 35, 1);
+
 	_resourceMgr.loadAllTexturesInDirectory("T-0");
 	auto map = std::move(genMap.getMap());
 	for (auto &line : map) {
@@ -73,17 +83,13 @@ void GameScene::receive(const MapDims &dims) noexcept
 		for (auto &tiles : line) {
 			tmp.emplace_back();
 			int idGrass = rand() % 7;
-			std::cout << "rand = [" << idGrass << "]" <<std::endl;
 			if (tiles == 0)
 				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-7"));
 			else
-				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-" + std::to_string
-													     (idGrass)));
+				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-" + std::to_string(idGrass)));
 		}
 		_map.emplace_back(std::move(tmp));
 	}
-	std::cout << "Hi !" << std::endl;
-//	_map = std::move(std::vector(dims._y, std::vector(dims._x, Tile{})));
 }
 
 void GameScene::receive(const FillCellInventory &cell) noexcept
@@ -96,7 +102,6 @@ void GameScene::receive(const FillCellInventory &cell) noexcept
 
 	auto &tile = _map[cell._y][cell._x];
 	tile.setTileInventory(cell._inventory);
-	//tile.getSprite().setTexture(_resourceMgr.getTexture("Grass-6"));
 	tile.getSprite().setScale(size / 128.0f, size / 128.0f);
 	tile.getSprite().setPosition(cell._x * size + offset.x, cell._y * size + offset.y);
 
