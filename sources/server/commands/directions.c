@@ -6,6 +6,7 @@
 */
 
 #include <stdio.h>
+#include "server/gui_commands.h"
 #include "commands.h"
 #include "tools.h"
 
@@ -28,20 +29,28 @@ bool forward(server_t *server, client_t *client, char *UNUSED(args))
 	remove_elem(&server->map_infos.map[cur_pos.y][cur_pos.x].players,
 		client);
 	client->infos->pos = new_pos;
+	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
+		     new_pos.x, new_pos.y, client->infos->direction);
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
 
-bool right(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool right(server_t *server, client_t *client, char *UNUSED(args))
 {
 	client->infos->direction = ((client->infos->direction + 1) + 4) % 4;
 	dprintf(client->sock, "ok\n");
+	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
+		     client->infos->pos.x, client->infos->pos.y,
+		     client->infos->direction);
 	return (true);
 }
 
-bool left(server_t *UNUSED(server), client_t *client, char *UNUSED(args))
+bool left(server_t *server, client_t *client, char *UNUSED(args))
 {
 	client->infos->direction = ((client->infos->direction - 1) + 4) % 4;
 	dprintf(client->sock, "ok\n");
+	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
+		     client->infos->pos.x, client->infos->pos.y,
+		     client->infos->direction);
 	return (true);
 }
