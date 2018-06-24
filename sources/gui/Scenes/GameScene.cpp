@@ -40,6 +40,8 @@ void GameScene::enter() noexcept
 	_evtMgr.subscribe<PlayerDeath>(*this);
 	_evtMgr.subscribe<PlayerMoved>(*this);
 	_evtMgr.subscribe<FillCellInventory>(*this);
+	_evtMgr.subscribe<ResourceDropping>(*this);
+	_evtMgr.subscribe<ResourceCollecting>(*this);
 	/*
 	 * Resources Initialization
 	 */
@@ -117,4 +119,20 @@ void GameScene::receive(const PlayerMoved &player) noexcept
 	_players[player._id]._pos = vector2d<int>(player._x, player._y);
 	_players[player._id]._move = vector2d<int>(player._x, player._y);
 	_players[player._id]._orientation = player._orientation;
+}
+
+void GameScene::receive(const ResourceDropping &event) noexcept
+{
+	(void)event;
+}
+
+void GameScene::receive(const ResourceCollecting &collect) noexcept
+{
+	auto &player = _players[collect._id];
+	std::cout << "CLEAR(" << collect._resourcesName << ")" << std::endl;
+	Inventory::ResourceType resourceType = player._inventory._resourcesName[collect._resourcesName];
+
+	for (auto &it : _map[player._pos.y][player._pos.x].getInventory()._resources)
+		it.clear();
+//	_map[player._pos.y][player._pos.x].getInventory()._resources[resourceType].clear();
 }

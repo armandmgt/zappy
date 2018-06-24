@@ -36,6 +36,8 @@ public:
 	void receive(const NewPlayer &event) noexcept;
 	void receive(const PlayerDeath &event) noexcept;
 	void receive(const PlayerMoved &event) noexcept;
+	void receive(const ResourceDropping &event) noexcept;
+	void receive(const ResourceCollecting &event) noexcept;
 private:
 	void displayGame(float timeSinceLastFrame) noexcept;
 

@@ -113,10 +113,10 @@ public:
  */
 class ResourceDropping : public BaseEvent {
 public:
-	explicit ResourceDropping(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resources(params.at(1)) {}
+	explicit ResourceDropping(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resourcesName(params.at(1)) {}
 public:
 	int _id;
-	std::string _resources;
+	std::string _resourcesName;
 };
 
 /*
@@ -124,8 +124,8 @@ public:
  */
 class ResourceCollecting : public BaseEvent {
 public:
-	explicit ResourceCollecting(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resources(params.at(1)) {}
+	explicit ResourceCollecting(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resourcesName(params.at(1)) {}
 public:
 	int _id;
-	std::string _resources;
+	std::string _resourcesName;
 };
