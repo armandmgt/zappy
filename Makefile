@@ -10,6 +10,7 @@ RESET = "\033[0m"
 
 all: build
 	@$(MAKE) -j4 -s -C build
+	@$(MAKE) -s -C sources/client/
 
 build:
 	@cmake -E make_directory build
@@ -17,6 +18,7 @@ build:
 
 clean:
 	@if [ -d build ]; then $(MAKE) -s -C build/ clean; fi
+	@$(MAKE) -s -C sources/client/ clean
 
 fclean: clean
 	@rm -rf build
