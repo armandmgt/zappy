@@ -11,7 +11,7 @@
 void init_cbuf(cir_buffer_t *buf)
 {
 	memset(buf->buffer, 0, sizeof(buf->buffer));
-	buf->end = buf->buffer + BUFF_SIZE;
+	buf->end = buf->buffer + BUFF_SIZE - 1;
 	buf->write_ptr = buf->buffer;
 	buf->read_ptr = buf->buffer;
 	buf->empty = true;
