@@ -33,10 +33,9 @@ bool broadcast(server_t *server, client_t *client, char *args)
 		}
 	}
 	dprintf(client->sock, "%s\n", args ? "ok" : "ko");
-	if (args) {
-		print_in_gui(server->clients, "pbc %d %s\n", client->infos->id, args);
-		return (true);
-	}
+	if (args)
+		print_in_gui(server->clients, "pbc %d %s\n", client->infos->id,
+			args);
 	return (false);
 }
 

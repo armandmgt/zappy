@@ -9,12 +9,7 @@
 #include <stdlib.h>
 #include "server.h"
 
-static bool check_timer(command_t *cmd, clock_t *end)
-{
-	if (cmd->t_out > (double)(*end - cmd->s_time) / CLOCKS_PER_SEC * 10)
-		return (true);
-	return (false);
-}
+static bool check_timer(command_t *cmd, clock_t *end);
 
 int do_pending_actions(server_t *server)
 {
@@ -39,4 +34,11 @@ int do_pending_actions(server_t *server)
 			((command_t *)prev->data)->s_time = end;
 	}
 	return (0);
+}
+
+static bool check_timer(command_t *cmd, clock_t *end)
+{
+	if (cmd->t_out > (double)(*end - cmd->s_time) / CLOCKS_PER_SEC * 10)
+		return (true);
+	return (false);
 }
