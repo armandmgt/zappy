@@ -3,7 +3,6 @@ from common.vec import Vec2d
 
 
 class Player:
-	id = -1
 	level = 1
 	position: Vec2d = Vec2d(0, 0)
 	timeout: int = 0
