@@ -30,6 +30,9 @@ public:
     std::vector<std::string> _params;
 };
 
+class GameEnd : public BaseEvent {
+
+};
 /*
  * Map Size
  */

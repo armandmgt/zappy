@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <unistd.h>
 #include <unordered_map>
 #include "MyEvents.hpp"
 extern "C" {
@@ -36,20 +37,22 @@ private:
 
     int _serverSoket { -1 };
     uint16_t _serverPort { 4242 };
-    int _ipAddr[4] { 192, 168, 0, 119 };
+    int _ipAddr[4] { 127, 0, 0, 1 };
 
+    using Params = std::vector<std::string>;
     EventManager &_evtMgr;
     std::unordered_map<std::string, std::function<void(std::vector<std::string>)>> _networkProtocol{
-	    { "WELCOME", [this](std::vector<std::string> &&params[[maybe_unused]]) { send(GUI_NAME); send("msz"); } },
-	    { "msz", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<MapDims>(std::move(params)); send("mct"); } }, //Map Size
-	    { "bct", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<FillCellInventory>(std::move(params)); } }, //Content of a Tile
-	    { "pnw", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<NewPlayer>(std::move(params)); send("mct"); } }, //Connection of a new Player && update Map Tiles
-	    { "ppo", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<PlayerMoved>(std::move(params)); } }, //Player’s position
-	    { "pdi", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<PlayerDeath>(std::move(params)); } }, //Player Death
-	    { "pdr", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<ResourceDropping>(std::move(params)); } }, //Resource Dropping
-	    { "pgt", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<ResourceCollecting>(std::move(params)); } }, //Resource Collecting
-	    { "pin", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* TODO */ } }, //Player Inventory
-	    { "message", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* TODO: J'EN VEUX PAS*/ } }, //Player Inventory
-	    { "pbc", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* */ } } //Player BroadCas
+	    { "WELCOME", [this](Params &&params[[maybe_unused]]) { send(GUI_NAME); send("msz"); } },
+	    { "DISCONNECTED", [this](Params &&params[[maybe_unused]]) { close(_serverSoket); _evtMgr.emit<GameEnd>(); } },
+
+	    { "msz", [this](Params &&params) { _evtMgr.emit<MapDims>(std::move(params)); send("mct"); } }, //Map Size
+	    { "bct", [this](Params &&params) { _evtMgr.emit<FillCellInventory>(std::move(params)); } }, //Content of a Tile
+	    { "pnw", [this](Params &&params) { _evtMgr.emit<NewPlayer>(std::move(params)); send("mct"); } }, //Connection of a new Player && update Map Tiles
+	    { "ppo", [this](Params &&params) { _evtMgr.emit<PlayerMoved>(std::move(params)); } }, //Player’s position
+	    { "pdi", [this](Params &&params) { _evtMgr.emit<PlayerDeath>(std::move(params)); } }, //Player Death
+	    { "pdr", [this](Params &&params) { _evtMgr.emit<ResourceDropping>(std::move(params)); } }, //Resource Dropping
+	    { "pgt", [this](Params &&params) { _evtMgr.emit<ResourceCollecting>(std::move(params)); } }, //Resource Collecting
+	    { "pin", [this](Params &&params [[maybe_unused]]) { /* TODO */ } }, //Player Inventory
+	    { "pbc", [this](Params &&params[[maybe_unused]]) { /* */ } } //Player BroadCas
     };
 };

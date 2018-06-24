@@ -30,6 +30,7 @@ public:
 	/*
 	 * Events Callback
 	 */
+	void receive(const GameEnd &event) noexcept;
 	void receive(const SfmlEvent &event) noexcept;
 	void receive(const MapDims &event) noexcept;
 	void receive(const FillCellInventory &event) noexcept;
@@ -42,6 +43,7 @@ private:
 	void displayGame(float timeSinceLastFrame) noexcept;
 
 	bool _started {false};
+	bool _running {true};
 	NetworkGui _networkMgr;
 	std::vector<std::vector<Tile>> _map;
 	std::unordered_map<int, Player> _players;
