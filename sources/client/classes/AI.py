@@ -3,9 +3,9 @@ from random import randint
 
 from numpy.core.umath import sign
 
-from classes.client import Client
+from classes.client import Client, clamp
 from classes.inventory import Inventory
-from common.listtools import find
+from common.listtools import find, index
 from common.vec import Vec2d
 
 _RESOURCES_NEEDED = [
@@ -76,7 +76,9 @@ class AI:
 		information.score /= 2
 		if self.alpha_target is None or self.alpha_target.score < information.score:
 			self.alpha_target = information
-			print('changed allegiance')
+			# print('changed allegiance')
+		elif self.alpha_target is not None:
+			self.alpha_target.origin = information.origin
 
 	def player_level_score(self, level: int) -> int:
 		return 1 if self.client.player.level == level else 0
@@ -97,31 +99,38 @@ class AI:
 
 	def go_for_food(self) -> None:
 		if self.food is not None and (self.food.x() != self.client.player.position.x() or self.food.y() != self.client.player.position.y()):
-			print('taking previous food')
+			# print('taking previous food')
 			pos = self.food
 		else:
 			self.client.look()
 			found = find(self.client.player.vision, key=self.has_food)
 			if found is not None:
-				print('found food !')
-				index = self.client.player.vision.index(found)
-				pos = Vec2d(int(index / self.client.mapSize.x()), index % self.client.mapSize.x())
+				# print('found food !')
+				idx = index(self.client.player.vision, key=self.has_food)
+				# print(f'found index {idx}')
+				pos = Vec2d(idx % self.client.mapSize.x(), int(idx / self.client.mapSize.x()))
 				self.food = pos
+				if self.food.x() == self.client.player.position.x() and self.food.y() == self.client.player.position.y():
+					# print(f'taking all food at {pos.x()};{pos.y()}')
+					self.take_all()
+					return
 			else:
-				print('taking random food')
+				# print('taking random food')
 				pos = Vec2d(randint(0, self.client.mapSize.x()), randint(0, self.client.mapSize.y()))
-		print(f'going for food at {pos.x()};{pos.y()} from {self.client.player.position.x()};{self.client.player.position.y()}')
+		# print(f'going for food at {pos.x()};{pos.y()} from {self.client.player.position.x()};{self.client.player.position.y()}')
 		self.best_direction(pos)
 
 	def go_for_target(self) -> None:
-		print(f'going for target at {self.alpha_target.origin}')
+		# print(f'going for target at {self.alpha_target.origin}')
 		if find([1, 2, 8], key=lambda x: x == self.alpha_target.origin) is not None:
 			self.client.move_forward()
 			self.take_all()
 		elif self.alpha_target.origin - 4 < 0:
 			self.client.turn_right()
+			self.alpha_target.origin = clamp(self.alpha_target.origin - 1, 8)
 		else:
 			self.client.turn_left()
+			self.alpha_target.origin = clamp(self.alpha_target.origin + 1, 8)
 
 	def best_direction(self, pos: Vec2d) -> None:
 		deltax = pos.x() - self.client.player.position.x()
@@ -130,10 +139,12 @@ class AI:
 			deltax = self.client.mapSize.x() - deltax
 		if deltay > self.client.mapSize.y() / 2:
 			deltay = self.client.mapSize.y() - deltay
+		# print(f'deltax {deltax}, deltay {deltay}')
 		if abs(deltax) > abs(deltay):
-			direction = 3 + sign(deltax)
+			direction = 2 + -1 * sign(deltax)
 		else:
-			direction = 2 + sign(deltay)
+			direction = 1 + -1 * sign(deltay)
+		# print(f'should go {direction}, is looking at {self.client.player.orientation}')
 		l_turns = (self.client.player.orientation - direction + 4) % 4
 		r_turns = (direction - self.client.player.orientation + 4) % 4
 		turns = min((l_turns, self.client.turn_left), (r_turns, self.client.turn_right), key=lambda x: x[0])
@@ -144,9 +155,10 @@ class AI:
 			turns[1]()
 
 	def take_all(self):
+		# print('taking all on tile')
 		for (key, value) in self.client.player.vision[0].items():
 			if key != 'player' and value > 0:
-				while value and self.client.take(key):
+				while value > 0 and self.client.take(key):
 					value -= 1
 
 	@staticmethod
