@@ -29,7 +29,7 @@ bool forward(server_t *server, client_t *client, char *UNUSED(args))
 		client);
 	client->infos->pos = new_pos;
 	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
-		     new_pos.x, new_pos.y, client->infos->direction);
+		     new_pos.x, new_pos.y, client->infos->direction + 1);
 	dprintf(client->sock, "ok\n");
 	return (true);
 }
@@ -40,7 +40,7 @@ bool right(server_t *server, client_t *client, char *UNUSED(args))
 	dprintf(client->sock, "ok\n");
 	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
 		     client->infos->pos.x, client->infos->pos.y,
-		     client->infos->direction);
+		     client->infos->direction + 1);
 	return (true);
 }
 
@@ -50,6 +50,6 @@ bool left(server_t *server, client_t *client, char *UNUSED(args))
 	dprintf(client->sock, "ok\n");
 	print_in_gui(server->clients, "ppo %d %d %d %d", client->infos->id,
 		     client->infos->pos.x, client->infos->pos.y,
-		     client->infos->direction);
+		     client->infos->direction + 1);
 	return (true);
 }
