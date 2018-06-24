@@ -120,25 +120,24 @@ static void add_command(server_t *server, client_t *client, char **av)
 
 static void send_pnw_to_gui(server_t *server, client_t *client)
 {
-	client_t *tmp_client;
+	client_t *tmp;
 
 	if (strcmp(client->team->name, GUI_NAME) != 0) {
 		dprintf(client->sock, "%d\n%d %d\n", count_in_team(server,
 			client), server->map_infos.x, server->map_infos.y);
-		print_in_gui(server->clients, "%d %d %d %d %d %s\n",
+		print_in_gui(server->clients, "pnw %d %d %d %d %d %s\n",
 			client->infos->id, client->infos->pos.x,
 			client->infos->pos.y, client->infos->direction + 1,
 			client->infos->level, client->team->name);
 		return;
 	}
 	for (list_t *cur = server->clients; cur; cur = cur->next) {
-		tmp_client = cur->data;
-		if (strcmp(tmp_client->team->name, GUI_NAME) != 0)
-			print_in_gui(server->clients, "%d %d %d %d %d %s\n",
-				tmp_client->infos->id, tmp_client->infos->pos.x,
-				tmp_client->infos->pos.y,
-				tmp_client->infos->direction + 1,
-				tmp_client->infos->level,
-				tmp_client->team->name);
+		tmp = cur->data;
+		if (tmp->team && strcmp(tmp->team->name, GUI_NAME) != 0)
+			print_in_gui(server->clients,
+				"pnw %d %d %d %d %d %s\n",
+				tmp->infos->id, tmp->infos->pos.x,
+				tmp->infos->pos.y, tmp->infos->direction + 1,
+				tmp->infos->level, tmp->team->name);
 	}
 }
