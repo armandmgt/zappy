@@ -35,8 +35,7 @@ public:
  */
 class MapDims : public BaseEvent {
 public:
-    explicit MapDims(std::vector<std::string> &&params) noexcept : _x(std::stoi(params.at(0))), _y(std::stoi(params.at(1))) {
-    }
+    explicit MapDims(std::vector<std::string> &&params) noexcept : _x(std::stoi(params.at(0))), _y(std::stoi(params.at(1))) {}
 public:
     int _x;
     int _y;
@@ -70,7 +69,7 @@ public:
 	explicit NewPlayer(std::vector<std::string> &&params) noexcept {
 		_player._id = std::stoi(params.at(0));
 		_player._pos = vector2d<int>{ std::stoi(params.at(1)), std::stoi(params.at(2)) };
-		_player._orienation = static_cast<Player::Orientation>(std::stoi(params.at(3)));
+		_player._orientation = static_cast<Player::Orientation>(std::stoi(params.at(3)));
 		_player._level = std::stoi(params.at(4));
 		_player._teamName = std::move(params[5]);
 	}
@@ -84,21 +83,40 @@ public:
 class PlayerDeath : public BaseEvent {
 public:
 	explicit PlayerDeath(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))) {
+		std::cout << "PLAYER(" << params.at(0) << ") DEATH " << std::endl;
 	}
 public:
 	int _id;
 };
 
 /*
+ * Player’s position
+ */
+class PlayerMoved : public BaseEvent {
+public:
+	explicit PlayerMoved(std::vector<std::string> &&params) noexcept
+		: _id(std::stoi(params.at(0))),
+	_x(std::stoi(params.at(1))),
+	_y(std::stoi(params.at(2))),
+	_orientation(static_cast<Player::Orientation>(std::stoi(params.at(3))))
+	{
+		std::cout << "PLAYER(" << params.at(0) << ") MOVED " << params.at(1) << ", " << params.at(2) << std::endl;
+	}
+public:
+	int _id;
+	int _x;
+	int _y;
+	Player::Orientation _orientation;
+};
+/*
  * Resource Dropping
  */
 class ResourceDropping : public BaseEvent {
 public:
-	explicit ResourceDropping(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _nbResources(std::stoi(params.at(1))) {
-	}
+	explicit ResourceDropping(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resources(params.at(1)) {}
 public:
 	int _id;
-	int _nbResources;
+	std::string _resources;
 };
 
 /*
@@ -106,9 +124,8 @@ public:
  */
 class ResourceCollecting : public BaseEvent {
 public:
-	explicit ResourceCollecting(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _nbResources(std::stoi(params.at(1))) {
-	}
+	explicit ResourceCollecting(std::vector<std::string> &&params) noexcept : _id(std::stoi(params.at(0))), _resources(params.at(1)) {}
 public:
 	int _id;
-	int _nbResources;
+	std::string _resources;
 };

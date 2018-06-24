@@ -44,8 +44,12 @@ private:
 	    { "msz", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<MapDims>(std::move(params)); send("mct"); } }, //Map Size
 	    { "bct", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<FillCellInventory>(std::move(params)); } }, //Content of a Tile
 	    { "pnw", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<NewPlayer>(std::move(params)); send("mct"); } }, //Connection of a new Player && update Map Tiles
+	    { "ppo", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<PlayerMoved>(std::move(params)); } }, //Player’s position
 	    { "pdi", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<PlayerDeath>(std::move(params)); } }, //Player Death
 	    { "pdr", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<ResourceDropping>(std::move(params)); } }, //Resource Dropping
-	    { "pgt", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<ResourceCollecting>(std::move(params)); } } //Resource Collecting
+	    { "pgt", [this](std::vector<std::string> &&params[[maybe_unused]]) { _evtMgr.emit<ResourceCollecting>(std::move(params)); } }, //Resource Collecting
+	    { "pin", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* TODO */ } }, //Player Inventory
+	    { "message", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* TODO: J'EN VEUX PAS*/ } }, //Player Inventory
+	    { "pbc", [this](std::vector<std::string> &&params[[maybe_unused]]) { /* */ } } //Player BroadCas
     };
 };

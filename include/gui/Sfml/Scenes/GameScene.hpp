@@ -34,11 +34,13 @@ public:
 	void receive(const MapDims &event) noexcept;
 	void receive(const FillCellInventory &event) noexcept;
 	void receive(const NewPlayer &event) noexcept;
+	void receive(const PlayerDeath &event) noexcept;
+	void receive(const PlayerMoved &event) noexcept;
 private:
-	void displayMap(float timeSinceLastFrame) noexcept;
+	void displayGame(float timeSinceLastFrame) noexcept;
 
 	bool _started {false};
 	NetworkGui _networkMgr;
 	std::vector<std::vector<Tile>> _map;
-	std::vector<Player> _players;
+	std::unordered_map<int, Player> _players;
 };
