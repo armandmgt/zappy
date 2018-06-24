@@ -95,7 +95,7 @@ class Client:
 
 		for s in data:
 			item, val = s.strip().split(' ')
-			self.player.inventory[item] = val
+			self.player.inventory[item] = int(val)
 
 	def broadcast(self, text: str):
 		self.write('Broadcast ' + text)
