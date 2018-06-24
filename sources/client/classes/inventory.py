@@ -26,6 +26,9 @@ class Inventory(dict):
 	def __repr__(self):
 		return super(Inventory, self).__repr__()
 
+	def __str__(self):
+		return super(Inventory, self).__str__().replace("'", '"')
+
 	def __len__(self):
 		return super(Inventory, self).__len__()
 

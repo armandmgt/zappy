@@ -1,7 +1,5 @@
-import json
-
-from common.vec import Vec2d
 from classes.inventory import Inventory
+from common.vec import Vec2d
 
 
 class Player:
@@ -20,6 +18,4 @@ class Player:
 			self.vision.append(Inventory())
 
 	def to_str(self) -> str:
-		return f'{self.position.x()},{self.position.y()},'\
-			f'{self.level},'\
-			f'{self.inventory}'
+		return f'{self.level};{self.inventory}'

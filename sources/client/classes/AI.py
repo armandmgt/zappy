@@ -1,3 +1,5 @@
+import json
+
 from classes.client import Client
 
 
@@ -12,11 +14,16 @@ class AI:
 		if not message:
 			self.client.send_information()
 			return
-		print(f'make decision with {message}')
-		command, *arg = message.split(maxsplit=1)
-		arg = arg[0] if arg else ''
-		print(f'command [{command}] arg [{arg}]')
-		self.parse_information()
+		try:
+			_, arg = message.split(maxsplit=1)
+			self.parse_information(arg)
+		except ValueError:
+			print(f'Invalid message received: {message}')
 
-	def parse_information(self):
-		pass
+	def parse_information(self, arg: str):
+		cell_num, arg = arg.split(', ', maxsplit=1)
+		team_name, level, inventory_str = arg.split(';')
+		inventory = json.loads(inventory_str)
+		if team_name != self.client.team:
+			return
+		print(inventory)
