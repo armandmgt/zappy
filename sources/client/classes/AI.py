@@ -1,6 +1,7 @@
 import json
 
 from classes.client import Client
+from classes.inventory import Inventory
 
 
 class AI:
@@ -16,14 +17,16 @@ class AI:
 			return
 		try:
 			_, arg = message.split(maxsplit=1)
-			self.parse_information(arg)
+			information = self.parse_information(arg)
 		except ValueError:
 			print(f'Invalid message received: {message}')
 
 	def parse_information(self, arg: str):
-		cell_num, arg = arg.split(', ', maxsplit=1)
-		team_name, level, inventory_str = arg.split(';')
-		inventory = json.loads(inventory_str)
+		information = {'org': 0, 'lvl': 0, 'inv': Inventory()}
+		information['org'], arg = arg.split(', ', maxsplit=1)
+		team_name, information['lvl'], information['inv'] = arg.split(';')
+		information['inv'] = json.loads(information['inv'])
+		information['lvl'] = int(information['lvl'])
 		if team_name != self.client.team:
 			return
-		print(inventory)
+		return information
