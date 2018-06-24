@@ -6,11 +6,12 @@
 */
 
 #include "App.hpp"
+#include "GameScene.hpp"
 #include "imgui-SFML.hpp"
 
 void App::init()
 {
-
+	AScene::create<GameScene>(_sceneMgr);
 }
 
 void App::run()
@@ -27,10 +28,10 @@ void App::run()
 			_sceneMgr.event(event);
 			ImGui::SFML::ProcessEvent(event);
 		}
+		clear();
 		float timeSinceLastFrame { deltaClock.getElapsedTime().asSeconds() };
 		ImGui::SFML::Update(*this, deltaClock.restart());
 		_sceneMgr.update(timeSinceLastFrame);
-		clear();
 		ImGui::SFML::Render(*this);
 		display();
 	}

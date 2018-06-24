@@ -19,6 +19,7 @@ int handle_new_connections(server_t *server, fd_set *readfds)
 	client_t *client;
 
 	if (FD_ISSET(server->sock, readfds)) {
+		fprintf(stdout, "client connected !\n");
 		if (!(client = new_client(server)) ||
 			accept_client(server, client) == -1)
 			return (-1);
