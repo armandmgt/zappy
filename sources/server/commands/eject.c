@@ -16,7 +16,7 @@ static void change_data(server_t *server, list_t *tmp);
 bool eject(server_t *server, client_t *client, char *UNUSED(args))
 {
 	list_t **list = get_player_list_at(&server->map_infos,
-		client->infos->pos.x,client->infos->pos.y);
+		client->infos->pos.x, client->infos->pos.y);
 
 	if (list_len(*list) <= 1) {
 		dprintf(client->sock, "ko\n");
@@ -47,7 +47,6 @@ static void case_positions(server_t *server, client_t *cpy, vec2i_t *pos)
 	case (WEST):
 		*pos = (vec2i_t){cpy->infos->pos.x - 1, cpy->infos->pos.y};
 		dprintf(cpy->sock, "eject: E\n");
-		break;
 	default: break;
 	}
 	pos->y = (pos->y + server->map_infos.y) % server->map_infos.y;
