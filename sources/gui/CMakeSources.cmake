@@ -9,6 +9,7 @@ set(GENERATION
         )
 
 set(CORE_SCENES
+        Scenes/MenuScene.cpp
         Scenes/GameScene.cpp
         )
 

@@ -14,14 +14,8 @@
 void GameScene::update(float timeSinceLastFrame) noexcept
 {
 	_networkMgr.updateGui();
-	//ImGui::Image(_resourceMgr.getTexture("GreenRupee"));
-	//ImGui::ShowDemoWindow();
 	ImGui::End();
 	displayGame(timeSinceLastFrame);
-	if (_running == false) {
-		_parent.popScene();
-		_parent.getWindow().close();
-	}
 }
 
 void GameScene::displayGame(float timeSinceLastFrame) noexcept
@@ -55,6 +49,11 @@ void GameScene::enter() noexcept
 	_resourceMgr.loadAnimation("Down");
 	_resourceMgr.loadAnimation("Right");
 	_resourceMgr.loadAnimation("Left");
+	static sf::Music sound;
+
+	sound.openFromFile("assets/Music/Music.ogg");
+	sound.setLoop(true);
+	sound.play();
 }
 
 void GameScene::exit() noexcept
@@ -75,14 +74,17 @@ void GameScene::receive(const SfmlEvent &event[[maybe_unused]]) noexcept
 void GameScene::receive(const MapDims &dims) noexcept
 {
 	GuiMapManager genMap(dims._x, dims._y, 35, 1);
-
 	_resourceMgr.loadAllTexturesInDirectory("T-0");
+
+	std::random_device random_device;
+	std::mt19937 engine{random_device()};
 	auto map = std::move(genMap.getMap());
+
 	for (auto &line : map) {
 		std::vector<Tile> tmp;
 		for (auto &tiles : line) {
 			tmp.emplace_back();
-			int idGrass = rand() % 7;
+			int idGrass{std::uniform_int_distribution<int>(0, 6)(engine)};
 			if (tiles == 0)
 				tmp.back().getSprite().setTexture(_resourceMgr.getTexture("Grass-7"));
 			else
@@ -131,6 +133,11 @@ void GameScene::receive(const NewPlayer &player) noexcept
 	_players[player._player._id].setAnimation(_resourceMgr.getAnimation("Down"), Player::Orientation::Down);
 	_players[player._player._id].setAnimation(_resourceMgr.getAnimation("Left"), Player::Orientation::Lelft);
 	_players[player._player._id].setAnimation(_resourceMgr.getAnimation("Right"), Player::Orientation::Right);
+
+	static sf::Music sound;
+
+	sound.openFromFile("assets/Music/Fanfare.ogg");
+	sound.play();
 }
 void GameScene::receive(const PlayerDeath &player) noexcept
 {
