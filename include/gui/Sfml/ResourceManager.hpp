@@ -101,7 +101,7 @@ public:
      * If the texture is in _resourceDirectoryPath(default = "assets/")
      */
     sf::Texture &loadTexture(const std::experimental::filesystem::path &filename) {
-	    std::experimental::filesystem::path id = filename;
+    	std::experimental::filesystem::path id = filename;
     	for (auto &it : std::experimental::filesystem::recursive_directory_iterator(_resourceDirectoryPath)) {
 		if (it.status().type() != std::experimental::filesystem::file_type::directory) {
 			if (it.path().filename() == filename) {
@@ -157,6 +157,7 @@ public:
 
 private:
     TexturesRegistry _texturesRegistry;
+
     std::experimental::filesystem::path _resourceDirectoryPath;
     std::unordered_map<std::string, AnimationState> _animations;
 };

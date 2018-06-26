@@ -6,12 +6,13 @@
 */
 
 #include "App.hpp"
+#include "MenuScene.hpp"
 #include "GameScene.hpp"
 #include "imgui-SFML.hpp"
 
 void App::init()
 {
-	AScene::create<GameScene>(_sceneMgr);
+	AScene::create<MenuScene>(_sceneMgr);
 }
 
 void App::run()

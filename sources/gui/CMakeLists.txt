@@ -4,7 +4,7 @@ include(CMakeSources.cmake)
 
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS} Scenes/MenuScene.cpp ../../include/gui/Sfml/Scenes/MenuScene.hpp)
 
 #CXXFlags
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wfatal-errors")
