@@ -1,4 +1,4 @@
-# zappy ![CircleCI](https://circleci.com/gh/armandmgt/zappy/tree/master.svg?style=svg&circle-token=0f20a4db4f8ba3fdadcd42650cb67f0832e52ad4)
+# zappy
 Epitech's Zappy project
 
 ### Description
